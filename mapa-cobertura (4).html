@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cobertura de entrega | Pureza Natural</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+:root{--g:#2fa35f;--a:#e0a526;--o:#d2642f;--txt:#1d2430;--mut:#667085;--blue:#1a73e8}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--txt);overflow:hidden}
+#map{position:absolute;inset:0}
+.top{position:absolute;z-index:5;left:12px;right:62px;top:calc(12px + env(safe-area-inset-top));display:flex;flex-direction:column;gap:6px;max-width:460px}
+.bar{display:flex;align-items:center;gap:6px;background:#fff;border-radius:28px;padding:5px 6px 5px 14px;box-shadow:0 2px 10px #0003}
+.bar img,.logo{width:26px;height:26px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font:800 11px system-ui;flex:none}
+.bar input{flex:1;min-width:0;border:0;outline:0;font-size:15px;padding:9px 4px;background:transparent;color:var(--txt)}
+.bar button{border:0;border-radius:50%;width:38px;height:38px;background:#f1f3f6;font-size:17px;cursor:pointer;flex:none}
+.bar button.go{background:var(--blue);color:#fff}
+.sub{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;padding-left:14px;text-shadow:0 0 4px #fff,0 0 4px #fff}
+#res{align-self:flex-start;background:#fff;border-radius:14px;padding:7px 12px;font-size:13px;box-shadow:0 2px 8px #0002;color:var(--txt);max-width:100%}
+.cards{position:absolute;z-index:5;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;overflow-x:auto;padding:6px 12px 8px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.cards::-webkit-scrollbar{display:none}
+.card{flex:0 0 76%;max-width:320px;scroll-snap-align:center;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 4px 16px #0003;border:2px solid transparent;cursor:pointer;transition:transform .3s,border-color .3s;opacity:0;transform:translateY(40px);animation:up .6s forwards}
+.card:nth-child(2){animation-delay:.15s}.card:nth-child(3){animation-delay:.3s}
+.card.on{border-color:var(--blue);transform:translateY(-4px)}
+.card h2{font-size:13px;display:flex;gap:8px;align-items:center;font-weight:600}
+.dot{width:11px;height:11px;border-radius:50%;flex:none}
+.price{font-size:24px;font-weight:800;margin:4px 0 2px}
+.card p{font-size:12.5px;color:var(--mut);line-height:1.35}
+@keyframes up{to{opacity:1;transform:none}}
+.pin{position:relative;width:18px;height:18px}
+.pin i{position:absolute;inset:0;border-radius:50%;background:var(--c);border:3px solid #fff;box-shadow:0 1px 5px #0006}
+.pin b{position:absolute;inset:0;border-radius:50%;background:var(--c);opacity:.55;animation:pulse 2s infinite}
+@keyframes pulse{to{transform:scale(3.2);opacity:0}}
+.van{position:relative;width:52px;height:46px;animation:bob .45s ease-in-out infinite alternate;filter:drop-shadow(0 5px 4px #0006)}
+.van .chip{position:absolute;left:50%;top:-4px;transform:translateX(-50%);background:var(--g);color:#fff;font:700 10px system-ui;padding:2px 8px;border-radius:9px;white-space:nowrap;border:1.5px solid #fff}
+.van .truck{position:absolute;left:2px;top:15px;transition:transform .25s}
+@keyframes bob{to{transform:translateY(-2px)}}
+.van.honk{animation:hop .18s ease-in-out 4}
+@keyframes hop{50%{transform:translateY(-7px) rotate(-3deg)}}
+.zchip{pointer-events:none;color:#fff;font:800 10px system-ui;letter-spacing:.04em;padding:4px 9px;border-radius:10px;border:1.5px solid #fff;box-shadow:0 2px 6px #0004;opacity:0;animation:fade .6s 1.6s forwards;white-space:nowrap}
+@keyframes fade{to{opacity:1}}
+.wa{display:block;margin-top:8px;background:#25d366;color:#fff!important;text-decoration:none;text-align:center;font-weight:700;padding:8px 10px;border-radius:10px}
+.maplibregl-popup-content{border-radius:14px;padding:10px 14px;font:13px system-ui;box-shadow:0 4px 16px #0004}
+@media (min-width:800px){
+  .cards{flex-direction:column;overflow:visible;left:12px;right:auto;bottom:24px;width:320px;padding:0}
+  .card{flex:none;max-width:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="top">
+  <div class="bar">
+    <div class="logo">PN</div>
+    <input id="q" placeholder="Busca tu barrio o municipio" autocomplete="off">
+    <button id="snd" title="Sonido">🔊</button>
+    <button id="loc" title="Usar mi ubicación">📍</button>
+    <button id="go" class="go" title="Buscar">➜</button>
+  </div>
+  <div class="sub">Pureza Natural · AguaLogic distribuidor autorizado</div>
+  <div id="res"></div>
+</div>
+<div class="cards">
+  <div class="card" data-z="1"><h2><span class="dot" style="background:var(--g)"></span>1. Dentro del perímetro urbano</h2><div class="price" data-to="0">ENTREGA GRATIS</div><p>Direcciones dentro del límite urbano oficial de Villavicencio.</p></div>
+  <div class="card" data-z="2"><h2><span class="dot" style="background:var(--a)"></span>2. Fuera del perímetro urbano</h2><div class="price" data-to="20000">$0</div><p>Sectores fuera del límite urbano, sujetos a confirmación de cobertura.</p></div>
+  <div class="card" data-z="3"><h2><span class="dot" style="background:var(--o)"></span>3. Fuera de Villavicencio</h2><div class="price" data-to="49500">$0</div><p>Entregas a otros municipios o destinos fuera de Villavicencio.</p></div>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+const showErr=m=>{let e=document.getElementById('err');if(!e){e=document.createElement('div');e.id='err';e.style.cssText='position:fixed;z-index:99;left:12px;right:12px;top:140px;background:#fff;color:#b42318;padding:10px 12px;border-radius:12px;font:13px system-ui;box-shadow:0 2px 10px #0004';document.body.appendChild(e)}e.textContent='Error: '+m};
+window.addEventListener('error',e=>showErr(e.message));
+window.addEventListener('unhandledrejection',e=>showErr(String(e.reason&&e.reason.message||e.reason)));
+if(typeof maplibregl==='undefined'){showErr('No cargó el mapa. Revisa tu internet y ábrelo en Chrome o Safari, no dentro de otra app.');throw new Error('maplibre no cargó')}
+const C={1:'#2fa35f',2:'#e0a526',3:'#d2642f'};
+const center=[-73.6383,4.1515];            // [lng,lat]
+const urban=[[-73.665,4.182],[-73.620,4.180],[-73.590,4.168],[-73.585,4.140],[-73.600,4.115],[-73.625,4.105],[-73.655,4.115],[-73.675,4.140],[-73.680,4.165]];
+const towns=[['Restrepo',-73.5626,4.2631],['Cumaral',-73.4881,4.2713],['Acacías',-73.7661,3.9917],['Puerto López',-72.9604,4.0874]];
+const destFor={1:[-73.6200,4.1725],2:[-73.56643,4.08468],3:[-73.5626,4.2631]};
+const MSG={1:['Zona 1','Entrega gratis'],2:['Zona 2','$20.000 COP · sujeto a confirmación'],3:['Zona 3','$49.500 COP']};
+const fmt=n=>'$'+n.toLocaleString('es-CO')+' COP';
+
+// ---------- geometría
+const rad=x=>x*Math.PI/180;
+function km(a,b){const R=6371,dLa=rad(b[1]-a[1]),dLo=rad(b[0]-a[0]);const h=Math.sin(dLa/2)**2+Math.cos(rad(a[1]))*Math.cos(rad(b[1]))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function inPoly(p,poly){let [x,y]=p,r=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const [xi,yi]=poly[i],[xj,yj]=poly[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))r=!r}return r}
+const classify=p=>inPoly(p,urban)?1:(km(p,center)<=18?2:3);
+function circle(c,r,n=72){const pts=[];for(let i=0;i<=n;i++){const a=i/n*2*Math.PI;pts.push([c[0]+r/(111.32*Math.cos(rad(c[1])))*Math.cos(a),c[1]+r/111.32*Math.sin(a)])}return pts}
+const feat=(g)=>({type:'Feature',geometry:g,properties:{}});
+
+// ---------- mapa
+const map=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/liberty',center,zoom:9,pitch:0,attributionControl:{compact:true}});
+map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'top-right');
+// respaldo: si el estilo 3D no carga, usa mapa OpenStreetMap normal
+let fell=false;
+const RASTER={version:8,sources:{osm:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap'}},layers:[{id:'osm',type:'raster',source:'osm'}]};
+map.on('error',e=>{if(!fell&&!map.isStyleLoaded()){fell=true;map.setStyle(RASTER)}});
+
+const pinEl=c=>{const d=document.createElement('div');d.className='pin';d.style.setProperty('--c',c);d.innerHTML='<b></b><i></i>';return d};
+const vanEl=document.createElement('div');
+vanEl.innerHTML='<div class="van"><div class="chip">Pureza Natural</div><svg class="truck" viewBox="0 0 64 36" width="48" height="27"><rect x="2" y="4" width="38" height="22" rx="3" fill="#2fa35f"/><path d="M40 10h12l9 9v7H40z" fill="#23834c"/><path d="M44 13h7l5 6H44z" fill="#cfe9ff"/><circle cx="16" cy="28" r="5" fill="#111" stroke="#fff" stroke-width="2"/><circle cx="48" cy="28" r="5" fill="#111" stroke="#fff" stroke-width="2"/><text x="21" y="20" font-size="10" font-weight="800" fill="#fff" text-anchor="middle" font-family="sans-serif">PN</text></svg></div>';
+const van=new maplibregl.Marker({element:vanEl,anchor:'bottom'}).setLngLat(center).addTo(map);
+let destMarker,popup,tok=0;
+
+map.on('load',()=>{
+  const before=(map.getStyle().layers.find(l=>l.type==='symbol')||{}).id;
+  map.addSource('z2',{type:'geojson',data:feat({type:'Polygon',coordinates:[circle(center,18)]})});
+  map.addSource('z1',{type:'geojson',data:feat({type:'Polygon',coordinates:[urban.concat([urban[0]])]})});
+  map.addSource('route',{type:'geojson',data:feat({type:'LineString',coordinates:[center,center]})});
+  map.addLayer({id:'z2f',type:'fill',source:'z2',paint:{'fill-color':C[2],'fill-opacity':0,'fill-opacity-transition':{duration:1400}}},before);
+  map.addLayer({id:'z2l',type:'line',source:'z2',paint:{'line-color':C[2],'line-width':2.5,'line-dasharray':[2,2],'line-opacity':.9}},before);
+  map.addLayer({id:'z1f',type:'fill',source:'z1',paint:{'fill-color':C[1],'fill-opacity':0,'fill-opacity-transition':{duration:1400}}},before);
+  map.addLayer({id:'z1l',type:'line',source:'z1',paint:{'line-color':C[1],'line-width':3}},before);
+  map.addLayer({id:'routeC',type:'line',source:'route',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#fff','line-width':9}});
+  map.addLayer({id:'routeL',type:'line',source:'route',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#1a73e8','line-width':5}});
+  setTimeout(()=>map.setPaintProperty('z2f','fill-opacity',.16),500);
+  setTimeout(()=>map.setPaintProperty('z1f','fill-opacity',.38),1100);
+
+  [['ZONA 1 · GRATIS',C[1],[-73.64,4.168]],['ZONA 2 · $20.000',C[2],[center[0],4.1515+18/111.32]]].forEach(([t,c,p])=>{
+    const el=document.createElement('div');el.className='zchip';el.style.background=c;el.textContent=t;
+    new maplibregl.Marker({element:el}).setLngLat(p).addTo(map);
+  });
+  const b=new maplibregl.LngLatBounds(center,center);
+  towns.forEach(([n,lo,la],i)=>{
+    b.extend([lo,la]);
+    setTimeout(()=>{
+      const el=pinEl(C[3]);el.style.cursor='pointer';
+      new maplibregl.Marker({element:el}).setLngLat([lo,la]).addTo(map);
+      el.addEventListener('click',e=>{e.stopPropagation();select(3,true);drive([lo,la],3,n)});
+    },1500+i*350);
+  });
+  map.fitBounds(b,{padding:{top:150,bottom:230,left:40,right:40},duration:2200,pitch:25});
+  setTimeout(()=>document.querySelectorAll('.price[data-to]').forEach(count),500);
+});
+
+// ---------- pito
+let AC,muted=false;
+function ctx(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}return AC}
+['pointerdown','touchstart','keydown'].forEach(ev=>addEventListener(ev,ctx,{passive:true}));
+function toot(t,dur){
+  const g=AC.createGain(),f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=1400;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.02);g.gain.setValueAtTime(.22,t+dur-.04);g.gain.linearRampToValueAtTime(0,t+dur);
+  [392,494].forEach(hz=>{const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=hz;o.connect(f);o.start(t);o.stop(t+dur+.02)});
+  f.connect(g);g.connect(AC.destination);
+}
+function honk(){
+  const v=vanEl.querySelector('.van'),chip=vanEl.querySelector('.chip');
+  v.classList.add('honk');chip.textContent='¡Pi pi!';
+  setTimeout(()=>{v.classList.remove('honk');chip.textContent='Pureza Natural'},1300);
+  if(muted||!AC)return;
+  const t=AC.currentTime+.02;toot(t,.15);toot(t+.25,.32);
+}
+document.getElementById('snd').onclick=e=>{muted=!muted;e.currentTarget.textContent=muted?'🔇':'🔊'};
+
+// ---------- llegada
+const WHATSAPP='';   // ← pon tu número con indicativo, ej: '573001234567'. Vacío = sin botón.
+function waBtn(z,addr,to){
+  if(!WHATSAPP)return '';
+  const t=`Hola, quiero un purificador AguaLogic. Mi zona: ${MSG[z][0]} (${MSG[z][1]}). Dirección: ${addr||''} https://maps.google.com/?q=${to[1]},${to[0]}`;
+  return `<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}">Pedir por WhatsApp</a>`;
+}
+function arrive(to,z,label,my){
+  destMarker=new maplibregl.Marker({element:pinEl(C[z]),draggable:true}).setLngLat(to).addTo(map);
+  destMarker.on('dragend',()=>{const l=destMarker.getLngLat(),p=[l.lng,l.lat],zz=classify(p);select(zz,true);drive(p,zz);say(`Zona ${zz} (referencial). Confirmamos tu dirección exacta antes de despachar.`)});
+  const d=km(center,to).toFixed(1).replace('.',',');
+  const html=a=>`<b>${label?label+' · ':''}${MSG[z][0]}</b><br>${MSG[z][1]}<br><small style="color:#667085">${a?a+'<br>':''}≈ ${d} km del centro · arrastra el pin para ajustar</small>${waBtn(z,a||label,to)}`;
+  popup=new maplibregl.Popup({offset:18,closeButton:false,closeOnClick:false,maxWidth:'250px'}).setLngLat(to).setHTML(html('')).addTo(map);
+  fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=17&lat='+to[1]+'&lon='+to[0])
+    .then(r=>r.json()).then(j=>{if(my!==tok||!j||!j.display_name)return;popup.setHTML(html(j.display_name.split(',').slice(0,3).join(',')))}).catch(()=>{});
+}
+
+// ---------- carro
+function setRoute(coords){const s=map.getSource('route');if(s)s.setData(feat({type:'LineString',coordinates:coords}))}
+function drive(to,z,label){
+  const my=++tok;
+  if(popup)popup.remove();if(destMarker)destMarker.remove();
+  setRoute([center,center]);van.setLngLat(center);
+  vanEl.querySelector('.truck').style.transform=to[0]<center[0]?'scaleX(-1)':'';
+  const d=km(center,to),Z=d<8?14.2:d<20?12.6:11.2;
+  map.flyTo({center,zoom:Z,pitch:55,bearing:0,duration:1300,essential:true});
+  setTimeout(()=>{
+    if(my!==tok)return;
+    const dur=Math.min(6500,Math.max(2800,d*160)),t0=performance.now();
+    (function f(t){
+      if(my!==tok)return;
+      const p=Math.min((t-t0)/dur,1),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      const cur=[center[0]+(to[0]-center[0])*e,center[1]+(to[1]-center[1])*e];
+      van.setLngLat(cur);setRoute([center,cur]);map.jumpTo({center:cur});
+      if(p<1)return requestAnimationFrame(f);
+      honk();
+      arrive(to,z,label,my);
+      setTimeout(()=>{if(my!==tok)return;map.fitBounds(new maplibregl.LngLatBounds(center,to),{padding:{top:170,bottom:250,left:60,right:60},pitch:30,maxZoom:14,duration:1800})},1100);
+    })(t0);
+  },1350);
+}
+
+// ---------- UI
+function count(el){const to=+el.dataset.to;if(!to)return;const d=900;let s=null;(function f(t){s=s||t;const p=Math.min((t-s)/d,1);el.textContent=fmt(Math.round(to*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(f)})(performance.now())}
+function select(z,skip){
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('on',c.dataset.z==z));
+  count(document.querySelector(`.card[data-z="${z}"] .price`));
+  if(!skip)drive(destFor[z],z);
+}
+document.querySelectorAll('.card').forEach(c=>c.onclick=()=>select(+c.dataset.z));
+map.on('click',e=>{const p=[e.lngLat.lng,e.lngLat.lat],z=classify(p);select(z,true);drive(p,z);say(`Zona ${z} (referencial). Confirmamos tu dirección exacta antes de despachar.`)});
+const res=document.getElementById('res');
+const say=t=>res.textContent=t;
+say('Toca el mapa donde vives y el carro de Pureza Natural va hacia tu dirección.');
+
+async function buscar(){
+  const q=document.getElementById('q').value.trim();if(!q)return;say('Buscando…');
+  try{
+    const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&viewbox=-74.3,4.6,-72.7,3.4&q='+encodeURIComponent(q+', Meta, Colombia'));
+    const j=await r.json();if(!j.length)return say('No lo encontré. Prueba con barrio y municipio.');
+    const p=[+j[0].lon,+j[0].lat],z=classify(p);select(z,true);drive(p,z);
+    say(`Zona ${z} (resultado referencial). Confirmamos tu dirección exacta antes de despachar.`);
+  }catch(e){say('Sin conexión para buscar. Toca el mapa o una zona.')}
+}
+document.getElementById('go').onclick=buscar;
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')buscar()});
+document.getElementById('loc').onclick=()=>{
+  if(!navigator.geolocation)return say('Tu navegador no permite ubicación.');
+  say('Buscando tu ubicación…');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const p=[pos.coords.longitude,pos.coords.latitude],z=classify(p);select(z,true);drive(p,z);
+    say(`Zona ${z} (referencial). Confirmamos tu dirección exacta antes de despachar.`);
+  },()=>say('No pude obtener tu ubicación. Toca el mapa o escribe tu barrio.'),{enableHighAccuracy:true,timeout:10000});
+};
+</script>
+</body>
+</html>
