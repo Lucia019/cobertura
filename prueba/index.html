@@ -1178,7 +1178,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <div class="thanks" id="fThanks" role="status" tabindex="-1">
         <svg class="check" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 24.5l6 6 12-13" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h3 id="fThanksT">¡Gracias por elegir Pureza Natural!</h3>
-        <p>Tu pedido quedó escrito en WhatsApp. <strong>Toca Enviar para que nos llegue.</strong> En poco nos comunicamos contigo para confirmar disponibilidad, envío y fecha de entrega.</p>
+        <p id="fThanksP">Tu pedido quedó escrito en WhatsApp. <strong>Toca Enviar para que nos llegue.</strong></p>
         <a class="btn btn-cta" id="fRetry" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>¿No se abrió? Toca aquí</a>
         <button type="button" class="linkish" id="fEdit">Corregir mis datos</button>
       </div>
@@ -1230,6 +1230,21 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 'use strict';
 var WA_NUMBER = '573053529366';
 var WA_DEFAULT = 'Hola Pureza, quiero información del producto y el valor.';
+var PN_HOOK = 'https://script.google.com/macros/s/AKfycbzSiHIgt1Oy7zEubMaeob1aJxn8duhHbfxr2ONd7SI7PPBLWZljYd2DSKglCqkRR7Mz/exec';
+/* Guarda el pedido o la visita en la hoja de la empresa. Responde true solo si el registro confirmó "ok". */
+function enviarRegistro(datos){
+  return new Promise(function(resolve){
+    var fin = false;
+    function cierra(v){ if(!fin){ fin = true; clearTimeout(t); resolve(v); } }
+    var t = setTimeout(function(){ cierra(false); }, 12000);
+    try{
+      fetch(PN_HOOK, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(datos) })
+        .then(function(r){ return r.text(); })
+        .then(function(x){ cierra(x.trim() === 'ok'); })
+        .catch(function(){ cierra(false); });
+    }catch(e){ cierra(false); }
+  });
+}
 function waURL(msg){ return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg || WA_DEFAULT); }
 
 /* Los botones de compra bajan al formulario de pedido de esta misma página */
@@ -1743,11 +1758,25 @@ form.addEventListener('submit', function(e){
     (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nDía preferido: ' + document.getElementById('fDia').value) +
     '\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.';
   var url = waURL(msg);
-  window.open(url, '_blank', 'noopener');
-  document.getElementById('fRetry').href = url;
-  document.getElementById('fThanksT').textContent = '¡Gracias, ' + name.split(' ')[0] + '!';
-  form.classList.add('sent'); var bm=document.getElementById('buyMain'); if(bm) bm.scrollTop=0;
-  document.getElementById('fThanks').focus({ preventScroll: true });
+  var btn = form.querySelector('button[type=submit]'), btnTxt = btn.innerHTML;
+  btn.disabled = true; btn.textContent = 'Enviando tu pedido…';
+  enviarRegistro({ tipo:'pedido', nombre:name, celular:pretty, detalle:msg }).then(function(ok){
+    btn.disabled = false; btn.innerHTML = btnTxt;
+    var p = document.getElementById('fThanksP'), r = document.getElementById('fRetry'), ed = document.getElementById('fEdit');
+    if(ok){
+      p.innerHTML = 'Recibimos tu pedido. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmar disponibilidad, envío y fecha de entrega.';
+      r.textContent = 'Escribirnos por WhatsApp'; r.href = waURL('Hola Pureza Natural, soy ' + name + '. Acabo de hacer un pedido en la página.');
+      ed.hidden = true;
+    } else {
+      window.open(url, '_blank', 'noopener');
+      p.innerHTML = 'No pudimos registrar tu pedido en la página. Quedó escrito en WhatsApp: <strong>toca Enviar para que nos llegue.</strong>';
+      r.textContent = '¿No se abrió? Toca aquí'; r.href = url;
+      ed.hidden = false;
+    }
+    document.getElementById('fThanksT').textContent = '¡Gracias, ' + name.split(' ')[0] + '!';
+    form.classList.add('sent'); var bm=document.getElementById('buyMain'); if(bm) bm.scrollTop=0;
+    document.getElementById('fThanks').focus({ preventScroll: true });
+  });
 });
 
 
@@ -1825,7 +1854,14 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
     if(bad){ bad[0].setAttribute('aria-invalid','true'); err.textContent=bad[1]; err.classList.add('on'); bad[0].focus(); return; }
     var dt=parse(fDate.value), pretty=phone.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3');
     var msg='Hola Pureza Natural, quiero agendar una visita a Ferrecubiertas para ver el purificador de vidrio verde.\n\n*Visita*\nNombre: '+name+'\nCelular: '+pretty+'\nDía: '+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+'\nHora: '+fTime.value+'\nLugar: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro\n\nAcepto la política de tratamiento de datos. Quedo atento a su confirmación.';
-    window.open(waURL(msg),'_blank','noopener'); document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
+    var vb=document.querySelector('#visForm button[type=submit]'), vbt=vb.textContent; vb.disabled=true; vb.textContent='Agendando…';
+    enviarRegistro({ tipo:'visita', nombre:name, celular:pretty, detalle:msg }).then(function(ok){
+      vb.disabled=false; vb.textContent=vbt;
+      var vp=document.querySelector('#vThanks p');
+      if(ok){ vp.innerHTML='Agendamos tu visita. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmarla.'; }
+      else { window.open(waURL(msg),'_blank','noopener'); vp.innerHTML='No pudimos registrar tu visita en la página. Quedó escrita en WhatsApp: <strong>toca Enviar para que nos llegue.</strong>'; }
+      document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
+    });
   });
 })();
 document.getElementById('fEdit').addEventListener('click', function(){
