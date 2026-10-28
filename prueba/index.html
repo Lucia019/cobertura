@@ -678,6 +678,14 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 }
 
 /* --- Accesibilidad --- */
+.buy-info{padding:20px 20px 22px;display:grid;gap:12px;overflow:auto}
+.buy-info h3{margin:0;font-size:1.35rem;color:#0f3a35}.buy-info p{margin:0;line-height:1.5}
+.bi-date{background:#fff;border-radius:14px;padding:14px;font-size:1.02rem}.bi-date span{font-weight:800;color:#8a4a24;font-size:1.1rem}
+.bi-note{font-size:.88rem;color:#4a5f5a}.bi-ask{font-size:1rem}
+.bi-b{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:4px}
+.bs-d{display:block;margin-top:2px;color:#8a4a24!important;font-weight:700}
+#buyd [hidden]{display:none!important}
+
 .doubts{background:#E9F1EE;padding:56px 0 64px;color:#17302c}
 .doubts h2{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.8rem);margin:0;color:#0f3a35}
 .d-lead{margin:10px 0 24px;font-size:1.05rem;color:#3d5550}
@@ -1115,8 +1123,17 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 
 <dialog id="buyd" aria-labelledby="buyT">
   <div class="buy-top"><h2 id="buyT">Finaliza tu pedido</h2><button type="button" class="buy-x" id="buyX" aria-label="Cerrar">×</button></div>
-  <div class="buy-body">
-    <div class="buy-sum"><img src="assets/producto-vidrio-verde.jpg" alt="" width="72" height="72"><div><b>1 × Purificador AguaLogic de vidrio verde</b><small>20 litros · filtro cerámico y grifo de acero inoxidable</small></div><span>$810.000</span></div>
+  <div class="buy-info" id="buyInfo">
+    <h3>Compra bajo reserva</h3>
+    <p>Te informamos que esta referencia solo está disponible para compra bajo reserva.</p>
+    <p>Tu pedido será despachado durante los siguientes tiempos:</p>
+    <p class="bi-date"><b>Purificador AguaLogic de vidrio verde</b><br><span id="biFecha">—</span></p>
+    <p class="bi-note">La fecha se cuenta desde el día de tu compra. Antes de despachar te confirmamos por WhatsApp.</p>
+    <p class="bi-ask">Si estás de acuerdo, toca <b>CONTINUAR</b>.</p>
+    <div class="bi-b"><button type="button" class="btn btn-line" id="biNo">Cancelar</button><button type="button" class="btn btn-cta" id="biSi">Continuar</button></div>
+  </div>
+  <div class="buy-body" id="buyMain" hidden>
+    <div class="buy-sum"><img src="assets/producto-vidrio-verde.jpg" alt="" width="72" height="72"><div><b>1 × Purificador AguaLogic de vidrio verde</b><small>20 litros · filtro cerámico y grifo de acero inoxidable</small><small class="bs-d">Despacho estimado: <span id="biFecha2"></span></small></div><span>$810.000</span></div>
     <div class="buy-trust"><svg viewBox="0 0 48 56" aria-hidden="true" width="34" height="40"><path d="M24 2l19 7v15c0 14-8 24-19 30C13 48 5 38 5 24V9z" fill="#2e7d4f"/><path d="M16 26l6 6 11-13" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Pedido seguro</b><span>Distribuidor autorizado AguaLogic. No pagas nada en esta página: el pago es contraentrega, con Nequi o en tienda.</span></div></div>
     <form class="form" id="waForm" novalidate>
       <div class="form-fields">
@@ -1718,7 +1735,7 @@ form.addEventListener('submit', function(e){
   var villa = town === 'Villavicencio';
   var envio = tienda ? 'No aplica (recoge en Ferrecubiertas)' : (villa ? 'Gratis en Villavicencio (perímetro urbano)' : 'Por confirmar según el municipio');
   var pagoTxt = pago === 'contra' ? 'Contraentrega' : pago === 'nequi' ? 'Nequi (coordinamos por este chat)' : 'En Ferrecubiertas al recoger';
-  var msg = 'Hola Pureza Natural, quiero hacer este pedido.\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nEnvío: ' + envio + '\nPago: ' + pagoTxt +
+  var msg = 'Hola Pureza Natural, quiero hacer este pedido.\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nDespacho estimado (bajo reserva): ' + reservaTxt().replace('Del','del') + '\nEnvío: ' + envio + '\nPago: ' + pagoTxt +
     '\n\n*' + (tienda ? 'Recogida' : 'Entrega') + '*\nNombre: ' + name + '\nCelular: ' + pretty + '\nMunicipio: ' + town + '\nDepartamento: Meta' +
     (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nDía preferido: ' + document.getElementById('fDia').value) +
     '\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.';
@@ -1731,10 +1748,21 @@ form.addEventListener('submit', function(e){
 });
 
 
+
+/* ===== Compra bajo reserva: aviso con fecha que se corre ===== */
+var RESERVA=[13,24], MESL=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth(),t.getDate()+RESERVA[0]), b=new Date(t.getFullYear(),t.getMonth(),t.getDate()+RESERVA[1]);
+  var pa=(''+a.getDate()).padStart(2,'0'), pb=(''+b.getDate()).padStart(2,'0');
+  return a.getMonth()===b.getMonth() ? 'Del '+pa+' al '+pb+' de '+MESL[b.getMonth()]+' de '+b.getFullYear() : 'Del '+pa+' de '+MESL[a.getMonth()]+' al '+pb+' de '+MESL[b.getMonth()]+' de '+b.getFullYear(); }
 /* ===== Ventana de compra segura ===== */
 (function(){
   var d=document.getElementById('buyd'); if(!d||!d.showModal) return;
-  function abrir(e){ if(e) e.preventDefault(); if(!d.open) d.showModal(); }
+  var info=document.getElementById('buyInfo'), main=document.getElementById('buyMain'), tt=document.getElementById('buyT'), f=reservaTxt();
+  document.getElementById('biFecha').textContent=f; document.getElementById('biFecha2').textContent=f;
+  function vista(m){ info.hidden=m; main.hidden=!m; tt.textContent=m?'Finaliza tu pedido':'Información'; }
+  function abrir(e){ if(e) e.preventDefault(); vista(false); if(!d.open) d.showModal(); }
+  document.getElementById('biSi').addEventListener('click',function(){ vista(true); main.scrollTop=0; document.getElementById('fName').focus(); });
+  document.getElementById('biNo').addEventListener('click',function(){ d.close(); });
   document.querySelectorAll('a.wa-link,[data-buy]').forEach(function(a){ a.addEventListener('click', abrir); });
   document.getElementById('buyX').addEventListener('click', function(){ d.close(); });
   d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
