@@ -1508,7 +1508,7 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
           <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span><b>Ferrecubiertas S.A.S.</b>Calle 35 A No. 27-86, San Isidro</span></p>
           <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>Horario</b>Lun–vie 7:30–6 · Sáb 7:30–5 · Dom 8–1</span></p>
           <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span><b>Elige abajo el día que pasas</b>Te escribimos por WhatsApp cuando esté listo. Te lo guardamos <span id="pick-dias">5</span> días hábiles.</span></p>
-          <a class="pi-btn" href="https://www.google.com/maps/dir/?api=1&destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Cómo llegar a Ferrecubiertas</a>
+          <button type="button" class="pi-btn" id="pi-map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Ver mapa aquí</button>
         </div>
       </div>
       <div class="row2"><label>Ciudad<input name="ciudad" autocomplete="address-level2" required maxlength="50" placeholder="Villavicencio" list="pn-ciudades"></label><label>Municipio<input name="municipio" autocomplete="address-level1" required maxlength="50" placeholder="Meta"></label></div>
@@ -1732,6 +1732,9 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
 .mapd-h{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-size:15px;border-bottom:1px solid #24302e1a}
 .mapd-h button{border:0;background:transparent;font-size:26px;line-height:1;cursor:pointer;color:#24302E;padding:0 4px}
 .mapd iframe{flex:1;border:0;width:100%}
+.mapd-b{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid #24302e1a;font-size:12.5px;color:#5b6663;background:#fff}
+.mapd-b[hidden]{display:none}
+.mapd-b a{color:#174C46;font-weight:700}
 @media (max-height:780px){.cart-foot{padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));gap:6px}.cart-foot .cart-note{display:none}.cart-foot .btn-wa.big{padding:11px;font-size:15px}.cart-ship,.cart-grand{margin-top:2px}.cart-grand{padding-top:4px}.cart-grand b{font-size:19px}}
 .cart-body{scroll-padding:12px 0 90px}
 @media (max-height:540px){.cart-foot .cart-total,.cart-foot .cart-ship,.cart-foot .cart-clear{display:none}.cart-foot .acepto{font-size:12px}.cart-head{padding-top:8px;padding-bottom:8px}}
@@ -1752,8 +1755,9 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
 @media (prefers-reduced-motion:reduce){.zona,.bump{animation:none}}
 </style>
 <dialog class="mapd" id="mapd" aria-label="Mapa de cobertura">
-  <div class="mapd-h"><b>¿Dentro o fuera del perímetro?</b><button type="button" id="mapd-x" aria-label="Cerrar">×</button></div>
-  <iframe id="mapd-f" title="Mapa de cobertura Pureza Natural" allow="geolocation"></iframe>
+  <div class="mapd-h"><b id="mapd-t">¿Dentro o fuera del perímetro?</b><button type="button" id="mapd-x" aria-label="Cerrar">×</button></div>
+  <iframe id="mapd-f" title="Mapa" allow="geolocation"></iframe>
+  <div class="mapd-b" id="mapd-b" hidden><a href="https://www.google.com/maps/dir/?api=1&amp;destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener">Abrir en Google Maps</a><span>El mapa lo carga Google al abrirlo.</span></div>
 </dialog>
 <script>
 (function(){
@@ -1814,7 +1818,10 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
   var ct=$("cart-total");if(ct&&window.MutationObserver)new MutationObserver(upd).observe(ct,{childList:true,characterData:true,subtree:true});
 
   var md=$("mapd"),mf=$("mapd-f");
-  $("zona-map").addEventListener("click",function(){if(mf.getAttribute("data-l")!=="1"){mf.src=MAPA;mf.setAttribute("data-l","1");}md.showModal();});
+  var GM="https://www.google.com/maps?q=Calle+35A+%2327-86,+Villavicencio,+Meta&z=16&output=embed";
+  function abrirMapa(url,titulo,ext){if(mf.getAttribute("data-l")!==url){mf.src=url;mf.setAttribute("data-l",url);}$("mapd-t").textContent=titulo;$("mapd-b").hidden=!ext;md.showModal();}
+  $("zona-map").addEventListener("click",function(){abrirMapa(MAPA,"¿Dentro o fuera del perímetro?",false);});
+  document.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest("#pi-map");if(t){e.preventDefault();abrirMapa(GM,"Cómo llegar a Ferrecubiertas",true);}});
   $("mapd-x").addEventListener("click",function(){md.close();});
   md.addEventListener("click",function(e){if(e.target===md)md.close();});
   /* ===== BAJO PEDIDO =====
