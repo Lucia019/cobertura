@@ -678,6 +678,29 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 }
 
 /* --- Accesibilidad --- */
+.doubts{background:#E9F1EE;padding:56px 0 64px;color:#17302c}
+.doubts h2{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.8rem);margin:0;color:#0f3a35}
+.d-lead{margin:10px 0 24px;font-size:1.05rem;color:#3d5550}
+.d-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.d-card{background:#fff;border-radius:24px;padding:24px;display:grid;gap:14px;align-content:start;box-shadow:0 10px 30px -18px rgba(15,58,53,.4)}
+.d-card h3{margin:0;font-size:1.3rem;display:flex;align-items:center;gap:10px}
+.d-ic{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#E9F1EE;font-size:1.4rem}
+.d-card label{display:grid;gap:6px;font-weight:700;font-size:.95rem}
+.d-card input,.d-card select{min-height:48px;padding:0 14px;border-radius:12px;border:1.5px solid #B9B09D;font:inherit;font-weight:400;background:#fff;color:#17302c;width:100%}
+.d-card small{color:#4a5f5a;font-size:.85rem}
+.d-card p{margin:0}
+.d-card .err{display:none;font-weight:600;color:#A8402A;font-size:.9rem}.d-card .err.on{display:block}
+.d-card .btn{width:100%}
+.d-visit{background:#0f3a35;color:#fff}.d-visit h3{color:#fff}.d-visit .d-ic{background:rgba(255,255,255,.14)}
+.d-steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.d-steps li{display:flex;gap:10px;align-items:center;font-size:1rem}
+.d-steps b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#78B9B2;color:#12332f;flex:none}
+.d-days{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.d-day{display:grid;gap:2px;justify-items:center;min-height:64px;padding:8px 4px;border-radius:14px;border:1.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font:inherit;cursor:pointer}
+.d-day span{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.d-day b{font-size:1.4rem;line-height:1}.d-day em{font-style:normal;font-size:.75rem;opacity:.85}
+.d-day:hover,.d-day:focus-visible{background:#fff;color:#0f3a35}
+@media (max-width:820px){.d-grid{grid-template-columns:1fr}.doubts{padding-bottom:40px}}
+
 .final-cta{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center;background:var(--canvas);color:var(--text-primary);border-radius:28px;padding:24px}
 .final-cta img{width:120px;height:120px;object-fit:cover;border-radius:18px}
 .fc-body{display:grid;gap:8px}.fc-body b{font-size:1.05rem}.fc-price{font-family:var(--display);font-size:1.9rem}.fc-body small{color:var(--text-secondary)}
@@ -1061,6 +1084,32 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
     <div class="vis-b"><button type="button" class="btn btn-line" id="vNo">Cancelar</button><button type="submit" class="btn btn-cta">Agendar por WhatsApp</button></div>
   </form>
 </dialog>
+
+<section class="doubts" id="dudas" aria-labelledby="t-dudas">
+  <div class="wrap">
+    <h2 id="t-dudas">¿Tienes dudas? Resuélvelas antes de comprar</h2>
+    <p class="d-lead">Escríbenos por WhatsApp o ven a ver el purificador a Ferrecubiertas.</p>
+    <div class="d-grid">
+      <form class="d-card" id="qForm" novalidate>
+        <h3><span class="d-ic" aria-hidden="true">💬</span> Escríbenos por WhatsApp</h3>
+        <label>Tu nombre<input id="qName" autocomplete="given-name" placeholder="Ej: Laura" required></label>
+        <label>¿Qué quieres saber?
+          <select id="qTema"><option>Precio y forma de pago</option><option>Cómo funciona el purificador</option><option>Envío y tiempos de entrega</option><option>Garantía y repuestos</option><option>Otra pregunta</option></select>
+        </label>
+        <p class="err" id="qErr" role="alert"></p>
+        <button class="btn btn-cta" type="submit">Preguntar por WhatsApp</button>
+        <small>Te respondemos por el chat. No necesitas dejar más datos.</small>
+      </form>
+      <div class="d-card d-visit">
+        <h3><span class="d-ic" aria-hidden="true">📅</span> Agenda tu visita</h3>
+        <p>Míralo en persona en Ferrecubiertas y compra ahí mismo. Toma 1 minuto:</p>
+        <ol class="d-steps"><li><b>1</b> Toca un día</li><li><b>2</b> Escoge la hora</li><li><b>3</b> Te confirmamos por WhatsApp</li></ol>
+        <div class="d-days" id="dDays" role="group" aria-label="Escoge el día de tu visita"></div>
+        <button type="button" class="btn btn-cta" data-vis>Ver más días y horas</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 </main>
 
@@ -1691,6 +1740,16 @@ form.addEventListener('submit', function(e){
   d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
 })();
 
+/* ===== Dudas por WhatsApp ===== */
+(function(){
+  var f=document.getElementById('qForm'); if(!f) return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault(); var n=document.getElementById('qName'), er=document.getElementById('qErr'), nm=n.value.trim();
+    if(nm.length<2){ n.setAttribute('aria-invalid','true'); er.textContent='Escribe tu nombre.'; er.classList.add('on'); n.focus(); return; }
+    n.removeAttribute('aria-invalid'); er.classList.remove('on');
+    window.open(waURL('Hola Pureza Natural, soy '+nm+'. Tengo una duda sobre: '+document.getElementById('qTema').value.toLowerCase()+'.'),'_blank','noopener');
+  });
+})();
 /* ===== Agendar visita a Ferrecubiertas ===== */
 (function(){
   var d = document.getElementById('visd'), btn = document.getElementById('visBtn');
@@ -1715,6 +1774,12 @@ form.addEventListener('submit', function(e){
     fDate.min=iso(min); fDate.max=iso(max); if(!fDate.value) fDate.value=iso(min); fill(); err.classList.remove('on'); d.showModal();
   }
   btn.addEventListener('click', abrir);
+  document.querySelectorAll('[data-vis]').forEach(function(x){ x.addEventListener('click', abrir); });
+  var box=document.getElementById('dDays'), dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  if(box){ var t0=new Date(); for(var i=0,k=0;k<4&&i<10;i++){ var x=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i); if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
+    var bt=document.createElement('button'); bt.type='button'; bt.className='d-day'; bt.setAttribute('data-d',iso(x)); bt.setAttribute('aria-label','Agendar el '+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]);
+    bt.innerHTML='<span>'+(i===0?'Hoy':i===1?'Mañana':dn[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+MES[x.getMonth()]+'</em>'; box.appendChild(bt); }
+    box.addEventListener('click',function(e){ var q=e.target.closest('.d-day'); if(!q) return; abrir(e); fDate.value=q.getAttribute('data-d'); fill(); }); }
   fDate.addEventListener('change', fill);
   document.getElementById('vNo').addEventListener('click', function(){ d.close(); });
   d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
