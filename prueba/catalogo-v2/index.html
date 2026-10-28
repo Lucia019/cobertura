@@ -1501,14 +1501,14 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
       <div class="modo" id="modo-box">
         <h4>¿Cómo lo recibes?</h4>
         <div class="zona-opts" role="radiogroup" aria-label="Forma de entrega">
-          <label class="zo"><input type="radio" name="modo" value="domicilio" checked><span class="zo-c"><i class="zo-d" style="background:#174C46"></i><b>Domicilio</b><small>Te lo llevamos a tu dirección</small></span></label>
-          <label class="zo"><input type="radio" name="modo" value="recoger"><span class="zo-c"><i class="zo-d" style="background:#C66F45"></i><b>Recoger en Ferrecubiertas</b><small>Sin costo de envío · Cl. 35A #27-86, San Isidro</small></span></label>
+          <label class="zo"><input type="radio" name="modo" value="domicilio" checked><span class="zo-c"><svg class="zo-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><b>Domicilio</b><small>Te lo llevamos a tu dirección</small></span></label>
+          <label class="zo"><input type="radio" name="modo" value="recoger"><span class="zo-c"><svg class="zo-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10l1.5-5h13L20 10M4 10h16v9H4zM9 19v-5h6v5"/></svg><b>Recoger en Ferrecubiertas</b><small>Sin costo de envío · Cl. 35A #27-86, San Isidro</small></span></label>
         </div>
         <div class="pick-info" id="pick-info" hidden>
-          <p><b>Ferrecubiertas S.A.S.</b> · Calle 35 A No. 27-86, San Isidro, Villavicencio.</p>
-          <p>Lunes a viernes 7:30 a. m. a 6:00 p. m. · Sábados 7:30 a. m. a 5:00 p. m. · Domingos 8:00 a. m. a 1:00 p. m.</p>
-          <p>Elige abajo el día en que quieres pasar. Te escribimos por WhatsApp cuando esté listo. Te guardamos el pedido <span id="pick-dias">5</span> días hábiles.</p>
-          <a class="linkbtn" href="https://www.google.com/maps/dir/?api=1&destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener">Ver cómo llegar a Ferrecubiertas</a>
+          <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span><b>Ferrecubiertas S.A.S.</b>Calle 35 A No. 27-86, San Isidro</span></p>
+          <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>Horario</b>Lun–vie 7:30–6 · Sáb 7:30–5 · Dom 8–1</span></p>
+          <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span><b>Elige abajo el día que pasas</b>Te escribimos por WhatsApp cuando esté listo. Te lo guardamos <span id="pick-dias">5</span> días hábiles.</span></p>
+          <a class="pi-btn" href="https://www.google.com/maps/dir/?api=1&destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Cómo llegar a Ferrecubiertas</a>
         </div>
       </div>
       <div class="row2"><label>Ciudad<input name="ciudad" autocomplete="address-level2" required maxlength="50" placeholder="Villavicencio" list="pn-ciudades"></label><label>Municipio<input name="municipio" autocomplete="address-level1" required maxlength="50" placeholder="Meta"></label></div>
@@ -1737,6 +1737,18 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
 @media (max-height:540px){.cart-foot .cart-total,.cart-foot .cart-ship,.cart-foot .cart-clear{display:none}.cart-foot .acepto{font-size:12px}.cart-head{padding-top:8px;padding-bottom:8px}}
 .modo{margin:6px 0}.modo h4{margin:0 0 8px}.pick-info{margin-top:8px;padding:10px 12px;border-radius:12px;background:#f4f1e9;font-size:13.5px}.pick-info[hidden]{display:none}.pick-info p{margin:0 0 6px}.row2[hidden],.cform label[hidden]{display:none}
 #ok-reserva{margin:10px 0;padding:12px 14px;border-radius:14px;background:#fbf1dc;border:1.5px solid #E8B85F;font-size:14px;text-align:left}#ok-reserva[hidden]{display:none}#ok-reserva p{margin:6px 0 10px}.res-ck{display:flex;gap:8px;align-items:center;font-weight:600;cursor:pointer}.res-ck input{width:20px;height:20px;accent-color:#174C46}#ok-go:disabled{opacity:.5;cursor:not-allowed}
+.modo .zo-c{grid-template-columns:44px 1fr}
+.zo-i{grid-row:1 / span 2;width:44px;height:44px;padding:10px;border-radius:50%;background:#78b9b230;fill:none;stroke:#174C46;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.zo input[value=recoger] + .zo-c .zo-i{background:#c66f4524;stroke:#C66F45}
+.zo input:checked + .zo-c .zo-i{background:#174C46;stroke:#fff}
+.zo input[value=recoger]:checked + .zo-c .zo-i{background:#C66F45}
+.pick-info{display:grid;gap:10px;padding:12px;background:#fff;border:1.5px solid #c66f4533}
+.pi-r{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;margin:0!important}
+.pi-r svg{width:30px;height:30px;padding:6px;border-radius:50%;background:#78b9b230;fill:none;stroke:#174C46;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pi-r span{display:grid;font-size:13px;color:#5b6663;line-height:1.4}
+.pi-r b{color:#24302e;font-size:13.5px}
+.pi-btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:12px;background:#174C46;color:#fff!important;font-weight:700;font-size:14px;text-decoration:none}
+.pi-btn svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media (prefers-reduced-motion:reduce){.zona,.bump{animation:none}}
 </style>
 <dialog class="mapd" id="mapd" aria-label="Mapa de cobertura">
