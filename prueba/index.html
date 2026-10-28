@@ -678,6 +678,17 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 }
 
 /* --- Accesibilidad --- */
+#visd{border:0;border-radius:20px;padding:0;width:min(92vw,440px);max-height:92vh;background:#F4F1E8;color:#17302c}
+#visd::backdrop{background:rgba(8,28,25,.6)}
+#visForm{display:grid;gap:14px;padding:22px 20px}
+#visForm h2{font-family:var(--display);font-size:1.6rem;margin:0}
+#visForm label{display:grid;gap:6px;font-weight:700;font-size:.95rem}
+#visForm input:not([type=checkbox]),#visForm select{min-height:48px;padding:0 14px;border-radius:12px;border:1.5px solid #cfc7b4;background:#fff;font:inherit;font-weight:400;color:#17302c}
+#visForm label.chk{display:flex;flex-direction:row;gap:10px;font-weight:400;font-size:.9rem}
+.vis-sub,.vis-h{margin:0;font-size:.92rem;color:#3d5550}
+.vis-b{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+#visForm .err{margin:0}
+
 .form label.chk{display:flex;flex-direction:row;gap:10px;align-items:flex-start;font-size:.92rem;line-height:1.4}
 .chk input{width:24px;height:24px;flex:none;margin-top:2px}
 .pickup-note{font-size:.95rem;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.12)}
@@ -1047,6 +1058,22 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
   </div>
 </section>
 
+
+<dialog id="visd" aria-labelledby="visT">
+  <form method="dialog" id="visForm" novalidate>
+    <h2 id="visT">Agenda tu visita</h2>
+    <p class="vis-sub">Ven a Ferrecubiertas, mira el purificador y compra ahí mismo. Calle 35 A No. 27-86, San Isidro, Villavicencio.</p>
+    <label>Tu nombre completo<input id="vName" autocomplete="name" placeholder="Ej: Laura Gómez" required></label>
+    <label>Tu celular<input id="vPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="Ej: 310 987 6543" maxlength="18" required></label>
+    <label>Día de la visita<input id="vDate" type="date" required></label>
+    <label>Hora<select id="vTime" required></select></label>
+    <p class="vis-h" id="vHint"></p>
+    <label class="chk"><input type="checkbox" id="vOk" required><span>Acepto la <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">política de tratamiento de datos</a>. Usarán mi nombre y celular solo para confirmar y recordarme la visita.</span></label>
+    <p class="err" id="vErr" role="alert"></p>
+    <div class="vis-b"><button type="button" class="btn btn-line" id="vNo">Cancelar</button><button type="submit" class="btn btn-cta">Agendar por WhatsApp</button></div>
+  </form>
+</dialog>
+
 </main>
 
 <footer class="ft">
@@ -1064,7 +1091,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         <h3>¿Quieres verlo?</h3>
         <p>Agenda una cita y míralo en Ferrecubiertas, Calle 35 A No. 27-86, San Isidro.</p>
         <div class="ft-btns">
-          <a class="ft-btn pri" href="https://wa.me/573053529366?text=Hola%20Pureza%20Natural%2C%20quiero%20agendar%20una%20visita%20a%20Ferrecubiertas%20para%20ver%20el%20purificador." target="_blank" rel="noopener">Agendar visita<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="ft-btn pri" id="visBtn" href="https://wa.me/573053529366?text=Hola%20Pureza%20Natural%2C%20quiero%20agendar%20una%20visita%20a%20Ferrecubiertas%20para%20ver%20el%20purificador." target="_blank" rel="noopener">Agendar visita<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <a class="ft-btn alt" href="https://www.google.com/maps/dir/?api=1&amp;destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener">Cómo llegar<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg></a>
         </div>
         <p class="ft-hours">Lun–vie 7:30–6 · Sáb 7:30–5 · Dom 8–1</p>
@@ -1605,6 +1632,46 @@ form.addEventListener('submit', function(e){
   form.classList.add('sent');
   document.getElementById('fThanks').focus({ preventScroll: true });
 });
+
+/* ===== Agendar visita a Ferrecubiertas ===== */
+(function(){
+  var d = document.getElementById('visd'), btn = document.getElementById('visBtn');
+  if (!d || !btn || !d.showModal) return;
+  var fDate = document.getElementById('vDate'), fTime = document.getElementById('vTime'), hint = document.getElementById('vHint'), err = document.getElementById('vErr');
+  var DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  var MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  function iso(x){ return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); }
+  function parse(v){ var p=v.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
+  function rango(dow){ return dow===0 ? [8*60,12*60+30,'8:00 a.m. a 1:00 p.m.'] : dow===6 ? [7*60+30,16*60+30,'7:30 a.m. a 5:00 p.m.'] : [7*60+30,17*60+30,'7:30 a.m. a 6:00 p.m.']; }
+  function hora(m){ var h=Math.floor(m/60), mm=m%60, ap=h>=12?'p.m.':'a.m.'; h=h%12||12; return h+':'+String(mm).padStart(2,'0')+' '+ap; }
+  function fill(){
+    fTime.innerHTML='';
+    if(!fDate.value){ hint.textContent='Escoge primero el día.'; return; }
+    var dt=parse(fDate.value), r=rango(dt.getDay()), now=new Date(), hoy=iso(now)===fDate.value, nowM=now.getHours()*60+now.getMinutes()+60;
+    for(var m=r[0]; m<=r[1]; m+=30){ if(hoy && m<nowM) continue; var o=document.createElement('option'); o.value=hora(m); o.textContent=hora(m); fTime.appendChild(o); }
+    hint.textContent='Atendemos el '+DIAS[dt.getDay()]+' de '+r[2]+(fTime.options.length?'':'. Ya no hay horas hoy; escoge otro día.');
+  }
+  function abrir(e){
+    e.preventDefault();
+    var t=new Date(), min=new Date(t.getFullYear(),t.getMonth(),t.getDate()), max=new Date(min); max.setDate(max.getDate()+30);
+    fDate.min=iso(min); fDate.max=iso(max); if(!fDate.value) fDate.value=iso(min); fill(); err.classList.remove('on'); d.showModal();
+  }
+  btn.addEventListener('click', abrir);
+  fDate.addEventListener('change', fill);
+  document.getElementById('vNo').addEventListener('click', function(){ d.close(); });
+  d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
+  document.getElementById('visForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var n=document.getElementById('vName'), p=document.getElementById('vPhone'), ok=document.getElementById('vOk');
+    var name=n.value.trim(), phone=p.value.replace(/\D/g,'').replace(/^57(?=3\d{9}$)/,'');
+    [n,p,fDate,fTime,ok].forEach(function(x){x.removeAttribute('aria-invalid');});
+    var bad = name.length<3 ? [n,'Escribe tu nombre completo.'] : !/^3\d{9}$/.test(phone) ? [p,'Escribe un celular de 10 dígitos que empiece por 3.'] : !fDate.value ? [fDate,'Escoge el día de tu visita.'] : !fTime.value ? [fTime,'Escoge una hora disponible.'] : !ok.checked ? [ok,'Acepta la política de datos para continuar.'] : null;
+    if(bad){ bad[0].setAttribute('aria-invalid','true'); err.textContent=bad[1]; err.classList.add('on'); bad[0].focus(); return; }
+    var dt=parse(fDate.value), pretty=phone.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3');
+    var msg='Hola Pureza Natural, quiero agendar una visita a Ferrecubiertas para ver el purificador de vidrio verde.\n\n*Visita*\nNombre: '+name+'\nCelular: '+pretty+'\nDía: '+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+'\nHora: '+fTime.value+'\nLugar: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro\n\nAcepto la política de tratamiento de datos. Quedo atento a su confirmación.';
+    window.open(waURL(msg),'_blank','noopener'); d.close();
+  });
+})();
 document.getElementById('fEdit').addEventListener('click', function(){
   form.classList.remove('sent');
   document.getElementById('fName').focus();
