@@ -1772,8 +1772,8 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
 <dialog class="bpd" id="bpd" aria-label="Producto bajo reserva"><div class="bpd-in">
   <h3>Información</h3>
   <p><b id="bpd-n"></b> solo está disponible <b>bajo reserva</b>. Lo pedimos a fábrica cuando haces tu pedido.</p>
-  <p class="bpf">Entrega estimada: <b id="bpd-f"></b></p>
-  <p>Te confirmamos la fecha exacta por WhatsApp. Si estás de acuerdo, toca <b>Continuar</b>.</p>
+  <p class="bpf">Entrega: <b id="bpd-f"></b></p>
+  <p>Antes de despachar te confirmamos la fecha exacta. Si estás de acuerdo, toca <b>Continuar</b>.</p>
   <div class="bpd-b"><button type="button" id="bpd-no">Cancelar</button><button type="button" class="ok" id="bpd-si">Continuar</button></div>
 </div></dialog>
 <script>
@@ -1845,7 +1845,7 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
      Productos que no están en bodega. Para cambiar: edita esta lista.
      "id-del-producto": "fecha estimada de entrega". Quita la línea cuando haya stock. */
   var BAJO_PEDIDO={
-    "v-mate":"9 al 20 de noviembre de 2026"
+    "v-mate":""
   };
   var okRes={},pend=null,bd=$("bpd");
   function marcarTarjetas(){
@@ -1854,17 +1854,17 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
       var card=document.querySelector('article.card[data-id="'+id+'"]');
       if(!card||card.querySelector(".bp-chip"))return;
       var b=card.querySelector("[data-add]")||card.querySelector("button");
-      var chip=document.createElement("span");chip.className="bp-chip";chip.textContent="Bajo pedido · despacho "+BAJO_PEDIDO[id].replace(" de 2026","");
+      var chip=document.createElement("span");chip.className="bp-chip";chip.textContent=BAJO_PEDIDO[id]?"Bajo pedido · despacho "+BAJO_PEDIDO[id].replace(" de 2026",""):"Bajo pedido · fecha según tu compra";
       if(b&&b.parentNode)b.parentNode.insertBefore(chip,b);else card.appendChild(chip);
     });
   }
   marcarTarjetas();
   window.addEventListener("click",function(e){
     var b=e.target.closest&&e.target.closest("[data-add]");if(!b)return;
-    var id=b.getAttribute("data-add");if(!BAJO_PEDIDO[id]||okRes[id])return;
+    var id=b.getAttribute("data-add");if(!Object.prototype.hasOwnProperty.call(BAJO_PEDIDO,id)||okRes[id])return;
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
     var P={};try{P=JSON.parse($("pdata").textContent);}catch(x){}
-    $("bpd-n").textContent=(P[id]||{}).n||"Este producto";$("bpd-f").textContent=BAJO_PEDIDO[id];
+    $("bpd-n").textContent=(P[id]||{}).n||"Este producto";$("bpd-f").textContent=BAJO_PEDIDO[id]||"depende del día en que hagas tu compra. Te la confirmamos por WhatsApp.";
     pend={id:id,btn:b};bd.showModal();
   },true);
   $("bpd-no").addEventListener("click",function(){pend=null;bd.close();});
@@ -1876,7 +1876,7 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
   function reservados(){
     var c={};try{c=JSON.parse(localStorage.getItem("pn-cart")||"{}")||{};}catch(e){}
     var P={};try{P=JSON.parse(document.getElementById("pdata").textContent);}catch(e){}
-    return Object.keys(c).filter(function(k){return c[k]>0&&BAJO_PEDIDO[k];}).map(function(k){return {n:(P[k]||{}).n||k,f:BAJO_PEDIDO[k]};});
+    return Object.keys(c).filter(function(k){return c[k]>0&&Object.prototype.hasOwnProperty.call(BAJO_PEDIDO,k);}).map(function(k){return {n:(P[k]||{}).n||k,f:BAJO_PEDIDO[k]};});
   }
   var go=$("ok-go"),box=null;
   if(go){
@@ -1889,7 +1889,7 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
       prev.apply(this,arguments);
       var r=reservados();
       if(!r.length){box.hidden=true;go.disabled=false;return;}
-      $("ok-res-t").innerHTML=r.map(function(x){return "<b>"+x.n+"</b>: lo pedimos a fábrica. Entrega estimada: "+x.f+".";}).join("<br>")+"<br>Te confirmamos la fecha exacta por WhatsApp.";
+      $("ok-res-t").innerHTML=r.map(function(x){return "<b>"+x.n+"</b>: lo pedimos a fábrica. "+(x.f?"Entrega estimada: "+x.f+".":"La fecha de entrega depende del día en que hagas tu compra y te la confirmamos por WhatsApp.");}).join("<br>")+"<br>Te confirmamos la fecha exacta por WhatsApp.";
       $("ok-res-ck").checked=false;go.disabled=true;box.hidden=false;
     };
   }
