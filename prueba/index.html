@@ -1855,7 +1855,7 @@ form.addEventListener('submit', function(e){
   var url = waURL(msg);
   var btn = form.querySelector('button[type=submit]'), btnTxt = btn.innerHTML;
   btn.disabled = true; btn.textContent = 'Enviando tu pedido…';
-  window.__ord = { num:num, fecha:new Date().toLocaleString('es-CO',{day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'}), nombre:name, tel:pretty, town:town, zona:(!tienda && villa) ? (zonaVal()==='fuera'?'Fuera del perímetro urbano':'Dentro del perímetro urbano') : '', dir:dir, ref:ref, dia:document.getElementById('fDia').value, tienda:tienda, pago:pagoTxt, envio:envio, sub:money(PRECIO), total:total, despacho:reservaTxt().replace('Del','del') };
+  window.__ord = { num:num, fecha:new Date().toLocaleString('es-CO',{day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'}), nombre:name, tel:pretty, town:town, zona:(!tienda && villa) ? (zonaVal()==='fuera'?'Fuera del perímetro urbano':'Dentro del perímetro urbano') : '', dir:dir, ref:ref, dia:document.getElementById('fDia').value, tienda:tienda, nequi:(pago==='nequi'), pago:pagoTxt, envio:envio, sub:money(PRECIO), total:total, despacho:reservaTxt().replace('Del','del') };
   document.getElementById('fPdf').hidden = false;
   enviarRegistro({ tipo:'pedido', numero:num, nombre:name, celular:pretty, detalle:msg }).then(function(ok){
     btn.disabled = false; btn.innerHTML = btnTxt;
@@ -2001,18 +2001,18 @@ function armaPdf(o, logo){
   function ln(yy,w,col){ d.setDrawColor.apply(d,col||LN); d.setLineWidth(w||.25); d.line(M,yy,R,yy); }
   function pie(){ ln(H-16,.25); t('Pureza Natural · Distribuidor autorizado AguaLogic · WhatsApp 305 352 9366 · contacto@purezanatural.co',M,H-11,7.5,'normal',GRY); t('Orden '+o.num+' · Página '+pag,R,H-11,7.5,'normal',GRY,'right'); }
   function ensure(h){ if(y+h>H-19){ pie(); d.addPage(); pag++; y=18; } }
-  function sec(l){ ensure(14); y+=7; t(l.toUpperCase(),M,y,8,'bold',TEAL); y+=2; ln(y+1.5); y+=1; }
+  function sec(l){ ensure(14); y+=6.5; t(l.toUpperCase(),M,y,8,'bold',TEAL); y+=2; ln(y+1.5); y+=1; }
   function kv(k,v){ var L=d.splitTextToSize(String(v),112); ensure(5+L.length*4.6); y+=4.9; t(k,M,y,9.2,'normal',GRY); d.setFont('helvetica','bold'); d.setFontSize(9.2); tc(INK); d.text(L,R,y,{align:'right'}); y+=(L.length-1)*4.4; }
   function par(x,sz,col,bold){ var L=d.splitTextToSize(String(x),R-M); ensure(L.length*4.4+2); y+=5; d.setFont('helvetica',bold?'bold':'normal'); d.setFontSize(sz||9); tc(col||INK); d.text(L,M,y); y+=(L.length-1)*4.4; }
 
   /* Encabezado */
   if(logo){ try{ d.addImage(logo,'PNG',M,11,18,18); }catch(e){} }
   t('Pureza Natural',M+22,19.5,17,'bold'); t('Distribuidor autorizado AguaLogic',M+22,25,8.5,'normal',GRY); t('Villavicencio, Meta',M+22,29,8.5,'normal',GRY);
-  t('ORDEN DE PEDIDO',R,17,9,'bold',TEAL,'right'); t(o.num,R,24,15,'bold',INK,'right'); t(o.fecha,R,29.5,8.5,'normal',GRY,'right');
+  t(o.nequi?'COMPROBANTE DE PAGO':'ORDEN DE PEDIDO',R,17,9,'bold',TEAL,'right'); t(o.num,R,24,15,'bold',INK,'right'); t(o.fecha,R,29.5,8.5,'normal',GRY,'right');
   y=34; ln(y,.9,INK);
 
   /* Estado y total */
-  y+=7.5; d.setFillColor(251,238,221); d.roundedRect(M,y-5,70,7.4,3.7,3.7,'F'); t('PENDIENTE DE CONFIRMACIÓN',M+5,y,8.5,'bold',[138,84,38]);
+  y+=7.5; d.setFillColor(251,238,221); d.roundedRect(M,y-5,70,7.4,3.7,3.7,'F'); t(o.nequi?'PAGO EN VERIFICACIÓN':'PENDIENTE DE CONFIRMACIÓN',M+5,y,8.5,'bold',[138,84,38]);
   t('Moneda: pesos colombianos (COP)',R,y,8.5,'normal',GRY,'right');
   y+=6; d.setFillColor(234,245,238); d.roundedRect(M,y,R-M,18,3,3,'F'); t('TOTAL A PAGAR',M+6,y+6.5,8,'bold',GRN); t(o.total,M+6,y+14.5,18,'bold'); t(o.pago,R-6,y+14.5,9,'normal',GRY,'right'); y+=18;
 
@@ -2028,12 +2028,12 @@ function armaPdf(o, logo){
   y+=12.5; t('Purificador de agua AguaLogic de vidrio verde',M+3,y,9.5,'bold'); t('1',142,y,9.5,'normal',INK,'right'); t(o.sub,R-3,y,9.5,'bold',INK,'right');
   y+=4.6; t('20 litros · filtro cerámico y vasija de barro · grifo de acero inoxidable · por gravedad',M+3,y,8,'normal',GRY);
   y+=3.5; ln(y);
-  kv('Subtotal producto',o.sub); kv('Envío',o.envio); kv('Forma de pago',o.pago);
+  kv('Subtotal producto',o.sub); kv('Envío',o.envio); kv('Forma de pago',o.pago); kv('Estado del pago',o.nequi?'En verificación (lo confirmamos por WhatsApp)':'Se paga '+(o.tienda?'al recoger':'al recibir'));
   y+=2; ln(y,.9,INK); y+=7; t('TOTAL A PAGAR',M,y,9,'bold'); t(o.total,R,y+.5,15,'bold',INK,'right');
 
   /* Qué sigue */
   sec('Qué sigue');
-  ['Te escribimos por WhatsApp para confirmar disponibilidad, costo y fecha de despacho.','Coordinamos contigo la entrega o la recogida.','Revisas tu pedido al recibirlo y pagas según la forma elegida.','Consultas el estado cuando quieras en "Consulta tu pedido" de nuestra página, con el número '+o.num+' y tu celular.'].forEach(function(x,i){ var L=d.splitTextToSize(x,R-M-9); ensure(L.length*4.6+4); y+=5.8; d.setFillColor(22,50,44); d.circle(M+2.6,y-1.2,2.4,'F'); t(String(i+1),M+2.6,y-.2,7.5,'bold',[255,255,255],'center'); d.setFont('helvetica','normal'); d.setFontSize(9.5); tc(INK); d.text(L,M+9,y); y+=(L.length-1)*4.6; });
+  ['Te escribimos por WhatsApp para confirmar disponibilidad, costo y fecha de despacho.','Coordinamos contigo la entrega o la recogida.','Revisas tu pedido al recibirlo y pagas según la forma elegida.','Consulta el estado en "Consulta tu pedido" de nuestra página con tu número y celular.'].forEach(function(x,i){ var L=d.splitTextToSize(x,R-M-9); ensure(L.length*4.6+4); y+=5.8; d.setFillColor(22,50,44); d.circle(M+2.6,y-1.2,2.4,'F'); t(String(i+1),M+2.6,y-.2,7.5,'bold',[255,255,255],'center'); d.setFont('helvetica','normal'); d.setFontSize(9.5); tc(INK); d.text(L,M+9,y); y+=(L.length-1)*4.6; });
 
   /* Tus derechos */
   sec('Tus derechos y condiciones');
@@ -2041,7 +2041,7 @@ function armaPdf(o, logo){
 
   /* Vendedor */
   sec('Vendedor'); kv('Razón social y NIT','FERRECUBIERTAS S.A.S. · NIT 900.531.231-8'); kv('Dirección','Calle 35 A No. 27-86, San Isidro, Villavicencio, Meta');
-  par('Esta orden registra tu pedido. No es una factura de venta ni reemplaza la factura electrónica, que se emite al entregar el producto.',8,GRY);
+  par('Este documento no es factura de venta; la factura electrónica se emite al entregar.',8,GRY);
   pie();
   d.save('Pureza-Natural-'+o.num+'.pdf');
 }
