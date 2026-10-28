@@ -310,7 +310,13 @@ section{position:relative}
 .calc-note{margin-top:20px;font-size:.85rem;color:var(--on-deep-2)}
 .calc-out .mid{white-space:nowrap}
 @media (max-width:860px){.calc-grid{grid-template-columns:1fr}}
-@media (max-width:480px){.calc-in,.calc-out{padding:26px 22px}.calc-out .pair{grid-template-columns:1fr}}
+@media (max-width:480px){.calc-in,.calc-out{padding:26px 22px}.calc-out .pair{grid-template-columns:1fr}
+.think{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.think ul{list-style:none;display:grid;gap:10px;margin-top:10px}
+.think li{position:relative;padding-left:20px;font-size:.95rem;line-height:1.45;color:var(--text-primary)}
+.think li:before{content:"";position:absolute;left:0;top:.5em;width:9px;height:9px;border-radius:50%;background:var(--water,#78B9B2)}
+.think li b{color:var(--deep)}
+.think-note{margin-top:10px;font-size:.8rem;color:var(--text-secondary)}}
 
 /* 6. Testimonios */
 .voices-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center}
@@ -735,6 +741,7 @@ body.rm .pain-list li span::after{transform:scaleX(1);transition:none}
           <div><span class="label">En 2 años</span><div class="mid" id="o2y">$1.584.000</div></div>
           <div><span class="label">Kilos que cargas al año</span><div class="mid" id="oKg">1.440 kg</div></div>
         </div>
+        <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas con tus datos de arriba. No incluyen el agua de la llave.</p></div>
         <a class="btn btn-cta wa-link" href="#pedir">Quiero dejar el botellón</a>
       </div>
     </div>
@@ -1309,6 +1316,22 @@ function updateCalc(){
 cBot.addEventListener('input', updateCalc);
 cPrice.addEventListener('input', updateCalc);
 updateCalc();
+/* Mensajes de apoyo: se recalculan con los controles. Edita estos dos valores si cambian los precios. */
+var PRECIO_PURIFICADOR = 810000, REPUESTO_VASIJA = 185000;
+var oThink = document.getElementById('oThink');
+function updateThink(){
+  var bot = +cBot.value, price = +cPrice.value, month = bot * price, year = month * 12;
+  var meses = Math.ceil(PRECIO_PURIFICADOR / month);
+  var dosAnos = year * 2, conPurif = PRECIO_PURIFICADOR + REPUESTO_VASIJA, dif = dosAnos - conPurif;
+  var l1 = 'Cada litro te cuesta <b>' + fmtCOP(price / 20) + '</b>. El purificador de ' + fmtCOP(PRECIO_PURIFICADOR) + ' equivale a <b>' + (meses > 24 ? 'más de 2 años' : meses + (meses === 1 ? ' mes' : ' meses')) + '</b> de botellones.';
+  var l2 = 'En 2 años: botellones <b>' + fmtCOP(dosAnos) + '</b>. Purificador más el repuesto de la vasija (' + fmtCOP(REPUESTO_VASIJA) + ') <b>' + fmtCOP(conPurif) + '</b>. ' +
+    (dif > 0 ? 'Diferencia a tu favor: <b>' + fmtCOP(dif) + '</b>.' : 'Con ese consumo, el botellón sale más barato en 2 años.');
+  var l3 = 'Son <b>' + (bot * 12) + ' botellones</b> al año. ¿Quién los carga, dónde los guardas y qué haces si se acaba uno el domingo?';
+  oThink.innerHTML = '<li>' + l1 + '</li><li>' + l2 + '</li><li>' + l3 + '</li>';
+}
+cBot.addEventListener('input', updateThink);
+cPrice.addEventListener('input', updateThink);
+updateThink();
 
 /* ===== Aviso de cookies (se recuerda solo en este navegador) ===== */
 var cookieBox = document.getElementById('cookie');
