@@ -1752,6 +1752,16 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
 .pi-r b{color:#24302e;font-size:13.5px}
 .pi-btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:12px;background:#174C46;color:#fff!important;font-weight:700;font-size:14px;text-decoration:none}
 .pi-btn svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bpd{border:0;padding:0;border-radius:18px;width:min(420px,92vw);background:#fff;color:#24302e}
+.bpd::backdrop{background:#0009}
+.bpd-in{padding:22px 20px 18px}
+.bpd h3{margin:0 0 12px;font-size:20px}
+.bpd p{margin:0 0 10px;font-size:15px;line-height:1.5;color:#3b4744}
+.bpd .bpf{padding:10px 12px;border-radius:12px;background:#f4f1e9;color:#24302e}
+.bpd-b{display:grid;grid-template-columns:1fr 1.3fr;gap:10px;margin-top:16px}
+.bpd-b button{min-height:48px;border-radius:12px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;border:1.5px solid #24302e33;background:#fff;color:#24302e}
+.bpd-b button.ok{background:#174C46;border-color:#174C46;color:#fff}
+.bp-chip{display:inline-block;margin:6px 0;padding:5px 11px;border-radius:999px;background:#E8B85F33;color:#7a5410;font-size:12.5px;font-weight:700}
 @media (prefers-reduced-motion:reduce){.zona,.bump{animation:none}}
 </style>
 <dialog class="mapd" id="mapd" aria-label="Mapa de cobertura">
@@ -1759,6 +1769,13 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
   <iframe id="mapd-f" title="Mapa" allow="geolocation"></iframe>
   <div class="mapd-b" id="mapd-b" hidden><a href="https://www.google.com/maps/dir/?api=1&amp;destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener">Abrir en Google Maps</a><span>El mapa lo carga Google al abrirlo.</span></div>
 </dialog>
+<dialog class="bpd" id="bpd" aria-label="Producto bajo reserva"><div class="bpd-in">
+  <h3>Información</h3>
+  <p><b id="bpd-n"></b> solo está disponible <b>bajo reserva</b>. Lo pedimos a fábrica cuando haces tu pedido.</p>
+  <p class="bpf">Entrega estimada: <b id="bpd-f"></b></p>
+  <p>Te confirmamos la fecha exacta por WhatsApp. Si estás de acuerdo, toca <b>Continuar</b>.</p>
+  <div class="bpd-b"><button type="button" id="bpd-no">Cancelar</button><button type="button" class="ok" id="bpd-si">Continuar</button></div>
+</div></dialog>
 <script>
 (function(){
   var ENVIO_FUERA=49500, ENVIO_CERCA=20000;
@@ -1830,6 +1847,32 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
   var BAJO_PEDIDO={
     "v-mate":"9 al 20 de noviembre de 2026"
   };
+  var okRes={},pend=null,bd=$("bpd");
+  function marcarTarjetas(){
+    var P={};try{P=JSON.parse($("pdata").textContent);}catch(e){}
+    Object.keys(BAJO_PEDIDO).forEach(function(id){
+      var card=document.querySelector('article.card[data-id="'+id+'"]');
+      if(!card||card.querySelector(".bp-chip"))return;
+      var b=card.querySelector("[data-add]")||card.querySelector("button");
+      var chip=document.createElement("span");chip.className="bp-chip";chip.textContent="Bajo pedido · despacho "+BAJO_PEDIDO[id].replace(" de 2026","");
+      if(b&&b.parentNode)b.parentNode.insertBefore(chip,b);else card.appendChild(chip);
+    });
+  }
+  marcarTarjetas();
+  window.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("[data-add]");if(!b)return;
+    var id=b.getAttribute("data-add");if(!BAJO_PEDIDO[id]||okRes[id])return;
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+    var P={};try{P=JSON.parse($("pdata").textContent);}catch(x){}
+    $("bpd-n").textContent=(P[id]||{}).n||"Este producto";$("bpd-f").textContent=BAJO_PEDIDO[id];
+    pend={id:id,btn:b};bd.showModal();
+  },true);
+  $("bpd-no").addEventListener("click",function(){pend=null;bd.close();});
+  bd.addEventListener("click",function(e){if(e.target===bd){pend=null;bd.close();}});
+  $("bpd-si").addEventListener("click",function(){
+    if(!pend){bd.close();return;}
+    okRes[pend.id]=true;var b=pend.btn;pend=null;bd.close();b.click();
+  });
   function reservados(){
     var c={};try{c=JSON.parse(localStorage.getItem("pn-cart")||"{}")||{};}catch(e){}
     var P={};try{P=JSON.parse(document.getElementById("pdata").textContent);}catch(e){}
