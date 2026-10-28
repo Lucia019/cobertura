@@ -26,7 +26,15 @@ html,body{height:100%;overflow:hidden;background:var(--nb);color:var(--cs);font-
 .rs svg{width:19px;height:19px}
 .rs:active{background:var(--nb)}
 .pp .back{display:block;width:100%;margin-top:6px;border:1.5px solid var(--vp);background:transparent;color:var(--vp);font:600 13px Figtree,system-ui,sans-serif;padding:8px;border-radius:12px;cursor:pointer}
+.sp .price{display:none}
+.sp .card h2{font-size:14px}
+.lnk{background:none;border:0;padding:7px 0 0;font:500 11px "IBM Plex Mono",monospace;letter-spacing:.02em;color:var(--vp);text-decoration:underline;cursor:pointer}
+#inf{display:none;margin-top:6px;font-size:12.5px;line-height:1.4;color:var(--cs);background:var(--bc);border-radius:12px;padding:9px 11px;border:1px solid #24302e1a}
+#inf.on{display:block}
+#inf ul{padding-left:16px;margin:5px 0}
+#inf li{margin:2px 0}
 @media (max-width:799px){
+  body.run #info,body.run #inf{display:none}
   body.run .top h1,body.run .top .eb{display:none}
   body.run .card p,body.run .card .t{display:none}
   body.run .card{padding:9px 12px}
@@ -94,6 +102,15 @@ html,body{height:100%;overflow:hidden;background:var(--nb);color:var(--cs);font-
   </div>
   <div id="sug"></div>
   <div id="res"></div>
+  <button id="info" class="lnk" type="button" aria-expanded="false">¿Qué es el perímetro urbano?</button>
+  <div id="inf"><b>Es el límite de la zona urbana de Villavicencio.</b> Adentro están los barrios, comunas y conjuntos de la ciudad. Afuera quedan veredas, fincas y parcelaciones.
+    <ul>
+      <li><b>Zona 1:</b> dentro del perímetro urbano. Entrega gratis.</li>
+      <li><b>Zona 2:</b> te sales del límite, pero sigues en Villavicencio. $20.000.</li>
+      <li><b>Zona 3:</b> fuera de Villavicencio. $49.500.</li>
+    </ul>
+    El mapa es referencial. Confirmamos tu dirección antes de despachar.
+  </div>
 </div>
 
 <div class="cards">
@@ -113,7 +130,10 @@ if(typeof maplibregl==='undefined'){showErr('No cargó el mapa. Revisa tu intern
 const WA='573053529366', ASESOR='Francisco';
 const C={1:'#174C46',2:'#E8B85F',3:'#C66F45'};
 const ZN={1:'Dentro del perímetro urbano',2:'Fuera del perímetro urbano',3:'Fuera de Villavicencio'};
-const TXT={1:'Entrega gratis',2:'$20.000 COP · sujeto a confirmación de cobertura',3:'$49.500 COP'};
+const SP=/[?&](sin-precios|precios=0)/.test(location.search);
+if(SP)document.body.classList.add('sp');
+const ENV='El costo de envío se calcula al pagar';
+const TXT=SP?{1:ENV,2:ENV,3:ENV}:{1:'Entrega gratis',2:'$20.000 COP · sujeto a confirmación de cobertura',3:'$49.500 COP'};
 const DIAS={1:'5 días hábiles',2:'5 días hábiles',3:'10 días hábiles'};
 const center=[-73.6383,4.1515];
 const urban=[[-73.665,4.182],[-73.620,4.180],[-73.590,4.168],[-73.585,4.140],[-73.600,4.115],[-73.625,4.105],[-73.655,4.115],[-73.675,4.140],[-73.680,4.165]];
@@ -156,7 +176,7 @@ map.on('load',()=>{
   map.addLayer({id:'routeL',type:'line',source:'route',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':C[3],'line-width':5}});
   setTimeout(()=>map.setPaintProperty('z2f','fill-opacity',.22),500);
   setTimeout(()=>map.setPaintProperty('z1f','fill-opacity',.34),1100);
-  [['ZONA 1 · GRATIS',C[1],'#fff',[-73.64,4.168]],['ZONA 2 · $20.000',C[2],'#24302E',[center[0],4.1515+18/111.32]]].forEach(([t,bg,fg,p])=>{
+  [['ZONA 1'+(SP?'':' · GRATIS'),C[1],'#fff',[-73.64,4.168]],['ZONA 2'+(SP?'':' · $20.000'),C[2],'#24302E',[center[0],4.1515+18/111.32]]].forEach(([t,bg,fg,p])=>{
     const el=document.createElement('div');el.className='zchip';el.style.background=bg;el.style.color=fg;el.textContent=t;
     new maplibregl.Marker({element:el}).setLngLat(p).addTo(map);
   });
@@ -267,6 +287,8 @@ function reset(){
   })(t0);
 }
 document.getElementById('rs').onclick=reset;
+if(SP)document.getElementById('inf').innerHTML='<b>Es el límite de la zona urbana de Villavicencio.</b> Adentro están los barrios, comunas y conjuntos de la ciudad. Afuera quedan veredas, fincas y parcelaciones.<ul><li><b>Zona 1:</b> dentro del perímetro urbano.</li><li><b>Zona 2:</b> fuera del perímetro, pero en Villavicencio.</li><li><b>Zona 3:</b> fuera de Villavicencio.</li></ul>El costo de envío se calcula al pagar, según tu zona. El mapa es referencial: confirmamos tu dirección antes de despachar.';
+document.getElementById('info').onclick=e=>{const on=document.getElementById('inf').classList.toggle('on');e.currentTarget.setAttribute('aria-expanded',on)};
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.back'))reset()});
 
 function go(item,exacto){
