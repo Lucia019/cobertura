@@ -549,29 +549,7 @@ body.rm .pain-list li span::after{transform:scaleX(1);transition:none}
 @media (prefers-reduced-motion:reduce){.steps li{opacity:1;transform:none;animation:none!important}.final .uline path{stroke-dashoffset:0;animation:none!important}}
 </style>
 <style>
-.foot2{background:#0f3a35;color:#e7f1ee;padding:44px 0 calc(96px + env(safe-area-inset-bottom,0px))}
-.f2-brand{display:flex;align-items:center;gap:14px}
-.f2-brand img{width:46px;height:auto;flex:none;background:#fff;border-radius:12px;padding:6px}
-.f2-brand b{display:block;font-family:var(--display);font-size:1.25rem;color:#fff}
-.f2-brand span{display:block;font-size:.85rem;color:#a9c9c2;margin-top:2px}
-.f2-actions{display:grid;gap:10px;margin-top:26px}
-.f2-actions a{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#fff;text-decoration:none;min-height:56px;transition:background .2s,transform .2s}
-.f2-actions a:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
-.f2-actions svg{flex:none;width:38px;height:38px;padding:9px;border-radius:50%;background:#78B9B2;fill:none;stroke:#0f3a35;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.f2-actions span{display:grid;font-weight:600;font-size:.98rem;line-height:1.25;min-width:0}
-.f2-actions small{font-weight:400;font-size:.8rem;color:#a9c9c2;overflow-wrap:anywhere}
-.f2-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
-.f2-nav a{padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);color:#e7f1ee;text-decoration:none;font-size:.88rem}
-.f2-nav a:last-child{background:#C66F45;border-color:#C66F45;color:#fff;font-weight:600}
-.f2-hours{margin-top:18px;font-size:.82rem;color:#a9c9c2;line-height:1.5}
-.f2-legal{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);display:grid;gap:10px;font-size:.8rem;color:#a9c9c2}
-.f2-legal nav{display:flex;flex-wrap:wrap;gap:4px 16px}
-.f2-legal a{color:#cfe3de;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:32px}
 @media (min-width:821px){
-.foot2{padding-bottom:44px}
-.f2-actions{grid-template-columns:repeat(3,1fr)}
-.f2-brand,.f2-nav,.f2-hours{max-width:none}
-.f2-legal{grid-template-columns:1fr auto;align-items:center}
 }
 </style>
 <style>
@@ -582,19 +560,49 @@ body.rm .pain-list li span::after{transform:scaleX(1);transition:none}
 @keyframes draw{to{stroke-dashoffset:0}}
 .why-item svg{transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
 .why-item:hover svg,.why-item:active svg{transform:scale(1.18) rotate(-6deg)}
-.f2-actions a svg{transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
-.f2-actions a:hover svg,.f2-actions a:focus-visible svg,.f2-actions a:active svg{transform:scale(1.15) rotate(-8deg)}
-.f2-actions a:active{transform:scale(.98)}
 .steps li i{animation:none}
 .final .rv.in .steps li i{animation:ping 1.2s ease-out 1.1s 1}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(120,185,178,.7)}100%{box-shadow:0 0 0 14px rgba(120,185,178,0)}}
-.fv-go svg,.f2-nav a:last-child{transition:transform .3s}
-.f2-nav a:last-child:active{transform:scale(.95)}
+.fv-go svg{transition:transform .3s}
 @media (prefers-reduced-motion:reduce){
 .why-item svg path,.why-item svg circle{stroke-dashoffset:0;animation:none!important}
-.why-item svg,.f2-actions a svg{transition:none}
+.why-item svg{transition:none}
 .final .rv.in .steps li i{animation:none}
 }
+
+.ft{background:#0f3a35;color:#e7f1ee;padding:40px 0 calc(96px + env(safe-area-inset-bottom,0px))}
+.ft-grid{display:grid;gap:28px}
+.ft-brand{display:flex;align-items:center;gap:12px}
+.ft-brand svg{flex:none;width:34px;height:40px}
+.ft-brand b{display:block;font-family:var(--display);font-size:1.3rem;color:#fff;line-height:1.1}
+.ft-brand span{display:block;font-size:.82rem;color:#a9c9c2;margin-top:3px}
+.ft-links{list-style:none;margin:18px 0 0;padding:0}
+.ft-links li+li{border-top:1px solid rgba(255,255,255,.1)}
+.ft-links a{display:flex;align-items:center;gap:14px;min-height:54px;color:#fff;text-decoration:none;padding:6px 0}
+.ft-links svg{flex:none;width:36px;height:36px;padding:8px;border-radius:50%;background:rgba(120,185,178,.18);fill:none;stroke:#78B9B2;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ft-links span{display:grid;font-weight:600;font-size:.97rem;line-height:1.25;min-width:0}
+.ft-links small{font-weight:400;font-size:.8rem;color:#a9c9c2;overflow-wrap:anywhere}
+.ft-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:20px}
+.ft-card h3{margin:0;font-family:var(--display);font-size:1.25rem;color:#fff}
+.ft-card p{margin:6px 0 0;font-size:.9rem;color:#cfe3de;line-height:1.45}
+.ft-btns{display:grid;gap:10px;margin-top:16px}
+.ft-btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:50px;border-radius:14px;font-weight:700;font-size:.97rem;text-decoration:none;border:1.5px solid #C66F45;transition:transform .2s,background .2s}
+.ft-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+.ft-btn.pri{background:#C66F45;color:#fff}
+.ft-btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+.ft-btn:active{transform:scale(.97)}
+.ft-btn:hover svg,.ft-btn:focus-visible svg{transform:translateX(3px)}
+.ft-hours{margin-top:14px;font-size:.8rem;color:#a9c9c2}
+.ft-legal{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);display:grid;gap:10px;font-size:.8rem;color:#a9c9c2}
+.ft-legal nav{display:flex;flex-wrap:wrap;gap:2px 16px}
+.ft-legal a{color:#cfe3de;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:32px}
+@media (min-width:821px){
+.ft{padding-bottom:40px}
+.ft-grid{grid-template-columns:1.1fr 1fr;gap:56px;align-items:start}
+.ft-btns{grid-template-columns:1fr 1fr}
+.ft-legal{grid-template-columns:1fr auto;align-items:center}
+}
+@media (prefers-reduced-motion:reduce){.ft-btn,.ft-btn svg{transition:none}}
 </style>
 </head>
 <body>
@@ -915,17 +923,28 @@ body.rm .pain-list li span::after{transform:scaleX(1);transition:none}
 
 </main>
 
-<footer class="foot2">
+<footer class="ft">
   <div class="wrap">
-    <div class="f2-brand"><img src="assets/logo-mark.png" alt="" width="46" height="47" loading="lazy"><div><b>Pureza Natural</b><span>Claridad que cuida · Distribuidor autorizado AguaLogic</span></div></div>
-    <div class="f2-actions">
-      <a class="wa-link" href="#pedir"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-13.4 7.9L3 21l1.2-4.4A9 9 0 1 1 21 12z"/></svg><span>WhatsApp<small>305 352 9366</small></span></a>
-      <a href="mailto:contacto@purezanatural.co"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span>Correo<small>contacto@purezanatural.co</small></span></a>
-      <a href="https://www.google.com/maps/dir/?api=1&destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span>Cómo llegar a Ferrecubiertas<small>Calle 35 A No. 27-86 · con cita</small></span></a>
+    <div class="ft-grid">
+      <div>
+        <div class="ft-brand"><svg viewBox="0 0 34 40" aria-hidden="true"><path d="M17 2C17 2 5 16 5 25a12 12 0 0 0 24 0C29 16 17 2 17 2z" fill="#78B9B2"/><path d="M11 26a6 6 0 0 0 6 6" stroke="#0f3a35" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><div><b>Pureza Natural</b><span>Distribuidor autorizado AguaLogic</span></div></div>
+        <ul class="ft-links">
+          <li><a href="#pedir"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-13.4 7.9L3 21l1.2-4.4A9 9 0 1 1 21 12z"/></svg><span>WhatsApp<small>305 352 9366</small></span></a></li>
+          <li><a href="mailto:contacto@purezanatural.co"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span>Correo<small>contacto@purezanatural.co</small></span></a></li>
+          <li><a href="catalogo-v2/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Catálogo<small>Modelos, precios y pedido</small></span></a></li>
+        </ul>
+      </div>
+      <aside class="ft-card" aria-label="Visita en Ferrecubiertas">
+        <h3>¿Quieres verlo?</h3>
+        <p>Agenda una cita y míralo en Ferrecubiertas, Calle 35 A No. 27-86, San Isidro.</p>
+        <div class="ft-btns">
+          <a class="ft-btn pri" href="https://wa.me/573053529366?text=Hola%20Pureza%20Natural%2C%20quiero%20agendar%20una%20visita%20a%20Ferrecubiertas%20para%20ver%20el%20purificador." target="_blank" rel="noopener">Agendar visita<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="ft-btn alt" href="https://www.google.com/maps/dir/?api=1&amp;destination=Calle+35A+%2327-86%2C+Villavicencio%2C+Meta" target="_blank" rel="noopener">Cómo llegar<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg></a>
+        </div>
+        <p class="ft-hours">Lun–vie 7:30–6 · Sáb 7:30–5 · Dom 8–1</p>
+      </aside>
     </div>
-    <nav class="f2-nav" aria-label="Secciones"><a href="#como-purifica">Cómo purifica</a><a href="catalogo-v2/">Catálogo</a><a href="#producto">El purificador</a><a href="#preguntas">Preguntas</a><a href="https://wa.me/573053529366?text=Hola%20Pureza%20Natural%2C%20quiero%20agendar%20una%20visita%20a%20Ferrecubiertas%20para%20ver%20el%20purificador." target="_blank" rel="noopener">Agendar visita</a></nav>
-    <p class="f2-hours">Lun–vie 7:30–6 · Sáb 7:30–5 · Dom 8–1</p>
-    <div class="f2-legal"><nav aria-label="Documentos legales"><a href="tratamiento-de-datos.html">Datos</a><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a><a href="propiedad-intelectual.html">Propiedad intelectual</a></nav><span>© 2026 Pureza Natural. Todos los derechos reservados.</span></div>
+    <div class="ft-legal"><nav aria-label="Documentos legales"><a href="tratamiento-de-datos.html">Datos</a><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a><a href="propiedad-intelectual.html">Propiedad intelectual</a></nav><span>© 2026 Pureza Natural. Todos los derechos reservados.</span></div>
   </div>
 </footer>
 
