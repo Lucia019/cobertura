@@ -678,6 +678,14 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 }
 
 /* --- Accesibilidad --- */
+.zona-f{border:0;margin:0;padding:0;display:grid;gap:10px}
+.zona-f legend{font-weight:700;font-size:.95rem;padding:0;margin-bottom:6px}
+.zona-f a{font-size:.9rem;color:#17302c}
+.fsum{display:grid;gap:6px;background:#E9F1EE;border-radius:14px;padding:12px 14px;font-size:.95rem}
+.fsum div{display:flex;justify-content:space-between;gap:10px}
+.fsum .t{border-top:1px solid #b7cdc6;padding-top:8px;margin-top:2px;font-size:1.1rem}
+.fsum b{font-weight:800}
+#buyd .form input[type=radio]{width:24px;height:24px;min-height:0;padding:0;flex:none;margin-top:2px}
 .buy-info{padding:20px 20px 22px;display:grid;gap:12px;overflow:auto}
 .buy-info h3{margin:0;font-size:1.35rem;color:#0f3a35}.buy-info p{margin:0;line-height:1.5}
 .bi-date{background:#fff;border-radius:14px;padding:14px;font-size:1.02rem}.bi-date span{font-weight:800;color:#8a4a24;font-size:1.1rem}
@@ -718,7 +726,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 @media (max-width:560px){.final-cta{grid-template-columns:1fr}.final-cta img{width:100%;height:200px}}
 #buyd,#buyd *{box-sizing:border-box}
 #buyd .buy-body>*{min-width:0}
-#buyd .form input:not([type=checkbox]),#buyd .form select{width:100%}
+#buyd .form input:not([type=checkbox]):not([type=radio]),#buyd .form select{width:100%}
 #buyd{border:0;border-radius:22px;padding:0;width:min(94vw,520px);max-height:94vh;background:#F4F1E8;color:#17302c;overflow:hidden}
 #buyd[open]{display:flex;flex-direction:column}
 #buyd::backdrop{background:rgba(8,28,25,.65)}
@@ -1144,11 +1152,16 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <div class="form-fields">
       <label class="p">Tu nombre completo<input name="nombre" id="fName" autocomplete="name" placeholder="Ej: Laura Gómez" required></label>
       <label class="p">Tu celular<input name="celular" id="fPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="Ej: 310 987 6543" maxlength="18" required aria-describedby="fErr"></label>
-      <label class="p">Forma de entrega y pago
+      <label class="p">¿Cómo lo recibes?
+        <select name="modo" id="fModo">
+          <option value="dom">Envío a domicilio</option>
+          <option value="tienda">Lo recojo en Ferrecubiertas</option>
+        </select>
+      </label>
+      <label class="p">Forma de pago
         <select name="pago" id="fPago">
-          <option value="contra">Envío a domicilio · pago contraentrega</option>
-          <option value="nequi">Envío a domicilio · pago con Nequi</option>
-          <option value="tienda">Recoger y pagar en Ferrecubiertas</option>
+          <option value="contra">Contraentrega</option>
+          <option value="nequi">Nequi</option>
         </select>
       </label>
       <label class="p">Municipio
@@ -1160,6 +1173,12 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
           <option>Otro municipio del Meta</option>
         </select>
       </label>
+      <fieldset class="zona-f" id="fZonaBox" hidden>
+        <legend>¿Dónde queda tu dirección en Villavicencio?</legend>
+        <label class="chk"><input type="radio" name="zona" value="dentro"><span>Dentro del perímetro urbano · envío gratis</span></label>
+        <label class="chk"><input type="radio" name="zona" value="fuera"><span>Fuera del perímetro urbano · envío $20.000</span></label>
+        <a href="https://lucia019.github.io/cobertura/?sin-precios" target="_blank" rel="noopener">Ver mapa de cobertura</a>
+      </fieldset>
       <div id="fAddr">
         <label class="p">Dirección<input name="dir" id="fDir" autocomplete="street-address" placeholder="Ej: Calle 40A # 19-03" maxlength="90"></label>
         <label class="p">Barrio o punto de referencia<input name="ref" id="fRef" placeholder="Ej: Barrio Florencia" maxlength="90"></label>
@@ -1172,6 +1191,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         </label>
       </div>
       <p class="pickup-note" id="fPick" hidden>Recoges en Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio. Te avisamos cuándo está listo.</p>
+      <div class="fsum" id="fSum" aria-live="polite"></div>
       <label class="chk"><input type="checkbox" id="fOk" required><span>Acepto los <a href="terminos.html" target="_blank" rel="noopener">términos de venta</a> y la <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">política de tratamiento de datos</a>.</span></label>
       <p class="err" id="fErr" role="alert"></p>
       <button class="btn btn-cta p" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Hacer mi pedido por WhatsApp</button>
@@ -1724,13 +1744,34 @@ document.getElementById('cookieOk').addEventListener('click', function(){
 
 /* ===== Formulario final: arma el mensaje y abre WhatsApp ===== */
 var form = document.getElementById('waForm');
-var fPago = document.getElementById('fPago');
+var fPago = document.getElementById('fPago'), fModo = document.getElementById('fModo');
+function esTienda(){ return fModo.value === 'tienda'; }
+var PRECIO = 810000, ENVIO_CERCA = 20000, ENVIO_LEJOS = 49500;
+function money(n){ return '$' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+function zonaVal(){ var r = form.querySelector('input[name=zona]:checked'); return r ? r.value : ''; }
+/* Envío: recoger = 0 · Villavicencio dentro del perímetro = gratis · fuera = 20.000 · otro municipio = 49.500 */
+function calcEnvio(){
+  var tienda = esTienda(), villa = document.getElementById('fTown').value === 'Villavicencio';
+  if(tienda) return { v:0, txt:'No aplica (recoge en Ferrecubiertas)' };
+  if(!villa) return { v:ENVIO_LEJOS, txt:money(ENVIO_LEJOS) };
+  var z = zonaVal();
+  if(z === 'dentro') return { v:0, txt:'Gratis' };
+  if(z === 'fuera') return { v:ENVIO_CERCA, txt:money(ENVIO_CERCA) };
+  return { v:null, txt:'Elige tu zona' };
+}
 function syncPago(){
-  var tienda = fPago.value === 'tienda';
+  var tienda = esTienda(), villa = document.getElementById('fTown').value === 'Villavicencio';
   document.getElementById('fAddr').hidden = tienda;
   document.getElementById('fPick').hidden = !tienda;
+  fPago.options[0].textContent = tienda ? 'Pago en Ferrecubiertas al recoger' : 'Contraentrega';
+  document.getElementById('fZonaBox').hidden = tienda || !villa;
+  var e = calcEnvio(), tot = e.v === null ? null : PRECIO + e.v;
+  document.getElementById('fSum').innerHTML = '<div><span>Purificador</span><b>' + money(PRECIO) + '</b></div><div><span>Envío</span><b>' + e.txt + '</b></div><div class="t"><span>Total a pagar</span><b>' + (tot === null ? '—' : money(tot)) + '</b></div>';
 }
-fPago.addEventListener('change', syncPago); syncPago();
+fPago.addEventListener('change', syncPago); fModo.addEventListener('change', syncPago); document.getElementById('fTown').addEventListener('change', syncPago);
+form.querySelectorAll('input[name=zona]').forEach(function(r){ r.addEventListener('change', syncPago); });
+syncPago();
+function mkNum(){ var t=new Date(), p=function(n){return String(n).padStart(2,'0');}; var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', k=''; for(var i=0;i<4;i++) k+=c[Math.floor(Math.random()*c.length)]; return 'PN-'+t.getFullYear()+p(t.getMonth()+1)+p(t.getDate())+'-'+k; }
 form.addEventListener('submit', function(e){
   e.preventDefault();
   var fName = document.getElementById('fName'), fPhone = document.getElementById('fPhone'), fErr = document.getElementById('fErr');
@@ -1738,11 +1779,12 @@ form.addEventListener('submit', function(e){
   var name = fName.value.trim();
   var phone = fPhone.value.replace(/\D/g, '').replace(/^57(?=3\d{9}$)/, '');
   var town = document.getElementById('fTown').value;
-  var pago = fPago.value, tienda = pago === 'tienda';
+  var pago = fPago.value, tienda = esTienda();
   var dir = fDir.value.trim(), ref = document.getElementById('fRef').value.trim();
   [fName, fPhone, fDir, fOk].forEach(function(x){ x.removeAttribute('aria-invalid'); }); fErr.classList.remove('on');
   var problem = name.length < 3 ? [fName, 'Escribe tu nombre completo.']
     : !/^3\d{9}$/.test(phone) ? [fPhone, 'Escribe un celular de 10 dígitos que empiece por 3.']
+    : (!tienda && town === 'Villavicencio' && !zonaVal()) ? [form.querySelector('input[name=zona]'), 'Elige si tu dirección queda dentro o fuera del perímetro urbano.']
     : (!tienda && dir.length < 5) ? [fDir, 'Escribe tu dirección de entrega.']
     : !fOk.checked ? [fOk, 'Acepta los términos y la política de datos para continuar.'] : null;
   if (problem){
@@ -1752,11 +1794,11 @@ form.addEventListener('submit', function(e){
     return;
   }
   var pretty = phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
-  var villa = town === 'Villavicencio';
-  var envio = tienda ? 'No aplica (recoge en Ferrecubiertas)' : (villa ? 'Gratis en Villavicencio (perímetro urbano)' : 'Por confirmar según el municipio');
-  var pagoTxt = pago === 'contra' ? 'Contraentrega' : pago === 'nequi' ? 'Nequi (coordinamos por este chat)' : 'En Ferrecubiertas al recoger';
-  var msg = 'Hola Pureza Natural, quiero hacer este pedido.\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nDespacho estimado (bajo reserva): ' + reservaTxt().replace('Del','del') + '\nEnvío: ' + envio + '\nPago: ' + pagoTxt +
-    '\n\n*' + (tienda ? 'Recogida' : 'Entrega') + '*\nNombre: ' + name + '\nCelular: ' + pretty + '\nMunicipio: ' + town + '\nDepartamento: Meta' +
+  var villa = town === 'Villavicencio', ev = calcEnvio(), envio = ev.txt, total = money(PRECIO + ev.v), num = mkNum();
+  var zonaTxt = (!tienda && villa) ? '\nZona de entrega: ' + (zonaVal() === 'fuera' ? 'Fuera del perímetro urbano' : 'Dentro del perímetro urbano') : '';
+  var pagoTxt = pago === 'nequi' ? 'Nequi (coordinamos por este chat)' : (tienda ? 'En Ferrecubiertas al recoger' : 'Contraentrega');
+  var msg = 'Hola Pureza Natural, quiero hacer este pedido.\nPedido No. ' + num + '\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nDespacho estimado (bajo reserva): ' + reservaTxt().replace('Del','del') + '\nEnvío: ' + envio + '\nTotal a pagar: ' + total + '\nPago: ' + pagoTxt +
+    '\n\n*' + (tienda ? 'Recogida' : 'Entrega') + '*\nNombre: ' + name + '\nCelular: ' + pretty + '\nMunicipio: ' + town + zonaTxt + '\nDepartamento: Meta' +
     (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nDía preferido: ' + document.getElementById('fDia').value) +
     '\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.';
   var url = waURL(msg);
@@ -1766,7 +1808,7 @@ form.addEventListener('submit', function(e){
     btn.disabled = false; btn.innerHTML = btnTxt;
     var p = document.getElementById('fThanksP'), r = document.getElementById('fRetry'), ed = document.getElementById('fEdit');
     if(ok){
-      p.innerHTML = 'Recibimos tu pedido. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmar disponibilidad, envío y fecha de entrega.';
+      p.innerHTML = 'Recibimos tu pedido <strong>' + num + '</strong>. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmar disponibilidad, envío y fecha de entrega.';
       r.textContent = 'Escribirnos por WhatsApp'; r.href = waURL('Hola Pureza Natural, soy ' + name + '. Acabo de hacer un pedido en la página.');
       ed.hidden = true;
     } else {
