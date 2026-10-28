@@ -750,6 +750,8 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 .chk input{width:24px;height:24px;flex:none;margin-top:2px}
 .pickup-note{font-size:.95rem;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.12)}
 #fAddr{display:grid;gap:16px}
+.vis-thanks{text-align:center;display:grid;gap:12px;padding:10px 0}.vis-thanks b{font-size:1.4rem;color:#0f3a35}.vis-thanks p{margin:0}
+#visd [hidden]{display:none!important}
 [hidden]{display:none!important}
 .btn-ask{background:#fff;color:#0f3a35;box-shadow:inset 0 0 0 1.5px #0f3a35;margin-left:10px}
 .btn-ask:hover{background:#0f3a35;color:#fff}
@@ -1089,7 +1091,8 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
     <p class="vis-h" id="vHint"></p>
     <label class="chk"><input type="checkbox" id="vOk" required><span>Acepto la <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">política de tratamiento de datos</a>. Usarán mi nombre y celular solo para confirmar y recordarme la visita.</span></label>
     <p class="err" id="vErr" role="alert"></p>
-    <div class="vis-b"><button type="button" class="btn btn-line" id="vNo">Cancelar</button><button type="submit" class="btn btn-cta">Agendar por WhatsApp</button></div>
+    <div class="vis-thanks" id="vThanks" role="status" tabindex="-1" hidden><b>¡Gracias, <span id="vThN"></span>!</b><p>Tu visita quedó escrita en WhatsApp. <strong>Toca Enviar para que nos llegue.</strong> En poco nos comunicamos contigo para confirmarla.</p><button type="button" class="btn btn-cta" id="vThX">Listo</button></div>
+    <div class="vis-b" id="vBtns"><button type="button" class="btn btn-line" id="vNo">Cancelar</button><button type="submit" class="btn btn-cta">Agendar por WhatsApp</button></div>
   </form>
 </dialog>
 
@@ -1175,7 +1178,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <div class="thanks" id="fThanks" role="status" tabindex="-1">
         <svg class="check" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 24.5l6 6 12-13" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h3 id="fThanksT">¡Gracias por elegir Pureza Natural!</h3>
-        <p>Se abrió WhatsApp con tu pedido listo. <strong>Solo toca Enviar</strong> y te confirmamos disponibilidad, envío y fecha de entrega.</p>
+        <p>Tu pedido quedó escrito en WhatsApp. <strong>Toca Enviar para que nos llegue.</strong> En poco nos comunicamos contigo para confirmar disponibilidad, envío y fecha de entrega.</p>
         <a class="btn btn-cta" id="fRetry" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>¿No se abrió? Toca aquí</a>
         <button type="button" class="linkish" id="fEdit">Corregir mis datos</button>
       </div>
@@ -1743,7 +1746,7 @@ form.addEventListener('submit', function(e){
   window.open(url, '_blank', 'noopener');
   document.getElementById('fRetry').href = url;
   document.getElementById('fThanksT').textContent = '¡Gracias, ' + name.split(' ')[0] + '!';
-  form.classList.add('sent');
+  form.classList.add('sent'); var bm=document.getElementById('buyMain'); if(bm) bm.scrollTop=0;
   document.getElementById('fThanks').focus({ preventScroll: true });
 });
 
@@ -1799,6 +1802,7 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
   function abrir(e){
     e.preventDefault();
     var t=new Date(), min=new Date(t.getFullYear(),t.getMonth(),t.getDate()), max=new Date(min); max.setDate(max.getDate()+30);
+    document.querySelectorAll('#visForm > label, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=false;}); document.getElementById('vThanks').hidden=true;
     fDate.min=iso(min); fDate.max=iso(max); if(!fDate.value) fDate.value=iso(min); fill(); err.classList.remove('on'); d.showModal();
   }
   btn.addEventListener('click', abrir);
@@ -1809,6 +1813,7 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
     bt.innerHTML='<span>'+(i===0?'Hoy':i===1?'Mañana':dn[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+MES[x.getMonth()]+'</em>'; box.appendChild(bt); }
     box.addEventListener('click',function(e){ var q=e.target.closest('.d-day'); if(!q) return; abrir(e); fDate.value=q.getAttribute('data-d'); fill(); }); }
   fDate.addEventListener('change', fill);
+  document.getElementById('vThX').addEventListener('click', function(){ d.close(); });
   document.getElementById('vNo').addEventListener('click', function(){ d.close(); });
   d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
   document.getElementById('visForm').addEventListener('submit', function(e){
@@ -1820,7 +1825,7 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
     if(bad){ bad[0].setAttribute('aria-invalid','true'); err.textContent=bad[1]; err.classList.add('on'); bad[0].focus(); return; }
     var dt=parse(fDate.value), pretty=phone.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3');
     var msg='Hola Pureza Natural, quiero agendar una visita a Ferrecubiertas para ver el purificador de vidrio verde.\n\n*Visita*\nNombre: '+name+'\nCelular: '+pretty+'\nDía: '+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+'\nHora: '+fTime.value+'\nLugar: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro\n\nAcepto la política de tratamiento de datos. Quedo atento a su confirmación.';
-    window.open(waURL(msg),'_blank','noopener'); d.close();
+    window.open(waURL(msg),'_blank','noopener'); document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
   });
 })();
 document.getElementById('fEdit').addEventListener('click', function(){
