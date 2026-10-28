@@ -741,7 +741,7 @@ body.rm .pain-list li span::after{transform:scaleX(1);transition:none}
           <div><span class="label">En 2 años</span><div class="mid" id="o2y">$1.584.000</div></div>
           <div><span class="label">Kilos que cargas al año</span><div class="mid" id="oKg">1.440 kg</div></div>
         </div>
-        <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas con tus datos de arriba. No incluyen el agua de la llave.</p></div>
+        <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas hechas con los datos que pusiste arriba.</p></div>
         <a class="btn btn-cta wa-link" href="#pedir">Quiero dejar el botellón</a>
       </div>
     </div>
@@ -1316,16 +1316,12 @@ function updateCalc(){
 cBot.addEventListener('input', updateCalc);
 cPrice.addEventListener('input', updateCalc);
 updateCalc();
-/* Mensajes de apoyo: se recalculan con los controles. Edita estos dos valores si cambian los precios. */
-var PRECIO_PURIFICADOR = 810000, REPUESTO_VASIJA = 185000;
+/* Mensajes de apoyo: se recalculan con los controles. Solo usan los valores que pone la persona. */
 var oThink = document.getElementById('oThink');
 function updateThink(){
-  var bot = +cBot.value, price = +cPrice.value, month = bot * price, year = month * 12;
-  var meses = Math.ceil(PRECIO_PURIFICADOR / month);
-  var dosAnos = year * 2, conPurif = PRECIO_PURIFICADOR + REPUESTO_VASIJA, dif = dosAnos - conPurif;
-  var l1 = 'Cada litro te cuesta <b>' + fmtCOP(price / 20) + '</b>. El purificador de ' + fmtCOP(PRECIO_PURIFICADOR) + ' equivale a <b>' + (meses > 24 ? 'más de 2 años' : meses + (meses === 1 ? ' mes' : ' meses')) + '</b> de botellones.';
-  var l2 = 'En 2 años: botellones <b>' + fmtCOP(dosAnos) + '</b>. Purificador más el repuesto de la vasija (' + fmtCOP(REPUESTO_VASIJA) + ') <b>' + fmtCOP(conPurif) + '</b>. ' +
-    (dif > 0 ? 'Diferencia a tu favor: <b>' + fmtCOP(dif) + '</b>.' : 'Con ese consumo, el botellón sale más barato en 2 años.');
+  var bot = +cBot.value, price = +cPrice.value, year = bot * price * 12;
+  var l1 = 'Al precio que pusiste, cada litro de agua te cuesta <b>' + fmtCOP(price / 20) + '</b>.';
+  var l2 = 'En 2 años gastas <b>' + fmtCOP(year * 2) + '</b> en botellones. Pídenos el valor del purificador y compáralo con esta cifra.';
   var l3 = 'Son <b>' + (bot * 12) + ' botellones</b> al año. ¿Quién los carga, dónde los guardas y qué haces si se acaba uno el domingo?';
   oThink.innerHTML = '<li>' + l1 + '</li><li>' + l2 + '</li><li>' + l3 + '</li>';
 }
