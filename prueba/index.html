@@ -686,7 +686,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 .tk-steps li.hecho{background:#eef7f1;color:#17302c}.tk-steps li.hecho span{background:#2e7d4f;color:#fff}
 .tk-steps li.actual{background:#fff4e6;color:#17302c;box-shadow:inset 0 0 0 2px #B35E36}.tk-steps li.actual span{background:#B35E36;color:#fff}
 .tk-msg{font-weight:600}
-#fPdf{width:100%}
+#fPdf,#tkPdf{width:100%;max-width:520px;margin-top:10px}
 
 #buyd .buy-top{background:#fff;color:#17302c;border-bottom:1px solid #e3ded0}
 #buyd .buy-top h2{color:#17302c;font-size:1.5rem}
@@ -1173,6 +1173,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       </form>
       <ol class="tk-steps" id="tkSteps" hidden></ol>
       <p class="tk-msg" id="tkMsg" hidden></p>
+      <button type="button" class="btn btn-line" id="tkPdf" hidden>Descargar comprobante (PDF)</button>
     </div>
   </div>
 </section>
@@ -1857,7 +1858,7 @@ form.addEventListener('submit', function(e){
   btn.disabled = true; btn.textContent = 'Enviando tu pedido…';
   window.__ord = { num:num, fecha:new Date().toLocaleString('es-CO',{day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit'}), nombre:name, tel:pretty, town:town, zona:(!tienda && villa) ? (zonaVal()==='fuera'?'Fuera del perímetro urbano':'Dentro del perímetro urbano') : '', dir:dir, ref:ref, dia:document.getElementById('fDia').value, tienda:tienda, nequi:(pago==='nequi'), pago:pagoTxt, envio:envio, sub:money(PRECIO), total:total, despacho:reservaTxt().replace('Del','del') };
   document.getElementById('fPdf').hidden = false;
-  enviarRegistro({ tipo:'pedido', numero:num, nombre:name, celular:pretty, detalle:msg }).then(function(ok){
+  enviarRegistro({ tipo:'pedido', numero:num, nombre:name, celular:pretty, detalle:msg, datos:JSON.stringify(window.__ord) }).then(function(ok){
     btn.disabled = false; btn.innerHTML = btnTxt;
     var p = document.getElementById('fThanksP'), r = document.getElementById('fRetry'), ed = document.getElementById('fEdit');
     if(ok){
@@ -1903,9 +1904,9 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
   var f=document.getElementById('tkForm'); if(!f) return;
   var ETAPAS=['Recibido','Confirmado','En preparación','Despachado','En camino','Entregado'];
   var MAPA={ 'nuevo':0,'recibido':0,'confirmado':1,'en preparación':2,'en preparacion':2,'despachado':3,'en camino':4,'entregado':5 };
-  var err=document.getElementById('tkErr'), box=document.getElementById('tkSteps'), msg=document.getElementById('tkMsg');
+  var tkPdf=document.getElementById('tkPdf'), tkOrd=null; var err=document.getElementById('tkErr'), box=document.getElementById('tkSteps'), msg=document.getElementById('tkMsg');
   f.addEventListener('submit',function(e){
-    e.preventDefault(); err.classList.remove('on'); box.hidden=true; msg.hidden=true;
+    e.preventDefault(); err.classList.remove('on'); box.hidden=true; msg.hidden=true; tkPdf.hidden=true; tkOrd=null;
     var num=document.getElementById('tkNum').value.trim().toUpperCase(), tel=document.getElementById('tkTel').value.replace(/\D/g,'').replace(/^57(?=3\d{9}$)/,'');
     if(!/^PN-\d{8}-[A-Z0-9]{4}$/.test(num)){ err.textContent='Escribe el número de pedido completo, por ejemplo PN-20261028-AB12.'; err.classList.add('on'); return; }
     if(!/^3\d{9}$/.test(tel)){ err.textContent='Escribe el celular de 10 dígitos con el que pediste.'; err.classList.add('on'); return; }
@@ -1920,9 +1921,16 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
         var i=MAPA[String(r.estado||'').trim().toLowerCase()]; if(i===undefined) i=0;
         box.innerHTML=ETAPAS.map(function(x,n){ return '<li class="'+(n<i?'hecho':n===i?'actual':'')+'"><span>'+(n<i?'✓':n+1)+'</span>'+x+'</li>'; }).join('');
         box.hidden=false;
+        if(r.datos && i>=1){ try{ tkOrd=JSON.parse(r.datos); tkOrd.confirmado=true; tkOrd.pagado = tkOrd.nequi ? true : i>=5; tkPdf.hidden=false; }catch(e){ tkOrd=null; } }
         if(r.guia){ msg.hidden=false; msg.textContent='Guía de envío: '+r.guia; }
       })
       .catch(function(){ if(fin) return; fin=true; clearTimeout(tm); listo(); msg.hidden=false; msg.textContent='No pudimos consultar ahora. Escríbenos por WhatsApp y te contamos.'; });
+  });
+  tkPdf.addEventListener('click',function(){
+    if(!tkOrd) return; var old=tkPdf.textContent; tkPdf.textContent='Generando PDF…'; tkPdf.disabled=true;
+    function fin(m){ tkPdf.textContent=m||old; tkPdf.disabled=false; if(m) setTimeout(function(){ tkPdf.textContent=old; },2000); }
+    cargaPdf(function(ok){ if(!ok){ fin(); alert('No se pudo generar el PDF. Toma una captura de esta pantalla.'); return; }
+      cargaLogo(function(logo){ try{ armaPdf(tkOrd,logo); fin('PDF descargado'); }catch(e){ fin(); alert('No se pudo generar el PDF. Toma una captura de esta pantalla.'); } }); });
   });
 })();
 /* ===== Dudas por WhatsApp ===== */
@@ -2008,11 +2016,11 @@ function armaPdf(o, logo){
   /* Encabezado */
   if(logo){ try{ d.addImage(logo,'PNG',M,11,18,18); }catch(e){} }
   t('Pureza Natural',M+22,19.5,17,'bold'); t('Distribuidor autorizado AguaLogic',M+22,25,8.5,'normal',GRY); t('Villavicencio, Meta',M+22,29,8.5,'normal',GRY);
-  t(o.nequi?'COMPROBANTE DE PAGO':'ORDEN DE PEDIDO',R,17,9,'bold',TEAL,'right'); t(o.num,R,24,15,'bold',INK,'right'); t(o.fecha,R,29.5,8.5,'normal',GRY,'right');
+  t((o.nequi||o.pagado)?'COMPROBANTE DE PAGO':'ORDEN DE PEDIDO',R,17,9,'bold',TEAL,'right'); t(o.num,R,24,15,'bold',INK,'right'); t(o.fecha,R,29.5,8.5,'normal',GRY,'right');
   y=34; ln(y,.9,INK);
 
   /* Estado y total */
-  y+=7.5; d.setFillColor(251,238,221); d.roundedRect(M,y-5,70,7.4,3.7,3.7,'F'); t(o.nequi?'PAGO EN VERIFICACIÓN':'PENDIENTE DE CONFIRMACIÓN',M+5,y,8.5,'bold',[138,84,38]);
+  y+=7.5; d.setFillColor(251,238,221); d.roundedRect(M,y-5,70,7.4,3.7,3.7,'F'); t(o.pagado?'PAGO RECIBIDO':o.nequi?'PAGO EN VERIFICACIÓN':o.confirmado?'PEDIDO CONFIRMADO':'PENDIENTE DE CONFIRMACIÓN',M+5,y,8.5,'bold',[138,84,38]);
   t('Moneda: pesos colombianos (COP)',R,y,8.5,'normal',GRY,'right');
   y+=6; d.setFillColor(234,245,238); d.roundedRect(M,y,R-M,18,3,3,'F'); t('TOTAL A PAGAR',M+6,y+6.5,8,'bold',GRN); t(o.total,M+6,y+14.5,18,'bold'); t(o.pago,R-6,y+14.5,9,'normal',GRY,'right'); y+=18;
 
@@ -2028,7 +2036,7 @@ function armaPdf(o, logo){
   y+=12.5; t('Purificador de agua AguaLogic de vidrio verde',M+3,y,9.5,'bold'); t('1',142,y,9.5,'normal',INK,'right'); t(o.sub,R-3,y,9.5,'bold',INK,'right');
   y+=4.6; t('20 litros · filtro cerámico y vasija de barro · grifo de acero inoxidable · por gravedad',M+3,y,8,'normal',GRY);
   y+=3.5; ln(y);
-  kv('Subtotal producto',o.sub); kv('Envío',o.envio); kv('Forma de pago',o.pago); kv('Estado del pago',o.nequi?'En verificación (lo confirmamos por WhatsApp)':'Se paga '+(o.tienda?'al recoger':'al recibir'));
+  kv('Subtotal producto',o.sub); kv('Envío',o.envio); kv('Forma de pago',o.pago); kv('Estado del pago',o.pagado?(o.nequi?'Pago recibido':'Pagado '+(o.tienda?'al recoger':'al recibir')):o.nequi?'En verificación (lo confirmamos por WhatsApp)':'Se paga '+(o.tienda?'al recoger':'al recibir'));
   y+=2; ln(y,.9,INK); y+=7; t('TOTAL A PAGAR',M,y,9,'bold'); t(o.total,R,y+.5,15,'bold',INK,'right');
 
   /* Qué sigue */
