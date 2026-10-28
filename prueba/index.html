@@ -1994,32 +1994,55 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
 function cargaPdf(cb){ if(window.jspdf){ cb(true); return; } var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; sc.onload=function(){ cb(!!window.jspdf); }; sc.onerror=function(){ cb(false); }; document.head.appendChild(sc); }
 function cargaLogo(cb){ var im=new Image(); im.onload=function(){ cb(im); }; im.onerror=function(){ cb(null); }; im.src='assets/logo.png'; }
 function armaPdf(o, logo){
-  var J=window.jspdf.jsPDF, d=new J({unit:'mm',format:'a4'}), W=210, M=16, R=W-M, y=0;
-  var INK=[22,50,44], TEAL=[31,122,140], GRN=[31,106,64], GRY=[96,112,108], LN=[214,220,216];
+  var J=window.jspdf.jsPDF, d=new J({unit:'mm',format:'a4'}), W=210, H=297, M=15, R=W-M, y=0, pag=1;
+  var INK=[22,50,44], TEAL=[31,122,140], GRN=[31,106,64], GRY=[88,104,100], LN=[214,220,216], BG=[246,248,245];
   function tc(c){ d.setTextColor(c[0],c[1],c[2]); }
   function t(x,xx,yy,sz,st,col,al){ d.setFont('helvetica',st||'normal'); d.setFontSize(sz); tc(col||INK); d.text(String(x),xx,yy,{align:al||'left'}); }
   function ln(yy,w,col){ d.setDrawColor.apply(d,col||LN); d.setLineWidth(w||.25); d.line(M,yy,R,yy); }
-  function sec(l){ y+=7; t(l.toUpperCase(),M,y,8,'bold',TEAL); y+=2; ln(y+1.5); }
-  function kv(k,v){ var L=d.splitTextToSize(String(v),108); y+=5.4; t(k,M,y,9.5,'normal',GRY); d.setFont('helvetica','bold'); d.setFontSize(9.5); tc(INK); d.text(L,R,y,{align:'right'}); y+=(L.length-1)*4.6; }
+  function pie(){ ln(H-16,.25); t('Pureza Natural · Distribuidor autorizado AguaLogic · WhatsApp 305 352 9366 · contacto@purezanatural.co',M,H-11,7.5,'normal',GRY); t('Orden '+o.num+' · Página '+pag,R,H-11,7.5,'normal',GRY,'right'); }
+  function ensure(h){ if(y+h>H-19){ pie(); d.addPage(); pag++; y=18; } }
+  function sec(l){ ensure(14); y+=7; t(l.toUpperCase(),M,y,8,'bold',TEAL); y+=2; ln(y+1.5); y+=1; }
+  function kv(k,v){ var L=d.splitTextToSize(String(v),112); ensure(5+L.length*4.6); y+=4.9; t(k,M,y,9.2,'normal',GRY); d.setFont('helvetica','bold'); d.setFontSize(9.2); tc(INK); d.text(L,R,y,{align:'right'}); y+=(L.length-1)*4.4; }
+  function par(x,sz,col,bold){ var L=d.splitTextToSize(String(x),R-M); ensure(L.length*4.4+2); y+=5; d.setFont('helvetica',bold?'bold':'normal'); d.setFontSize(sz||9); tc(col||INK); d.text(L,M,y); y+=(L.length-1)*4.4; }
+
+  /* Encabezado */
   if(logo){ try{ d.addImage(logo,'PNG',M,11,18,18); }catch(e){} }
-  t('Pureza Natural',M+22,19.5,17,'bold'); t('Distribuidor autorizado AguaLogic',M+22,25,8.5,'normal',GRY); t('Villavicencio, Meta · WhatsApp 305 352 9366',M+22,29,8.5,'normal',GRY);
+  t('Pureza Natural',M+22,19.5,17,'bold'); t('Distribuidor autorizado AguaLogic',M+22,25,8.5,'normal',GRY); t('Villavicencio, Meta',M+22,29,8.5,'normal',GRY);
   t('ORDEN DE PEDIDO',R,17,9,'bold',TEAL,'right'); t(o.num,R,24,15,'bold',INK,'right'); t(o.fecha,R,29.5,8.5,'normal',GRY,'right');
-  y=36; ln(y,.9,INK);
-  y+=8; d.setFillColor(251,238,221); d.roundedRect(M,y-5,66,7.4,3.7,3.7,'F'); t('PENDIENTE DE CONFIRMACION',M+5,y,8.5,'bold',[138,84,38]);
-  y+=6; d.setFillColor(234,245,238); d.roundedRect(M,y,R-M,22,3,3,'F'); t('TOTAL A PAGAR',M+6,y+7,8,'bold',GRN); t(o.total,M+6,y+17,20,'bold'); t(o.pago,R-6,y+17,9,'normal',GRY,'right'); y+=22;
-  sec(o.tienda?'Recogida':'Destino de entrega');
-  kv('Para',o.nombre); kv('Celular',o.tel);
-  if(o.tienda){ kv('Recoge en','Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro'); }
-  else { kv('Dirección',o.dir); kv('Municipio',o.town+', Meta'+(o.zona?' ('+o.zona.toLowerCase()+')':'')); if(o.ref) kv('Referencia',o.ref); kv('Día preferido',o.dia); }
+  y=34; ln(y,.9,INK);
+
+  /* Estado y total */
+  y+=7.5; d.setFillColor(251,238,221); d.roundedRect(M,y-5,70,7.4,3.7,3.7,'F'); t('PENDIENTE DE CONFIRMACIÓN',M+5,y,8.5,'bold',[138,84,38]);
+  t('Moneda: pesos colombianos (COP)',R,y,8.5,'normal',GRY,'right');
+  y+=6; d.setFillColor(234,245,238); d.roundedRect(M,y,R-M,18,3,3,'F'); t('TOTAL A PAGAR',M+6,y+6.5,8,'bold',GRN); t(o.total,M+6,y+14.5,18,'bold'); t(o.pago,R-6,y+14.5,9,'normal',GRY,'right'); y+=18;
+
+  /* Comprador y entrega */
+  sec(o.tienda?'Comprador y recogida':'Comprador y destino de entrega'); kv('Nombre',o.nombre); kv('Celular',o.tel);
+  if(o.tienda){ kv('Recoge en','Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio'); kv('Costo de envío','$0 (recogida en tienda)'); }
+  else { kv('Ciudad o municipio',o.town+', Meta'+(o.zona?' · '+o.zona:'')); kv('Dirección',o.dir); if(o.ref) kv('Referencia',o.ref); kv('Día preferido',o.dia); }
   kv('Despacho estimado',o.despacho);
-  sec('Producto'); y+=1;
-  y+=5.4; t('Purificador AguaLogic de vidrio verde · 20 litros',M,y,9.5,'normal',INK); t('x 1',150,y,9.5,'normal',GRY,'right'); t('$810.000',R,y,9.5,'bold',INK,'right');
-  y+=3; ln(y); kv('Producto',o.sub); kv('Envío',o.envio);
-  y+=3; ln(y,.9,INK); y+=8; t('TOTAL A PAGAR',M,y,9,'bold'); t(o.total,R,y+.5,17,'bold',INK,'right'); y+=5;
-  y+=8; t('QUE SIGUE',M,y,8,'bold',TEAL); y+=1;
-  ['Te escribimos por WhatsApp para confirmar disponibilidad, costo y fecha de despacho.','Coordinamos contigo la entrega o la recogida.','Revisas tu pedido al recibirlo y pagas segun la forma elegida.'].forEach(function(x,i){ var L=d.splitTextToSize(x,R-M-9); y+=6; d.setFillColor(22,50,44); d.circle(M+2.6,y-1.2,2.6,'F'); t(String(i+1),M+2.6,y-.1,8,'bold',[255,255,255],'center'); d.setFont('helvetica','normal'); d.setFontSize(9.5); tc(INK); d.text(L,M+9,y); y+=(L.length-1)*4.6; });
-  var fine='Esta orden registra tu pedido y no es una factura de venta. Garantia legal y del fabricante. Retracto de 5 dias habiles desde la entrega, con el producto en su estado original. Confirmamos disponibilidad, costo y tiempo de envio antes del despacho. Vende FERRECUBIERTAS S.A.S., NIT 900.531.231-8, Calle 35 A No. 27-86, San Isidro, Villavicencio.';
-  var FL=d.splitTextToSize(fine,R-M); y+=10; ln(y); y+=5; t('Pedido seguro · Distribuidor autorizado AguaLogic',M,y,8.5,'bold',GRN); y+=4.6; d.setFont('helvetica','normal'); d.setFontSize(8); tc(GRY); d.text(FL,M,y);
+
+  /* Producto */
+  sec('Producto'); ensure(30);
+  y+=2; d.setFillColor(BG[0],BG[1],BG[2]); d.rect(M,y,R-M,7,'F'); t('Descripción',M+3,y+4.9,8,'bold',GRY); t('Cant.',142,y+4.9,8,'bold',GRY,'right'); t('Valor',R-3,y+4.9,8,'bold',GRY,'right');
+  y+=12.5; t('Purificador de agua AguaLogic de vidrio verde',M+3,y,9.5,'bold'); t('1',142,y,9.5,'normal',INK,'right'); t(o.sub,R-3,y,9.5,'bold',INK,'right');
+  y+=4.6; t('20 litros · filtro cerámico y vasija de barro · grifo de acero inoxidable · por gravedad',M+3,y,8,'normal',GRY);
+  y+=3.5; ln(y);
+  kv('Subtotal producto',o.sub); kv('Envío',o.envio); kv('Forma de pago',o.pago);
+  y+=2; ln(y,.9,INK); y+=7; t('TOTAL A PAGAR',M,y,9,'bold'); t(o.total,R,y+.5,15,'bold',INK,'right');
+
+  /* Qué sigue */
+  sec('Qué sigue');
+  ['Te escribimos por WhatsApp para confirmar disponibilidad, costo y fecha de despacho.','Coordinamos contigo la entrega o la recogida.','Revisas tu pedido al recibirlo y pagas según la forma elegida.','Consultas el estado cuando quieras en "Consulta tu pedido" de nuestra página, con el número '+o.num+' y tu celular.'].forEach(function(x,i){ var L=d.splitTextToSize(x,R-M-9); ensure(L.length*4.6+4); y+=5.8; d.setFillColor(22,50,44); d.circle(M+2.6,y-1.2,2.4,'F'); t(String(i+1),M+2.6,y-.2,7.5,'bold',[255,255,255],'center'); d.setFont('helvetica','normal'); d.setFontSize(9.5); tc(INK); d.text(L,M+9,y); y+=(L.length-1)*4.6; });
+
+  /* Tus derechos */
+  sec('Tus derechos y condiciones');
+  ['Garantía: legal y del fabricante. Si hay un defecto de fábrica, Pureza Natural hace el trámite ante AguaLogic en tu nombre.','Retracto: 5 días hábiles desde la entrega, con el producto en su estado original (Ley 1480 de 2011).','Disponibilidad: confirmamos disponibilidad, costo y tiempo de envío antes del despacho. Si el despacho cambia, te avisamos.','Datos personales: los usamos solo para gestionar tu pedido, según la Ley 1581 de 2012. Puedes pedir que los actualicemos o los eliminemos por contacto@purezanatural.co.','Reclamos: escríbenos primero a contacto@purezanatural.co o al WhatsApp 305 352 9366. También puedes acudir a la Superintendencia de Industria y Comercio (sic.gov.co).'].forEach(function(x){ var L=d.splitTextToSize(x,R-M-6); ensure(L.length*4.2+3); y+=4.6; d.setFillColor(31,122,140); d.circle(M+1.2,y-1.2,.8,'F'); d.setFont('helvetica','normal'); d.setFontSize(8.5); tc(INK); d.text(L,M+5,y); y+=(L.length-1)*4.2; });
+
+  /* Vendedor */
+  sec('Vendedor'); kv('Razón social y NIT','FERRECUBIERTAS S.A.S. · NIT 900.531.231-8'); kv('Dirección','Calle 35 A No. 27-86, San Isidro, Villavicencio, Meta');
+  par('Esta orden registra tu pedido. No es una factura de venta ni reemplaza la factura electrónica, que se emite al entregar el producto.',8,GRY);
+  pie();
   d.save('Pureza-Natural-'+o.num+'.pdf');
 }
 var bPdf=document.getElementById('fPdf');
