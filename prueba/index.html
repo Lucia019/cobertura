@@ -678,6 +678,29 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 }
 
 /* --- Accesibilidad --- */
+#buyd .buy-top{background:#fff;color:#17302c;border-bottom:1px solid #e3ded0}
+#buyd .buy-top h2{color:#17302c;font-size:1.5rem}
+#buyd .buy-x{background:#fff;color:#17302c;border:1px solid #cfc7b4}
+.buy-trust{background:#eef7f1;border:1px solid #cfe5d6}
+.fh{margin:10px 0 0;font:700 .78rem var(--body);letter-spacing:.14em;text-transform:uppercase;color:#4a5f5a}
+.opt-grid{display:grid;gap:10px}
+.form label.opt{display:flex;flex-direction:row;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid #cfc7b4;border-radius:16px;background:#fff;font-weight:400;cursor:pointer}
+.form label.opt:has(input:checked){border-color:#2e7d4f;background:#eef7f1}
+.form label.opt input{width:22px;height:22px;min-height:0;padding:0;flex:none;accent-color:#2e7d4f;order:3;margin-left:auto}
+.opt .oi{width:42px;height:42px;border-radius:50%;background:#17302c;color:#fff;display:grid;place-items:center;flex:none}
+.opt .oi svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.opt .ot{display:grid;gap:2px}.opt .ot b{font-size:1rem}.opt .ot small{color:#4a5f5a;font-size:.85rem;line-height:1.3}
+#fAddr{display:grid;gap:16px}
+.pickup-note{display:grid;gap:4px;font-size:.92rem;padding:12px 14px;border-radius:14px;background:#eef7f1;border:1px solid #cfe5d6;color:#17302c}
+.pickup-note a{color:#17302c;font-weight:700}
+.buy-foot{position:sticky;bottom:-18px;background:#fff;margin:6px -18px -18px;padding:14px 18px 18px;border-top:1px solid #e3ded0;display:grid;gap:10px;box-shadow:0 -10px 22px -16px rgba(0,0,0,.35);z-index:2}
+.btn-confirm{background:#2b7a4b;color:#fff;min-height:54px;border-radius:999px;font-weight:700;font-size:1.05rem;width:100%}
+.btn-confirm:hover{background:#236a40}
+.btn-confirm[disabled]{opacity:.7}
+.form .note{margin:0;font-size:.8rem;color:#4a5f5a;text-align:center}
+.foot-total{display:flex;justify-content:space-between;align-items:baseline;font-size:1rem}.foot-total b{font-size:1.3rem}
+.buy-foot{gap:8px;padding-top:12px}
+
 .zona-f{border:0;margin:0;padding:0;display:grid;gap:10px}
 .zona-f legend{font-weight:700;font-size:.95rem;padding:0;margin-bottom:6px}
 .zona-f a{font-size:.9rem;color:#17302c}
@@ -758,7 +781,6 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 
 .form label.chk{display:flex;flex-direction:row;gap:10px;align-items:flex-start;font-size:.92rem;line-height:1.4}
 .chk input{width:24px;height:24px;flex:none;margin-top:2px}
-.pickup-note{font-size:.95rem;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.12)}
 #fAddr{display:grid;gap:16px}
 .vis-thanks{text-align:center;display:grid;gap:12px;padding:10px 0}.vis-thanks b{font-size:1.4rem;color:#0f3a35}.vis-thanks p{margin:0}
 #visd [hidden]{display:none!important}
@@ -1147,41 +1169,35 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
   </div>
   <div class="buy-body" id="buyMain" hidden>
     <div class="buy-sum"><img src="assets/producto-vidrio-verde.jpg" alt="" width="72" height="72"><div><b>1 × Purificador AguaLogic de vidrio verde</b><small>20 litros · filtro cerámico y grifo de acero inoxidable</small><small class="bs-d">Despacho estimado: <span id="biFecha2"></span></small></div><span>$810.000</span></div>
-    <div class="buy-trust"><svg viewBox="0 0 48 56" aria-hidden="true" width="34" height="40"><path d="M24 2l19 7v15c0 14-8 24-19 30C13 48 5 38 5 24V9z" fill="#2e7d4f"/><path d="M16 26l6 6 11-13" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Pedido seguro</b><span>Distribuidor autorizado AguaLogic. No pagas nada en esta página: el pago es contraentrega, con Nequi o en tienda.</span></div></div>
+    <div class="buy-trust"><svg viewBox="0 0 48 56" aria-hidden="true" width="40" height="46"><path d="M24 2l19 7v15c0 14-8 24-19 30C13 48 5 38 5 24V9z" fill="#2e7d4f"/><path d="M16 26l6 6 11-13" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Pedido seguro</b><span>Distribuidor autorizado AguaLogic · Pago contraentrega o Nequi. No pagas nada en esta página.</span></div></div>
     <form class="form" id="waForm" novalidate>
       <div class="form-fields">
-      <label class="p">Tu nombre completo<input name="nombre" id="fName" autocomplete="name" placeholder="Ej: Laura Gómez" required></label>
-      <label class="p">Tu celular<input name="celular" id="fPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="Ej: 310 987 6543" maxlength="18" required aria-describedby="fErr"></label>
-      <label class="p">¿Cómo lo recibes?
-        <select name="modo" id="fModo">
-          <option value="dom">Envío a domicilio</option>
-          <option value="tienda">Lo recojo en Ferrecubiertas</option>
-        </select>
-      </label>
-      <label class="p">Forma de pago
-        <select name="pago" id="fPago">
-          <option value="contra">Contraentrega</option>
-          <option value="nequi">Nequi</option>
-        </select>
-      </label>
-      <label class="p">Municipio
-        <select name="municipio" id="fTown">
-          <option>Villavicencio</option>
-          <option>Acacías</option>
-          <option>Restrepo</option>
-          <option>Cumaral</option>
-          <option>Otro municipio del Meta</option>
-        </select>
-      </label>
-      <fieldset class="zona-f" id="fZonaBox" hidden>
-        <legend>¿Dónde queda tu dirección en Villavicencio?</legend>
-        <label class="chk"><input type="radio" name="zona" value="dentro"><span>Dentro del perímetro urbano · envío gratis</span></label>
-        <label class="chk"><input type="radio" name="zona" value="fuera"><span>Fuera del perímetro urbano · envío $20.000</span></label>
-        <a href="https://lucia019.github.io/cobertura/?sin-precios" target="_blank" rel="noopener">Ver mapa de cobertura</a>
-      </fieldset>
+      <h3 class="fh">Datos de contacto</h3>
+      <label class="p">Nombre completo<input name="nombre" id="fName" autocomplete="name" placeholder="Ej: Laura Gómez" required></label>
+      <label class="p">Celular o WhatsApp<input name="celular" id="fPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="3XX XXX XXXX" maxlength="18" required aria-describedby="fErr"></label>
+      <h3 class="fh">¿Cómo lo recibes?</h3>
+      <div class="opt-grid" role="radiogroup" aria-label="¿Cómo lo recibes?">
+        <label class="opt"><input type="radio" name="modo" value="dom" checked><span class="oi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span><span class="ot"><b>Domicilio</b><small>Te lo llevamos a tu dirección</small></span></label>
+        <label class="opt"><input type="radio" name="modo" value="tienda"><span class="oi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9l1.5-5h13L20 9M4 9h16v11H4zM9 20v-6h6v6"/></svg></span><span class="ot"><b>Recoger en Ferrecubiertas</b><small>Sin costo de envío</small></span></label>
+      </div>
       <div id="fAddr">
-        <label class="p">Dirección<input name="dir" id="fDir" autocomplete="street-address" placeholder="Ej: Calle 40A # 19-03" maxlength="90"></label>
-        <label class="p">Barrio o punto de referencia<input name="ref" id="fRef" placeholder="Ej: Barrio Florencia" maxlength="90"></label>
+        <label class="p">Municipio
+          <select name="municipio" id="fTown">
+            <option>Villavicencio</option>
+            <option>Acacías</option>
+            <option>Restrepo</option>
+            <option>Cumaral</option>
+            <option>Otro municipio del Meta</option>
+          </select>
+        </label>
+        <fieldset class="zona-f" id="fZonaBox" hidden>
+          <legend>¿Dónde queda tu dirección en Villavicencio?</legend>
+          <label class="chk"><input type="radio" name="zona" value="dentro"><span>Dentro del perímetro urbano · envío gratis</span></label>
+          <label class="chk"><input type="radio" name="zona" value="fuera"><span>Fuera del perímetro urbano · envío $20.000</span></label>
+          <a href="https://lucia019.github.io/cobertura/?sin-precios" target="_blank" rel="noopener">Ver mapa de cobertura</a>
+        </fieldset>
+        <label class="p">Dirección<input name="dir" id="fDir" autocomplete="street-address" placeholder="Calle, carrera, número, apto o casa" maxlength="90"></label>
+        <label class="p">Barrio o punto de referencia<input name="ref" id="fRef" placeholder="Barrio y referencia (ej. frente al parque)" maxlength="90"></label>
         <label class="p">¿Cuándo lo quieres?
           <select name="dia" id="fDia">
             <option>Lo antes posible</option>
@@ -1190,12 +1206,20 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
           </select>
         </label>
       </div>
-      <p class="pickup-note" id="fPick" hidden>Recoges en Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio. Te avisamos cuándo está listo.</p>
+      <div class="pickup-note" id="fPick" hidden><b>Ferrecubiertas S.A.S.</b><span>Calle 35 A No. 27-86, San Isidro, Villavicencio. Te avisamos cuándo está listo para recoger.</span><a href="https://www.google.com/maps/dir/?api=1&destination=Calle+35A+%2327-86+Villavicencio" target="_blank" rel="noopener">Cómo llegar</a></div>
+      <h3 class="fh">Forma de pago</h3>
+      <div class="opt-grid" role="radiogroup" aria-label="Forma de pago">
+        <label class="opt"><input type="radio" name="pago" value="contra" checked><span class="oi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg></span><span class="ot"><b id="fContraT">Contraentrega</b><small id="fContraS">Pagas cuando recibes tu pedido. No pagas nada ahora.</small></span></label>
+        <label class="opt"><input type="radio" name="pago" value="nequi"><span class="oi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg></span><span class="ot"><b>Nequi</b><small>Te enviamos los datos por WhatsApp para pagar.</small></span></label>
+      </div>
       <div class="fsum" id="fSum" aria-live="polite"></div>
-      <label class="chk"><input type="checkbox" id="fOk" required><span>Acepto los <a href="terminos.html" target="_blank" rel="noopener">términos de venta</a> y la <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">política de tratamiento de datos</a>.</span></label>
-      <p class="err" id="fErr" role="alert"></p>
-      <button class="btn btn-cta p" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Hacer mi pedido por WhatsApp</button>
-      <p class="note p">Envío gratis en Villavicencio dentro del perímetro urbano. En otros municipios te confirmamos el costo antes del despacho. No cobramos nada en esta página: el pago se coordina por WhatsApp.</p>
+      <label class="chk"><input type="checkbox" id="fOk" required><span>Acepto los <a href="terminos.html" target="_blank" rel="noopener">términos de venta, garantía y retracto</a> y el <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">tratamiento de datos</a>.</span></label>
+      <p class="note p">Envío gratis en Villavicencio dentro del perímetro urbano. No pagas nada en esta página.</p>
+      <div class="buy-foot">
+        <p class="err" id="fErr" role="alert"></p>
+        <div class="foot-total"><span>Total a pagar</span><b id="fTotalMini">—</b></div>
+        <button class="btn btn-confirm" type="submit">Confirmar pedido</button>
+      </div>
       </div>
       <div class="thanks" id="fThanks" role="status" tabindex="-1">
         <svg class="check" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 24.5l6 6 12-13" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1744,7 +1768,8 @@ document.getElementById('cookieOk').addEventListener('click', function(){
 
 /* ===== Formulario final: arma el mensaje y abre WhatsApp ===== */
 var form = document.getElementById('waForm');
-var fPago = document.getElementById('fPago'), fModo = document.getElementById('fModo');
+function radioGrupo(n){ return { get value(){ var r = form.querySelector('input[name=' + n + ']:checked'); return r ? r.value : ''; }, addEventListener: function(ev, fn){ form.querySelectorAll('input[name=' + n + ']').forEach(function(r){ r.addEventListener(ev, fn); }); } }; }
+var fPago = radioGrupo('pago'), fModo = radioGrupo('modo');
 function esTienda(){ return fModo.value === 'tienda'; }
 var PRECIO = 810000, ENVIO_CERCA = 20000, ENVIO_LEJOS = 49500;
 function money(n){ return '$' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
@@ -1763,9 +1788,11 @@ function syncPago(){
   var tienda = esTienda(), villa = document.getElementById('fTown').value === 'Villavicencio';
   document.getElementById('fAddr').hidden = tienda;
   document.getElementById('fPick').hidden = !tienda;
-  fPago.options[0].textContent = tienda ? 'Pago en Ferrecubiertas al recoger' : 'Contraentrega';
+  document.getElementById('fContraT').textContent = tienda ? 'Pago en Ferrecubiertas' : 'Contraentrega';
+  document.getElementById('fContraS').textContent = tienda ? 'Pagas cuando recoges tu pedido. No pagas nada ahora.' : 'Pagas cuando recibes tu pedido. No pagas nada ahora.';
   document.getElementById('fZonaBox').hidden = tienda || !villa;
   var e = calcEnvio(), tot = e.v === null ? null : PRECIO + e.v;
+  document.getElementById('fTotalMini').textContent = (tot === null ? 'Elige tu zona' : money(tot));
   document.getElementById('fSum').innerHTML = '<div><span>Purificador</span><b>' + money(PRECIO) + '</b></div><div><span>Envío</span><b>' + e.txt + '</b></div><div class="t"><span>Total a pagar</span><b>' + (tot === null ? '—' : money(tot)) + '</b></div>';
 }
 fPago.addEventListener('change', syncPago); fModo.addEventListener('change', syncPago); document.getElementById('fTown').addEventListener('change', syncPago);
