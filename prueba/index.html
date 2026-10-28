@@ -1957,6 +1957,8 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
     e.preventDefault(); var n=document.getElementById('qName'), er=document.getElementById('qErr'), nm=n.value.trim();
     if(nm.length<2){ n.setAttribute('aria-invalid','true'); er.textContent='Escribe tu nombre.'; er.classList.add('on'); n.focus(); return; }
     n.removeAttribute('aria-invalid'); er.classList.remove('on');
+    var tema=document.getElementById('qTema').value;
+    try{ fetch(PN_HOOK,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({tipo:'duda',nombre:nm,celular:'',detalle:'Duda sobre: '+tema}),keepalive:true}).catch(function(){}); }catch(x){}
     window.open(waURL('Hola Pureza Natural, soy '+nm+'. Tengo una duda sobre: '+document.getElementById('qTema').value.toLowerCase()+'.'),'_blank','noopener');
   });
 })();
