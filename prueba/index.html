@@ -728,6 +728,13 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 @keyframes tkConf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(260deg)}}
 #tkPdf[hidden],#fPdf[hidden]{display:none}
 /* micro-movimientos */
+.vday-wrap{display:grid;gap:8px}.vday-l{font-weight:600}
+.vdays{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.vday{flex:none;scroll-snap-align:start;width:62px;padding:8px 0;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:#174C46;display:grid;gap:1px;justify-items:center;font-family:inherit;cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
+.vday span{font-size:.74rem;color:#4E5D58}.vday b{font-size:1.25rem;line-height:1.1}.vday em{font-style:normal;font-size:.72rem;color:#4E5D58;text-transform:uppercase;letter-spacing:.04em}
+.vday:active{transform:scale(.94)}
+.vday.on{background:#174C46;border-color:#174C46;color:#fff}.vday.on span,.vday.on em{color:#CFE9E4}
+
 .ft-links svg.ic2{padding:5px;stroke:none;background:rgba(120,185,178,.14)}
 .opt .oi svg.ic2{width:30px;height:30px;stroke:none}
 
@@ -1214,7 +1221,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
     <p class="vis-sub">Ven a Ferrecubiertas, mira el purificador y compra ahí mismo. Calle 35 A No. 27-86, San Isidro, Villavicencio.</p>
     <label>Tu nombre completo<input id="vName" autocomplete="name" placeholder="Ej: Laura Gómez" required></label>
     <label>Tu celular<input id="vPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="Ej: 310 987 6543" maxlength="18" required></label>
-    <label>Día de la visita<input id="vDate" type="date" required></label>
+    <div class="vday-wrap"><span class="vday-l" id="vDayL">Día de la visita</span><div class="vdays" id="vDays" role="radiogroup" aria-labelledby="vDayL"></div><input id="vDate" type="hidden"></div>
     <label>Hora<select id="vTime" required></select></label>
     <p class="vis-h" id="vHint"></p>
     <label class="chk"><input type="checkbox" id="vOk" required><span>Acepto la <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">política de tratamiento de datos</a>. Usarán mi nombre y celular solo para confirmar y recordarme la visita.</span></label>
@@ -2115,11 +2122,22 @@ function pnBocina(){
     for(var m=r[0]; m<=r[1]; m+=30){ if(hoy && m<nowM) continue; var o=document.createElement('option'); o.value=hora(m); o.textContent=hora(m); fTime.appendChild(o); }
     hint.textContent='Atendemos el '+DIAS[dt.getDay()]+' de '+r[2]+(fTime.options.length?'':'. Ya no hay horas hoy; escoge otro día.');
   }
+  var vDays=document.getElementById('vDays'), dn2=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  function pinta(){
+    var t0=new Date(), base=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()), html='', first='';
+    for(var i=0,k=0;k<14&&i<20;i++){ var x=new Date(base.getFullYear(),base.getMonth(),base.getDate()+i);
+      if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
+      var v=iso(x); if(!first) first=v; if(!fDate.value||fDate.value<first) fDate.value=first;
+      html+='<button type="button" role="radio" class="vday" data-d="'+v+'" aria-label="'+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]+'"><span>'+(i===0?'Hoy':i===1?'Mañana':dn2[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+MES[x.getMonth()]+'</em></button>'; }
+    vDays.innerHTML=html; if(!vDays.querySelector('[data-d="'+fDate.value+'"]')) fDate.value=first;
+    vDays.querySelectorAll('.vday').forEach(function(b){ var on=b.getAttribute('data-d')===fDate.value; b.setAttribute('aria-checked',on); b.classList.toggle('on',on); if(on){ vDays.scrollLeft=Math.max(0,b.offsetLeft-12); } });
+  }
+  vDays.addEventListener('click',function(e){ var b=e.target.closest('.vday'); if(!b) return; fDate.value=b.getAttribute('data-d'); fill(); pinta(); });
   function abrir(e){
     e.preventDefault();
     var t=new Date(), min=new Date(t.getFullYear(),t.getMonth(),t.getDate()), max=new Date(min); max.setDate(max.getDate()+30);
-    document.querySelectorAll('#visForm > label, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=false;}); document.getElementById('vThanks').hidden=true;
-    fDate.min=iso(min); fDate.max=iso(max); if(!fDate.value) fDate.value=iso(min); fill(); err.classList.remove('on'); d.showModal();
+    document.querySelectorAll('#visForm > label, #visForm .vday-wrap, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=false;}); document.getElementById('vThanks').hidden=true;
+    fDate.min=iso(min); fDate.max=iso(max); if(!fDate.value) fDate.value=iso(min); pinta(); fill(); err.classList.remove('on'); d.showModal();
   }
   btn.addEventListener('click', abrir);
   document.querySelectorAll('[data-vis]').forEach(function(x){ x.addEventListener('click', abrir); });
@@ -2127,7 +2145,7 @@ function pnBocina(){
   if(box){ var t0=new Date(); for(var i=0,k=0;k<4&&i<10;i++){ var x=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i); if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
     var bt=document.createElement('button'); bt.type='button'; bt.className='d-day'; bt.setAttribute('data-d',iso(x)); bt.setAttribute('aria-label','Agendar el '+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]);
     bt.innerHTML='<span>'+(i===0?'Hoy':i===1?'Mañana':dn[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+MES[x.getMonth()]+'</em>'; box.appendChild(bt); }
-    box.addEventListener('click',function(e){ var q=e.target.closest('.d-day'); if(!q) return; abrir(e); fDate.value=q.getAttribute('data-d'); fill(); }); }
+    box.addEventListener('click',function(e){ var q=e.target.closest('.d-day'); if(!q) return; abrir(e); fDate.value=q.getAttribute('data-d'); pinta(); fill(); }); }
   fDate.addEventListener('change', fill);
   document.getElementById('vThX').addEventListener('click', function(){ d.close(); });
   document.getElementById('vNo').addEventListener('click', function(){ d.close(); });
@@ -2147,7 +2165,7 @@ function pnBocina(){
       var vp=document.querySelector('#vThanks p');
       if(ok){ vp.innerHTML='Agendamos tu visita. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmarla.'; }
       else { window.open(waURL(msg),'_blank','noopener'); vp.innerHTML='No pudimos registrar tu visita en la página. Quedó escrita en WhatsApp: <strong>toca Enviar para que nos llegue.</strong>'; }
-      document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
+      document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vday-wrap, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
     });
   });
 })();
