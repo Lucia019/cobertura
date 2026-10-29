@@ -728,6 +728,11 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 @keyframes tkConf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(260deg)}}
 #tkPdf[hidden],#fPdf[hidden]{display:none}
 /* micro-movimientos */
+.qchips{display:grid;gap:8px}
+.qchip{display:flex;align-items:center;gap:12px;min-height:50px;padding:0 16px;border-radius:14px;border:1.5px solid #B9B09D;background:#fff;color:#17302c;font:inherit;font-weight:600;text-align:left;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
+.qchip i{font-style:normal;width:30px;height:30px;border-radius:50%;background:#E3F0EC;display:grid;place-items:center;font-size:1rem;flex:none;color:#174C46;font-weight:700}
+.qchip:hover{border-color:#007585;background:#F2F9F7}.qchip:active{transform:scale(.97)}
+
 .vday-wrap{display:grid;gap:8px}.vday-l{font-weight:600}
 .vdays{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
 .vday{flex:none;scroll-snap-align:start;width:62px;padding:8px 0;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:#174C46;display:grid;gap:1px;justify-items:center;font-family:inherit;cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
@@ -1238,13 +1243,15 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
     <div class="d-grid">
       <form class="d-card" id="qForm" novalidate>
         <h3><span class="d-ic" aria-hidden="true">💬</span> Escríbenos por WhatsApp</h3>
-        <label>Tu nombre<input id="qName" autocomplete="given-name" placeholder="Ej: Laura" required></label>
-        <label>¿Qué quieres saber?
-          <select id="qTema"><option>Precio y forma de pago</option><option>Cómo funciona el purificador</option><option>Envío y tiempos de entrega</option><option>Garantía y repuestos</option><option>Otra pregunta</option></select>
-        </label>
-        <p class="err" id="qErr" role="alert"></p>
-        <button class="btn btn-cta" type="submit">Preguntar por WhatsApp</button>
-        <small>Te respondemos por el chat. No necesitas dejar más datos.</small>
+        <label>Tu nombre (opcional)<input id="qName" autocomplete="given-name" placeholder="Ej: Laura"></label>
+        <div class="qchips" role="group" aria-label="¿Qué quieres saber?">
+          <button type="button" class="qchip" data-t="Quiero saber el precio y las formas de pago."><i><svg viewBox="0 0 48 48" aria-hidden="true" width="24" height="24"><circle cx="24" cy="24" r="19" fill="#007585"/><path d="M24 12v24M30 18.500c-1.500-2-9.500-2.500-10 1.500-.5 4.500 10.500 2 10 7-.5 4.500-9 4-11 1.500" fill="none" stroke="#fff" stroke-width="3.200" stroke-linecap="round"/></svg></i>Precio y forma de pago</button>
+          <button type="button" class="qchip" data-t="Quiero saber cómo funciona el purificador."><i><svg viewBox="0 0 48 48" aria-hidden="true" width="24" height="24"><path d="M24 5c8 10.500 13 16 13 22a13 13 0 0 1-26 0c0-6 5-11.500 13-22z" fill="#007585"/><path d="M17.500 28c0 3.500 2.200 6 5.500 6.500" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></i>Cómo funciona</button>
+          <button type="button" class="qchip" data-t="Quiero saber del envío y los tiempos de entrega."><i><svg viewBox="0 0 48 48" aria-hidden="true" width="24" height="24"><rect x="4" y="13" width="24" height="19" rx="3" fill="#007585"/><path d="M28 18h8.500l7 8.500V32H28z" fill="#174C46"/><path d="M31 20.500h4.500l4 5h-8.500z" fill="#CFE9E4"/><circle cx="14" cy="34" r="5" fill="#0f1f1d" stroke="#fff" stroke-width="2"/><circle cx="36" cy="34" r="5" fill="#0f1f1d" stroke="#fff" stroke-width="2"/></svg></i>Envío y tiempos</button>
+          <button type="button" class="qchip" data-t="Quiero saber sobre la garantía y los repuestos."><i><svg viewBox="0 0 48 48" aria-hidden="true" width="24" height="24"><path d="M24 4l16 5.800v11.400c0 9.800-6.600 17.400-16 21C14.600 38.600 8 31 8 21.200V9.800z" fill="#174C46"/><path d="M16 23.500l5.800 5.800L32.500 17.500" fill="none" stroke="#fff" stroke-width="3.600" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Garantía y repuestos</button>
+          <button type="button" class="qchip" data-t="Tengo otra pregunta."><i><svg viewBox="0 0 48 48" aria-hidden="true" width="24" height="24"><path d="M24 5C14 5 6 12.600 6 22c0 3.700 1.200 7 3.300 9.800L7 41l8.700-2.500c2.400 1 5.200 1.500 8.300 1.500 10 0 18-7.600 18-17S34 5 24 5z" fill="#007585"/><circle cx="16" cy="22" r="2.600" fill="#fff"/><circle cx="24" cy="22" r="2.600" fill="#fff"/><circle cx="32" cy="22" r="2.600" fill="#fff"/></svg></i>Otra pregunta</button>
+        </div>
+        <small>Tocas una opción y se abre WhatsApp con tu pregunta lista. No necesitas dejar más datos.</small>
       </form>
       <div class="d-card d-visit">
         <h3><span class="d-ic" aria-hidden="true">📅</span> Agenda tu visita</h3>
@@ -2095,13 +2102,12 @@ function pnBocina(){
 /* ===== Dudas por WhatsApp ===== */
 (function(){
   var f=document.getElementById('qForm'); if(!f) return;
-  f.addEventListener('submit',function(e){
-    e.preventDefault(); var n=document.getElementById('qName'), er=document.getElementById('qErr'), nm=n.value.trim();
-    if(nm.length<2){ n.setAttribute('aria-invalid','true'); er.textContent='Escribe tu nombre.'; er.classList.add('on'); n.focus(); return; }
-    n.removeAttribute('aria-invalid'); er.classList.remove('on');
-    var tema=document.getElementById('qTema').value;
-    try{ fetch(PN_HOOK,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({tipo:'duda',nombre:nm,celular:'',detalle:'Duda sobre: '+tema}),keepalive:true}).catch(function(){}); }catch(x){}
-    window.open(waURL('Hola Pureza Natural, soy '+nm+'. Tengo una duda sobre: '+document.getElementById('qTema').value.toLowerCase()+'.'),'_blank','noopener');
+  f.addEventListener('submit',function(e){ e.preventDefault(); });
+  f.addEventListener('click',function(e){
+    var c=e.target.closest('.qchip'); if(!c) return;
+    var nm=document.getElementById('qName').value.trim(), tema=c.textContent.replace(/^\S+\s*/,'').trim(), q=c.getAttribute('data-t');
+    try{ fetch(PN_HOOK,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({tipo:'duda',nombre:nm||'(sin nombre)',celular:'',detalle:'Duda sobre: '+tema}),keepalive:true}).catch(function(){}); }catch(x){}
+    window.open(waURL('Hola Pureza Natural'+(nm?', soy '+nm:'')+'. '+q),'_blank','noopener');
   });
 })();
 /* ===== Agendar visita a Ferrecubiertas ===== */
