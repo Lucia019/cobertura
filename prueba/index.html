@@ -678,7 +678,10 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 }
 
 /* --- Accesibilidad --- */
-.d-track{grid-column:1 / -1}
+.d-track{grid-column:1 / -1;margin-top:36px;position:relative}
+.d-track::before{content:'';position:absolute;left:12%;right:12%;top:-20px;border-top:2px dashed #b9c9c3}
+.d-grid{gap:24px}.doubts{padding-bottom:84px}
+@media (max-width:760px){.d-track{margin-top:44px}}
 .d-track form{display:grid;gap:12px;max-width:520px}
 .tk-steps{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:8px;max-width:520px}
 .tk-steps li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:#f1efe6;color:#4a5f5a;font-weight:600}
