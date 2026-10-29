@@ -743,7 +743,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 
 .cookie .row .btn-line{background:transparent;color:var(--deep);border:1.5px solid var(--deep)}
 .cookie b{margin-bottom:2px}
-@media (max-width:560px){.cookie.show{display:block;padding:16px 18px}.cookie p{margin:4px 0 0;font-size:.85rem}.cookie .row{margin-top:12px;gap:10px;flex-wrap:nowrap}.cookie .btn{flex:1;padding:10px 12px;font-size:.9rem}}
+@media (max-width:560px){.cookie.show{display:block;padding:12px 14px;border-radius:14px}.cookie b{display:none}.cookie p{margin:0;font-size:.78rem;line-height:1.35}.cookie .row{margin-top:8px;gap:8px;flex-wrap:nowrap}.cookie .btn{flex:1;padding:8px 10px;font-size:.85rem}}
 
 .qchips{display:grid;gap:8px}
 .qchip{display:flex;align-items:center;gap:12px;min-height:50px;padding:0 16px;border-radius:14px;border:1.5px solid #B9B09D;background:#fff;color:#17302c;font:inherit;font-weight:600;text-align:left;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
@@ -845,7 +845,11 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 .buy-sum small{display:block;line-height:1.3}
 #buyd [hidden]{display:none!important}
 
-.doubts{background:#E9F1EE;padding:56px 0 64px;color:#17302c}
+.doubts{background:#E9F1EE;padding:28px 0 36px;color:#17302c}
+.d-more>summary{cursor:pointer;font-size:1rem;font-weight:600;color:#0f3a35;text-align:center;padding:12px 0;list-style:none}
+.d-more>summary::-webkit-details-marker{display:none}
+.d-more>summary::after{content:" ▾"}
+.d-more[open]>summary::after{content:" ▴"}
 .doubts h2{font-family:var(--display);font-size:clamp(1.9rem,5vw,2.8rem);margin:0;color:#0f3a35}
 .d-lead{margin:10px 0 24px;font-size:1.05rem;color:#3d5550}
 .d-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -979,7 +983,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <h2 data-split="words">Claridad que cuida.</h2>
       <p class="e-sub">Purificador AguaLogic de 20 litros.</p>
       <a href="#producto" style="display:inline-block;margin:2px 0 16px;padding:9px 18px;border-radius:999px;background:#174C46;color:#fff;font-weight:700;text-decoration:none"><span style="font-size:1.3rem">20 litros</span> · Filtro cerámico y vasija de barro</a>
-      <div class="row"><a class="btn btn-cta wa-link" href="#pedir">Comprar ahora</a></div>
+      <div class="row"><a class="btn btn-cta" href="#producto">Ver el purificador</a></div>
     </div>
 
     <svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-opacity=".18" stroke-width="3"/><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="126" transform="rotate(-90 24 24)" style="stroke-dashoffset:var(--ld,126)"/></svg>
@@ -994,7 +998,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
     <span class="kicker">Distribuidor autorizado AguaLogic</span>
     <h1 style="margin-top:12px">Agua pura, hecha de barro.</h1>
     <p>Purificador AguaLogic de 20 litros. Sin luz, sin instalación, sin botellones.</p>
-    <a class="btn btn-cta wa-link" href="#pedir">Comprar ahora</a>
+    <a class="btn btn-cta" href="#producto">Ver el purificador</a>
   </div>
 </section>
 
@@ -1056,8 +1060,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
             <small>Compra única de $810.000 frente a tu gasto de arriba. La vasija de barro dura 2 años.</small></div>
         </div>
         <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas hechas con los datos que pusiste arriba.</p></div>
-        <a class="btn btn-cta wa-link" href="#pedir">Comprar ahora</a>
-        <a class="btn btn-ask wa-q" href="#" target="_blank" rel="noopener">¿Tienes dudas? Escríbenos</a>
+        <a class="btn btn-cta" href="#producto">Ver cuánto cuesta</a>
       </div>
     </div>
   </div>
@@ -1150,6 +1153,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
           <strong style="display:block;font-size:clamp(2.9rem,10vw,4rem);line-height:1.05;font-weight:800;margin:6px 0 12px;color:#fff;letter-spacing:-.02em">$810.000</strong>
           <span style="display:inline-block;padding:7px 14px;border-radius:999px;background:#78B9B2;color:#12332f;font-weight:700;font-size:.92rem">Envío gratis en Villavicencio</span>
           <p style="margin:12px 0 0;font-size:.88rem;opacity:.85">Fuera del perímetro urbano, el envío se suma al pagar.</p>
+          <p style="margin:8px 0 0;font-size:.88rem;opacity:.95">Compra bajo reserva. Despacho estimado: <b id="pDesp"></b>.</p>
           <ul class="seguro"><li>Garantía de fábrica AguaLogic</li><li>5 días hábiles para retractarte tras la entrega</li><li>Pagas contraentrega, con Nequi o en tienda</li></ul>
         </div>
         <div class="vs p" role="group" aria-label="Comparación con los botellones">
@@ -1158,7 +1162,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
           <a href="#t-calc">Calcula con tu gasto real ↑</a>
         </div>
         <div><a class="btn btn-cta wa-link p" href="#pedir" style="display:flex;justify-content:center;width:100%;font-size:1.1rem;padding:18px 24px">Comprar ahora →</a>
-          <a class="btn btn-ask wa-q" style="display:flex;width:100%;margin-top:10px" href="#" target="_blank" rel="noopener">¿Tienes dudas? Escríbenos</a></div>
+          <p style="margin:12px 0 0;text-align:center;font-size:.9rem">¿Prefieres verlo antes? <a href="#" data-vis style="color:#174C46;font-weight:700">Agenda tu visita</a></p></div>
       </div>
     </div>
     <div class="parts rv">
@@ -1241,7 +1245,6 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         <span class="fc-price">$810.000</span>
         <small>Envío gratis en Villavicencio</small>
         <button type="button" class="btn btn-cta" data-buy>Comprar ahora</button>
-        <a class="btn btn-ask wa-q" href="#" target="_blank" rel="noopener">¿Tienes dudas? Escríbenos</a>
       </div>
     </div>
   </div>
@@ -1266,9 +1269,9 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 
 <section class="doubts" id="dudas" aria-labelledby="t-dudas">
   <div class="wrap">
-    <h2 id="t-dudas">¿Tienes dudas? Resuélvelas antes de comprar</h2>
-    <p class="d-lead">Escríbenos por WhatsApp o ven a ver el purificador a Ferrecubiertas.</p>
-    <div class="d-grid">
+    <details class="d-more" id="dMore">
+    <summary id="t-dudas">¿Otra duda, quieres verlo en persona o ya hiciste tu pedido?</summary>
+    <div class="d-grid" style="margin-top:20px">
       <form class="d-card" id="qForm" novalidate>
         <h3><span class="d-ic" aria-hidden="true">💬</span> Escríbenos por WhatsApp</h3>
         <label>Tu nombre (opcional)<input id="qName" autocomplete="given-name" placeholder="Ej: Laura"></label>
@@ -1306,6 +1309,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <p class="tk-msg" id="tkMsg" hidden></p>
       <button type="button" class="btn btn-line" id="tkPdf" hidden>Descargar comprobante (PDF)</button>
     </div>
+    </details>
   </div>
 </section>
 
@@ -1901,7 +1905,7 @@ var oThink = document.getElementById('oThink');
 function updateThink(){
   var bot = +cBot.value, price = +cPrice.value, year = bot * price * 12;
   var l1 = 'Al precio que pusiste, cada litro de agua te cuesta <b>' + fmtCOP(price / 20) + '</b>.';
-  var l2 = 'En 2 años gastas <b>' + fmtCOP(year * 2) + '</b> en botellones. Pídenos el valor del purificador y compáralo con esta cifra.';
+  var l2 = 'En 2 años gastas <b>' + fmtCOP(year * 2) + '</b> en botellones. Más abajo ves cuánto cuesta el purificador para compararlo con esta cifra.';
   var l3 = 'Son <b>' + (bot * 12) + ' botellones</b> al año. ¿Quién los carga, dónde los guardas y qué haces si se acaba uno el domingo?';
   oThink.innerHTML = '<li>' + l1 + '</li><li>' + l2 + '</li><li>' + l3 + '</li>';
 }
@@ -1999,7 +2003,7 @@ function syncPago(){
   document.getElementById('fContraS').textContent = tienda ? 'Pagas cuando recoges tu pedido. No pagas nada ahora.' : 'Pagas cuando recibes tu pedido. No pagas nada ahora.';
   document.getElementById('fZonaBox').hidden = tienda || !villa;
   var e = calcEnvio(), tot = e.v === null ? null : PRECIO + e.v;
-  document.getElementById('fTotalMini').textContent = (tot === null ? 'Elige tu zona' : money(tot));
+  document.getElementById('fTotalMini').textContent = (tot === null ? money(PRECIO) + ' + envío' : money(tot));
   document.getElementById('fSum').innerHTML = '<div><span>Purificador</span><b>' + money(PRECIO) + '</b></div><div><span>Envío</span><b>' + e.txt + '</b></div><div class="t"><span>Total a pagar</span><b>' + (tot === null ? '—' : money(tot)) + '</b></div>';
 }
 fPago.addEventListener('change', syncPago); fModo.addEventListener('change', syncPago); document.getElementById('fTown').addEventListener('change', syncPago);
@@ -2062,6 +2066,10 @@ form.addEventListener('submit', function(e){
 
 
 
+/* ===== Bloque de dudas plegado: se abre si llegan por #track o #dudas ===== */
+(function(){ var m=document.getElementById('dMore'); if(!m) return;
+  function ab(){ if(/^#(track|dudas|dMore)$/.test(location.hash)) m.open=true; }
+  ab(); window.addEventListener('hashchange',ab); })();
 /* ===== Compra bajo reserva: aviso con fecha que se corre ===== */
 var RESERVA=[13,24], MESL=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth(),t.getDate()+RESERVA[0]), b=new Date(t.getFullYear(),t.getMonth(),t.getDate()+RESERVA[1]);
@@ -2071,7 +2079,7 @@ function reservaTxt(){ var t=new Date(), a=new Date(t.getFullYear(),t.getMonth()
 (function(){
   var d=document.getElementById('buyd'); if(!d||!d.showModal) return;
   var info=document.getElementById('buyInfo'), main=document.getElementById('buyMain'), tt=document.getElementById('buyT'), f=reservaTxt();
-  document.getElementById('biFecha').textContent=f; document.getElementById('biFecha2').textContent=f.replace(/^Del/,'del');
+  document.getElementById('biFecha').textContent=f; document.getElementById('biFecha2').textContent=f.replace(/^Del/,'del'); var pd=document.getElementById('pDesp'); if(pd) pd.textContent=f.replace(/^Del/,'del');
   function vista(m){ info.hidden=m; main.hidden=!m; tt.textContent=m?'Finaliza tu pedido':'Información'; }
   function abrir(e){ if(e) e.preventDefault(); vista(false); if(!d.open) d.showModal(); if(!window.__icSent){ window.__icSent=1; pnTrack('InitiateCheckout', PN_PROD); } }
   document.getElementById('biSi').addEventListener('click',function(){ vista(true); main.scrollTop=0; document.getElementById('fName').focus(); });
