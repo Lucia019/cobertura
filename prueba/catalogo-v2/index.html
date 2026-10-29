@@ -956,7 +956,6 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
 @keyframes tkSpin{to{transform:rotate(360deg)}}
 .tk-dash{animation:tkDash .5s linear infinite}@keyframes tkDash{to{stroke-dashoffset:-22}}
 .tk-speed{animation:tkBlink .4s linear infinite}@keyframes tkBlink{50%{opacity:.25}}
-.tk-pack{animation:tkPack .8s ease-in-out infinite alternate}@keyframes tkPack{from{transform:translateY(0)}to{transform:translateY(-6px)}}
 .tk-prog{stroke-dasharray:300;animation:tkProg 2.2s ease-out both}@keyframes tkProg{from{stroke-dashoffset:300}to{stroke-dashoffset:0}}
 .tk-ring{transform-box:fill-box;transform-origin:center;animation:tkRing 1.6s ease-out infinite}
 @keyframes tkRing{from{transform:scale(1);opacity:.5}to{transform:scale(2.4);opacity:0}}
@@ -968,6 +967,22 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
 .tk-drop{animation:tkIn2 .45s ease 3.8s both}@keyframes tkIn2{from{opacity:0;transform:translateY(-10px)}}
 .tk-bub{transform-box:fill-box;transform-origin:center bottom;animation:tkBub .5s cubic-bezier(.3,1.6,.5,1) 1s both}@keyframes tkBub{from{opacity:0;transform:scale(.4)}}
 @media (prefers-reduced-motion:reduce){.tk-scene *{animation:none!important}}
+
+.tk-bob{animation:tkBob .32s ease-in-out infinite alternate}.tk-bob.once{animation-iteration-count:7}
+@keyframes tkBob{from{transform:translateY(0)}to{transform:translateY(-1px)}}
+.tk-puff{transform-box:fill-box;transform-origin:center;animation:tkPuff 1.1s ease-out infinite}.tk-puff.d2{animation-delay:.55s}
+@keyframes tkPuff{from{opacity:.8;transform:translate(0,0) scale(.6)}to{opacity:0;transform:translate(-12px,-10px) scale(1.8)}}
+.tk-lamp{animation:tkLamp 1.2s ease-in-out infinite}@keyframes tkLamp{50%{opacity:.35}}
+.tk-ping{transform-box:fill-box;transform-origin:center;animation:tkPing 1.8s ease-out infinite}.tk-ping.d2{animation-delay:.9s}
+@keyframes tkPing{from{transform:scale(1);opacity:.7}to{transform:scale(2.6);opacity:0}}
+.tk-wig{transform-box:fill-box;transform-origin:center;animation:tkWig 1.1s ease-in-out infinite}@keyframes tkWig{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.tk-draw{stroke-dasharray:24;animation:tkDraw .7s ease-out 1.3s both}@keyframes tkDraw{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+.tk-scroll{animation:tkScroll 1.1s linear infinite}@keyframes tkScroll{to{transform:translateX(-50px)}}
+.tk-load{transform-box:fill-box;transform-origin:center;animation:tkLoad 1.8s ease-in infinite}.tk-load.d2{animation-delay:.9s}
+@keyframes tkLoad{0%{opacity:0;transform:translate(0,6px)}12%{opacity:1;transform:translate(0,0)}60%{opacity:1;transform:translate(-34px,-14px) scale(.9)}90%,100%{opacity:0;transform:translate(-44px,-6px) scale(.5)}}
+.tk-glow{animation:tkGlow .6s ease 3.8s both}@keyframes tkGlow{from{opacity:0}}
+.tk-conf{transform-box:fill-box;opacity:0;animation:tkConf 1.1s ease-out both}
+@keyframes tkConf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(260deg)}}
 </style>
 
 <header class="top">
@@ -2120,10 +2135,11 @@ function pnRuta(i){
   var VX=[64,64,64,150,218,296][i], T=['Recibido','Confirmado','Empacando','Despachado','En camino','¡Entregado!'][i], cx=[64,64,64,150,218,296][i];
   var w=T.length*8+26, bx=Math.max(8,Math.min(392-w,cx-w/2)), col=i===5?'#2E7D4F':'#B35E36';
   var NX=[64,118.4,172.8,227.2,281.6,336], run=(i===3||i===4);
-  var s='<svg viewBox="0 0 400 150" role="img" aria-label="Tu pedido va en: '+T.replace('¡','').replace('!','')+'"><defs><linearGradient id="tkBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7F1EE"/><stop offset="1" stop-color="#FAF8F2"/></linearGradient><linearGradient id="tkVan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F6F65"/><stop offset="1" stop-color="#174C46"/></linearGradient></defs>';
+  var s='<svg viewBox="0 0 400 150" role="img" aria-label="Tu pedido va en: '+T.replace('¡','').replace('!','')+'"><defs><linearGradient id="tkBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7F1EE"/><stop offset="1" stop-color="#FAF8F2"/></linearGradient><linearGradient id="tkVan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F6F65"/><stop offset="1" stop-color="#174C46"/></linearGradient><clipPath id="tkClip"><rect x="62" y="56" width="280" height="56"/></clipPath></defs>';
   s+='<rect width="400" height="150" fill="url(#tkBg)"/>';
   /* calle */
   s+='<rect x="0" y="112" width="400" height="12" fill="#3F4F4A"/><line x1="0" y1="118" x2="400" y2="118" stroke="#F4F1E8" stroke-width="1.6" stroke-dasharray="12 10" class="'+(run?'tk-dash':'')+'"/>';
+  if(run){ s+='<g clip-path="url(#tkClip)"><g class="tk-scroll">'; for(var q=0;q<7;q++){ var px=q*50; s+='<line x1="'+px+'" y1="78" x2="'+px+'" y2="112" stroke="#9fb0aa" stroke-width="2"/><line x1="'+(px-6)+'" y1="82" x2="'+(px+6)+'" y2="82" stroke="#9fb0aa" stroke-width="1.6"/><circle cx="'+(px+25)+'" cy="106" r="6" fill="#8FC3A5"/><circle cx="'+(px+31)+'" cy="108" r="4.5" fill="#7DB693"/>'; } s+='</g></g>'; }
   /* almacen */
   s+='<g><rect x="10" y="74" width="40" height="38" fill="#fff" stroke="#174C46" stroke-width="1.6"/><rect x="3" y="66" width="54" height="10" rx="2" fill="#174C46"/><text x="30" y="73.2" text-anchor="middle" font-size="5.3" font-weight="800" fill="#F4F1E8" font-family="inherit" letter-spacing=".2">PUREZA NATURAL</text><rect x="15" y="86" width="30" height="26" fill="#DCE5E1" stroke="#174C46" stroke-width="1.2"/>';
   for(var k=0;k<4;k++) s+='<line x1="15" y1="'+(92+k*5.5)+'" x2="45" y2="'+(92+k*5.5)+'" stroke="#AEBFB8" stroke-width=".9"/>';
@@ -2131,23 +2147,25 @@ function pnRuta(i){
   /* casa */
   s+='<g><rect x="352" y="86" width="40" height="26" fill="#fff" stroke="#174C46" stroke-width="1.6"/><polygon points="347,86 372,64 397,86" fill="#B35E36"/><rect x="366" y="93" width="12" height="19" rx="1.5" fill="#174C46"/><circle cx="375" cy="104" r="1.2" fill="#F4C26B"/><rect x="355" y="92" width="8" height="8" fill="#BFE3E0" stroke="#174C46" stroke-width="1"/><rect x="381" y="92" width="8" height="8" fill="#BFE3E0" stroke="#174C46" stroke-width="1"/></g>';
   /* fase 0 y 1: insignia sobre el almacen */
-  if(i===0) s+='<g class="tk-bub"><circle cx="30" cy="48" r="11" fill="#fff" stroke="#B35E36" stroke-width="2"/><path d="M25 48h10M25 44h10M25 52h6" stroke="#B35E36" stroke-width="1.8" stroke-linecap="round"/></g>';
-  if(i===1) s+='<g class="tk-bub"><circle cx="30" cy="48" r="11" fill="#2E7D4F"/><path d="M24.5 48.5l4 4 7.5-8.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>';
+  if(i===0) s+='<circle class="tk-ping" cx="30" cy="48" r="11" fill="none" stroke="#B35E36" stroke-width="2"/><circle class="tk-ping d2" cx="30" cy="48" r="11" fill="none" stroke="#B35E36" stroke-width="2"/><g class="tk-bub"><g class="tk-wig"><circle cx="30" cy="48" r="11" fill="#fff" stroke="#B35E36" stroke-width="2"/><path d="M25 48h10M25 44h10M25 52h6" stroke="#B35E36" stroke-width="1.8" stroke-linecap="round"/></g></g>';
+  if(i===1) s+='<circle class="tk-ping" cx="30" cy="48" r="11" fill="none" stroke="#2E7D4F" stroke-width="2"/><circle class="tk-ping d2" cx="30" cy="48" r="11" fill="none" stroke="#2E7D4F" stroke-width="2"/><g class="tk-bub"><circle cx="30" cy="48" r="11" fill="#2E7D4F"/><path class="tk-draw" d="M24.5 48.5l4 4 7.5-8.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>';
   /* camioneta */
   s+='<g class="tk-van" style="transform:translateX('+VX+'px)">';
   if(run) s+='<g class="tk-speed" stroke="#9fb4ad" stroke-width="2" stroke-linecap="round"><line x1="-36" y1="90" x2="-52" y2="90"/><line x1="-34" y1="98" x2="-46" y2="98"/></g>';
-  s+='<ellipse cx="0" cy="113" rx="36" ry="3" fill="#000" opacity=".16"/>';
-  s+='<path d="M-30 86a5 5 0 015-5h35v25h-40z" fill="url(#tkVan)"/><path d="M10 85h10a5 5 0 014 2l6 8a5 5 0 011 3v8H10z" fill="#1F7A8C"/><path d="M14 88.5h6a2.6 2.6 0 012 1l4.6 6H14z" fill="#E4F3F3"/><rect x="-30" y="97" width="40" height="3" fill="#B35E36"/><rect x="29" y="98" width="3" height="4" rx="1" fill="#FFE08A"/>';
+  s+='<ellipse cx="0" cy="113" rx="36" ry="3" fill="#000" opacity=".16"/><g class="tk-puff"><circle cx="-33" cy="104" r="2.6" fill="#d9dfdc"/></g><g class="tk-puff d2"><circle cx="-33" cy="104" r="2.2" fill="#d9dfdc"/></g><g class="tk-bob'+(i===5?' once':'')+'">';
+  s+='<path d="M-30 86a5 5 0 015-5h35v25h-40z" fill="url(#tkVan)"/><path d="M10 85h10a5 5 0 014 2l6 8a5 5 0 011 3v8H10z" fill="#1F7A8C"/><path d="M14 88.5h6a2.6 2.6 0 012 1l4.6 6H14z" fill="#E4F3F3"/><rect x="-30" y="97" width="40" height="3" fill="#B35E36"/><rect class="tk-lamp" x="29" y="98" width="3" height="4" rx="1" fill="#FFE08A"/>';
   s+='<path d="M-19 86q6 8 0 12q-6-4 0-12z" fill="#F4F1E8"/><text x="-11" y="93" font-size="6.6" font-weight="800" fill="#F4F1E8" font-family="inherit">Pureza</text><text x="-11" y="98" font-size="4.2" font-weight="700" fill="#BFE3E0" font-family="inherit" letter-spacing=".5">NATURAL</text>';
   [-16,19].forEach(function(x){ s+='<g class="tk-wh'+(i===5?' once':(run?' on':''))+'"><circle cx="'+x+'" cy="106" r="6.2" fill="#1b2623"/><circle cx="'+x+'" cy="106" r="2.6" fill="#D5DDD9"/><line x1="'+(x-5.4)+'" y1="106" x2="'+(x+5.4)+'" y2="106" stroke="#D5DDD9" stroke-width="1.1"/><line x1="'+x+'" y1="100.6" x2="'+x+'" y2="111.4" stroke="#D5DDD9" stroke-width="1.1"/></g>'; });
-  if(i===2) s+='<g class="tk-pack"><rect x="38" y="95" width="14" height="12" fill="#C9A27A" stroke="#8a6a44" stroke-width="1.2"/><line x1="38" y1="100" x2="52" y2="100" stroke="#8a6a44" stroke-width=".9"/><line x1="45" y1="95" x2="45" y2="100" stroke="#8a6a44" stroke-width=".9"/></g>';
-  s+='</g>';
+  if(i===2) s+='<g class="tk-load"><rect x="40" y="95" width="14" height="12" fill="#C9A27A" stroke="#8a6a44" stroke-width="1.2"/><line x1="40" y1="100" x2="54" y2="100" stroke="#8a6a44" stroke-width=".9"/><line x1="47" y1="95" x2="47" y2="100" stroke="#8a6a44" stroke-width=".9"/></g><g class="tk-load d2"><rect x="40" y="95" width="14" height="12" fill="#D4AE86" stroke="#8a6a44" stroke-width="1.2"/><line x1="40" y1="100" x2="54" y2="100" stroke="#8a6a44" stroke-width=".9"/></g>';
+  s+='</g></g>';
   /* mensajero (pictograma limpio) */
   if(i===5){
     s+='<g class="tk-cour"><g class="tk-leg a" style="transform-origin:-2px 98px"><line x1="-2" y1="98" x2="-2" y2="110" stroke="#1b2623" stroke-width="3.6" stroke-linecap="round"/></g><g class="tk-leg b" style="transform-origin:2px 98px"><line x1="2" y1="98" x2="2" y2="110" stroke="#33423d" stroke-width="3.6" stroke-linecap="round"/></g>';
     s+='<rect x="-6.5" y="80" width="13" height="19" rx="4" fill="#174C46"/><path d="M0 85q2.6 3.4 0 6q-2.6-2.6 0-6z" fill="#F4F1E8"/><circle cx="0" cy="73" r="6" fill="#D9A77F"/><path d="M-6.4 72a6.4 6.4 0 0112.8 0z" fill="#B35E36"/><rect x="2" y="70.6" width="8" height="2.4" rx="1.2" fill="#B35E36"/>';
     s+='<g class="tk-carry"><line x1="3" y1="86" x2="11" y2="91" stroke="#174C46" stroke-width="3.6" stroke-linecap="round"/><rect x="7" y="80" width="16" height="14" fill="#C9A27A" stroke="#8a6a44" stroke-width="1.2"/><line x1="7" y1="85" x2="23" y2="85" stroke="#8a6a44" stroke-width=".9"/><line x1="15" y1="80" x2="15" y2="85" stroke="#8a6a44" stroke-width=".9"/></g></g>';
     s+='<g class="tk-drop"><rect x="349" y="99" width="14" height="13" fill="#C9A27A" stroke="#8a6a44" stroke-width="1.2"/><line x1="349" y1="104" x2="363" y2="104" stroke="#8a6a44" stroke-width=".9"/><line x1="356" y1="99" x2="356" y2="104" stroke="#8a6a44" stroke-width=".9"/></g>';
+    s+='<rect class="tk-glow" x="355" y="92" width="8" height="8" fill="#FFE9A8" stroke="#174C46" stroke-width="1"/>';
+    [['#2E7D4F',-18,-26],['#B35E36',-8,-32],['#F4C26B',6,-34],['#1F7A8C',16,-28],['#2E7D4F',24,-18],['#B35E36',-24,-12],['#F4C26B',12,-12],['#1F7A8C',-14,-16]].forEach(function(c,n){ s+='<rect class="tk-conf" style="--dx:'+c[1]+'px;--dy:'+c[2]+'px;animation-delay:'+(3.95+n*.03)+'s" x="357" y="96" width="3.4" height="3.4" rx="1" fill="'+c[0]+'"/>'; });
   }
   /* linea de avance y etapas */
   s+='<line x1="64" y1="136" x2="336" y2="136" stroke="#D2DBD7" stroke-width="3" stroke-linecap="round"/>';
