@@ -731,6 +731,10 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 @keyframes tkConf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(260deg)}}
 #tkPdf[hidden],#fPdf[hidden]{display:none}
 /* micro-movimientos */
+.ringbox{display:flex;gap:16px;align-items:center;margin:18px 0;padding:14px;border-radius:16px;background:rgba(23,76,70,.07)}
+.ring2{width:96px;height:96px;flex:none}.ring2 circle:nth-child(1){stroke:rgba(23,76,70,.16)}.ring2 text{fill:#174C46}.ring2 #rgArc{stroke:#2e7d4f;transition:stroke-dashoffset .6s ease}
+.rg-txt{display:grid;gap:4px;font-size:.9rem}.rg-txt b{font-size:1rem}.rg-txt small{opacity:.75;font-size:.78rem}
+
 .vs{display:grid;gap:8px;margin:0 0 16px;padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
 .vs-row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:baseline}
 .vs-row span{font-weight:600;color:var(--text-secondary)}.vs-row b{font-size:1.1rem;color:#174C46}
@@ -1044,6 +1048,12 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         <div class="pair">
           <div><span class="label">En 2 años</span><div class="mid" id="o2y">$1.584.000</div></div>
           <div><span class="label">Kilos que cargas al año</span><div class="mid" id="oKg">1.440 kg</div></div>
+        </div>
+        <div class="ringbox" aria-live="polite">
+          <svg class="ring2" viewBox="0 0 120 120" role="img" aria-label="Comparación a 2 años"><circle cx="60" cy="60" r="48" fill="none" stroke="#C9B9A4" stroke-width="14"/><circle id="rgArc" cx="60" cy="60" r="48" fill="none" stroke="#2e7d4f" stroke-width="14" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" transform="rotate(-90 60 60)"/><text id="rgPct" x="60" y="66" text-anchor="middle" font-size="24" font-weight="700" fill="#174C46">51%</text></svg>
+          <div class="rg-txt"><b id="rgHead">En 2 años, el purificador cuesta el 51 % de lo que gastarías en botellones.</b>
+            <span id="rgMonth">Botellones: $66.000 al mes. Purificador repartido en 24 meses: $33.750 al mes.</span>
+            <small>Compra única de $810.000 frente a tu gasto de arriba. La vasija de barro dura 2 años.</small></div>
         </div>
         <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas hechas con los datos que pusiste arriba.</p></div>
         <a class="btn btn-cta wa-link" href="#pedir">Comprar ahora</a>
@@ -1877,6 +1887,11 @@ function updateCalc(){
   calcOut.oMonth.textContent = 'Son ' + fmtCOP(year / 12) + ' cada mes.';
   calcOut.o2y.textContent = fmtCOP(year * 2);
   calcOut.oKg.textContent = (bot * 12 * 20).toLocaleString('es-CO') + ' kg';
+  var two = year * 2, pct = Math.round(810000 / two * 100), arc = document.getElementById('rgArc');
+  arc.style.strokeDashoffset = 301.6 * (1 - Math.min(pct, 100) / 100);
+  document.getElementById('rgPct').textContent = pct + '%';
+  document.getElementById('rgHead').textContent = pct < 100 ? 'En 2 años, el purificador cuesta el ' + pct + ' % de lo que gastarías en botellones.' : 'Con este gasto, el purificador tarda más de 2 años en pagarse.';
+  document.getElementById('rgMonth').textContent = 'Botellones: ' + fmtCOP(year / 12) + ' al mes. Purificador repartido en 24 meses: ' + fmtCOP(810000 / 24) + ' al mes.';
 }
 cBot.addEventListener('input', updateCalc);
 cPrice.addEventListener('input', updateCalc);
