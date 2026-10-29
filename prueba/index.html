@@ -731,6 +731,12 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 @keyframes tkConf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(260deg)}}
 #tkPdf[hidden],#fPdf[hidden]{display:none}
 /* micro-movimientos */
+.vs{display:grid;gap:8px;margin:0 0 16px;padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.vs-row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:baseline}
+.vs-row span{font-weight:600;color:var(--text-secondary)}.vs-row b{font-size:1.1rem;color:#174C46}
+.vs-row small{grid-column:1/-1;color:var(--text-secondary);font-size:.82rem}
+.vs-row.ok b{color:#2e7d4f}.vs a{font-size:.9rem;color:var(--water);font-weight:600}
+
 .cookie .row .btn-line{background:transparent;color:var(--deep);border:1.5px solid var(--deep)}
 .cookie b{margin-bottom:2px}
 @media (max-width:560px){.cookie.show{display:block;padding:16px 18px}.cookie p{margin:4px 0 0;font-size:.85rem}.cookie .row{margin-top:12px;gap:10px;flex-wrap:nowrap}.cookie .btn{flex:1;padding:10px 12px;font-size:.9rem}}
@@ -1135,6 +1141,11 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
           <span style="display:inline-block;padding:7px 14px;border-radius:999px;background:#78B9B2;color:#12332f;font-weight:700;font-size:.92rem">Envío gratis en Villavicencio</span>
           <p style="margin:12px 0 0;font-size:.88rem;opacity:.85">Fuera del perímetro urbano, el envío se suma al pagar.</p>
           <ul class="seguro"><li>Garantía de fábrica AguaLogic</li><li>5 días hábiles para retractarte tras la entrega</li><li>Pagas contraentrega, con Nequi o en tienda</li></ul>
+        </div>
+        <div class="vs p" role="group" aria-label="Comparación con los botellones">
+          <div class="vs-row"><span>Botellones</span><b>$792.000 al año</b><small>Ejemplo: 6 al mes a $11.000</small></div>
+          <div class="vs-row ok"><span>Purificador</span><b>$810.000 una vez</b><small>Sin comprar más botellones</small></div>
+          <a href="#t-calc">Calcula con tu gasto real ↑</a>
         </div>
         <div><a class="btn btn-cta wa-link p" href="#pedir" style="display:flex;justify-content:center;width:100%;font-size:1.1rem;padding:18px 24px">Comprar ahora →</a>
           <a class="btn btn-ask wa-q" style="display:flex;width:100%;margin-top:10px" href="#" target="_blank" rel="noopener">¿Tienes dudas? Escríbenos</a></div>
