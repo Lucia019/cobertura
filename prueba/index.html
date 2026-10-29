@@ -2050,7 +2050,7 @@ form.addEventListener('submit', function(e){
     var p = document.getElementById('fThanksP'), r = document.getElementById('fRetry'), ed = document.getElementById('fEdit');
     if(ok){
       p.innerHTML = 'Recibimos tu pedido <strong>' + num + '</strong>. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmar disponibilidad, envío y fecha de entrega.';
-      r.textContent = 'Escribirnos por WhatsApp'; r.href = waURL('Hola Pureza Natural, soy ' + name + '. Acabo de hacer un pedido en la página.');
+      r.textContent = 'Escribirnos por WhatsApp'; r.href = url;
       ed.hidden = true;
     } else {
       window.open(url, '_blank', 'noopener');
