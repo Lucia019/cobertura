@@ -135,7 +135,7 @@ const ZN={1:'Dentro del perímetro urbano',2:'Fuera del perímetro urbano',3:'Fu
 const SP=/[?&](sin-precios|precios=0)/.test(location.search);
 if(SP)document.body.classList.add('sp');
 const ENV='El costo de envío se calcula al pagar';
-const TXT=SP?{1:ENV,2:ENV,3:ENV}:{1:'Entrega gratis',2:'$20.000 COP · sujeto a confirmación de cobertura',3:'$49.500 COP'};
+const TXT=SP?{1:'Envío gratis',2:ENV,3:ENV}:{1:'Entrega gratis',2:'$20.000 COP · sujeto a confirmación de cobertura',3:'$49.500 COP'};
 const DIAS={1:'5 días hábiles',2:'5 días hábiles',3:'10 días hábiles'};
 const RESERVA_TXT='Despacho bajo reserva: de 13 a 24 días desde tu compra';
 if(SP)document.querySelectorAll('.card .t').forEach(t=>{t.textContent=RESERVA_TXT});
