@@ -1068,7 +1068,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
           <svg class="ring2" viewBox="0 0 120 120" role="img" aria-label="Comparación a 2 años"><circle cx="60" cy="60" r="48" fill="none" stroke="#C9B9A4" stroke-width="14"/><circle id="rgArc" cx="60" cy="60" r="48" fill="none" stroke="#2e7d4f" stroke-width="14" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" transform="rotate(-90 60 60)"/><text id="rgPct" x="60" y="66" text-anchor="middle" font-size="24" font-weight="700" fill="#174C46">51%</text></svg>
           <div class="rg-txt"><b id="rgHead">En 2 años ahorras $774.000.</b>
             <span id="rgMonth">Hoy pagas $66.000 al mes. Con el purificador, $33.750 al mes.</span>
-            <small id="rgNote">Botellones: $1.584.000 en 2 años. Purificador: $810.000, un solo pago (vasija de barro: 2 años).</small></div>
+            <small id="rgNote">El círculo: el purificador cuesta 51 % de lo que gastarías en botellones. Botellones: $1.584.000 en 2 años. Purificador: $810.000, un solo pago (vasija de barro: 2 años).</small></div>
         </div>
         <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas hechas con los datos que pusiste.</p></div>
         <a class="btn btn-cta" href="#producto">Ver cuánto cuesta</a>
@@ -1915,7 +1915,7 @@ function updateCalc(){
   arc.style.strokeDashoffset = 301.6 * (1 - Math.min(pct, 100) / 100);
   document.getElementById('rgPct').textContent = pct + '%';
   document.getElementById('rgHead').textContent = pct < 100 ? 'En 2 años ahorras ' + fmtCOP(two - 810000) + '.' : 'Con este gasto, el purificador tarda más de 2 años en pagarse.';
-  document.getElementById('rgNote').textContent = 'Botellones: ' + fmtCOP(two) + ' en 2 años. Purificador: $810.000, un solo pago (vasija de barro: 2 años).';
+  document.getElementById('rgNote').textContent = 'El círculo: el purificador cuesta ' + pct + ' % de lo que gastarías en botellones. Botellones: ' + fmtCOP(two) + ' en 2 años. Purificador: $810.000, un solo pago (vasija de barro: 2 años).';
   document.getElementById('rgMonth').textContent = 'Hoy pagas ' + fmtCOP(year / 12) + ' al mes. Con el purificador, ' + fmtCOP(810000 / 24) + ' al mes.';
 }
 cBot.addEventListener('input', updateCalc);
