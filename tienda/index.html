@@ -109,8 +109,13 @@ else{
     var q=document.getElementById('q').value.trim();if(!q)return;
     say('Buscando…');
     try{
-      var url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&viewbox=-73.78,4.25,-73.50,4.02&bounded=1&q='+encodeURIComponent(q+', Villavicencio, Meta, Colombia');
-      var j=await (await fetch(url)).json();
+      var limpio=q.replace(/^\s*(barrio|conjunto|urbanizaci[oó]n|urb\.?|cr|cl|calle|carrera)\s+/i,'').replace(/\s+/g,' ').trim();
+      var intentos=[[limpio+', Villavicencio, Meta, Colombia',1],[limpio+', Meta, Colombia',1],[q+', Villavicencio, Meta, Colombia',1],[limpio+', Villavicencio, Meta, Colombia',0]];
+      var j=[];
+      for(var k=0;k<intentos.length&&!j.length;k++){
+        var url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&viewbox=-73.78,4.25,-73.50,4.02'+(intentos[k][1]?'&bounded=1':'')+'&q='+encodeURIComponent(intentos[k][0]);
+        j=await (await fetch(url)).json();
+      }
       if(!j.length){say('No encontré ese lugar. Prueba con el nombre del barrio o usa el botón de ubicación. '+DIR);return}
       trazar([+j[0].lon,+j[0].lat]);
     }catch(e){say('Sin conexión para buscar. Usa el botón de ubicación. '+DIR)}
