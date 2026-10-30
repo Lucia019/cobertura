@@ -15,29 +15,48 @@
 *{box-sizing:border-box;margin:0}
 html,body{height:100%;overflow:hidden;background:var(--nb);color:var(--cs);font-family:Figtree,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-weight:500}
 #map{position:absolute;inset:0}
-.top{position:absolute;z-index:5;left:10px;right:56px;top:calc(10px + env(safe-area-inset-top));max-width:440px;background:var(--nb);border-radius:18px;padding:11px 14px;box-shadow:0 6px 22px #24302e33;border:1px solid #24302e14}
+.top{position:absolute;z-index:5;left:10px;right:56px;top:calc(10px + env(safe-area-inset-top));max-width:440px;background:var(--nb);border-radius:18px;padding:11px 12px 10px;box-shadow:0 6px 22px #24302e33;border:1px solid #24302e14}
 .eb{font:500 9.5px/1.3 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--vp)}
-.top h1{font:700 21px/1.15 "Bricolage Grotesque",system-ui,sans-serif;margin:3px 0 0;color:var(--cs)}
+.top h1{font:700 21px/1.15 "Bricolage Grotesque",system-ui,sans-serif;margin:3px 0 8px;color:var(--cs)}
+.bar{display:flex;align-items:center;gap:6px;background:var(--bc);border:1.5px solid #24302e22;border-radius:14px;padding:3px 3px 3px 12px}
+.bar:focus-within{border-color:var(--vp)}
+.bar input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 15px Figtree,system-ui,sans-serif;color:var(--cs);padding:8px 0}
+.ib{flex:none;width:38px;height:38px;border:0;border-radius:11px;background:transparent;color:var(--vp);display:grid;place-items:center;cursor:pointer}
+.ib svg{width:20px;height:20px}
+.ib.go{background:var(--vp);color:#fff}
 .card{position:absolute;z-index:5;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:440px;background:var(--nb);border-radius:18px;padding:14px;box-shadow:0 8px 26px #24302e40;border:1px solid #24302e14}
 .card b{display:block;font:700 18px/1.2 "Bricolage Grotesque",system-ui,sans-serif;color:var(--vp)}
 .card p{margin:6px 0 12px;font-size:14px;line-height:1.4;color:var(--mut)}
+.card .eta{color:var(--vp);font-weight:600}
 .card button{width:100%;border:0;background:var(--vp);color:#fff;font:600 15px Figtree,system-ui,sans-serif;padding:13px 18px;border-radius:999px;cursor:pointer}
 .shop{position:relative;width:96px;height:96px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 6px 5px #24302e66)}
 .shop .chip{background:var(--nb);color:var(--vp);font:500 10px "IBM Plex Mono",monospace;letter-spacing:.02em;padding:4px 9px;border-radius:10px;white-space:nowrap;border:1.5px solid var(--vp);margin-bottom:4px}
 .shop svg{animation:bob .6s ease-in-out infinite alternate}
 .shop .ring{position:absolute;left:50%;bottom:-6px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:var(--ar);opacity:.55;animation:pulse 2s infinite}
+.me{position:relative;width:20px;height:20px}
+.me i{position:absolute;inset:0;border-radius:50%;background:#007585;border:3px solid #fff;box-shadow:0 1px 6px #0006}
+.me b{position:absolute;inset:0;border-radius:50%;background:#007585;opacity:.55;animation:pulse 2s infinite}
+.me span{position:absolute;left:50%;top:-26px;transform:translateX(-50%);background:var(--nb);color:var(--vp);font:500 10px "IBM Plex Mono",monospace;padding:3px 8px;border-radius:10px;border:1.5px solid var(--vp);white-space:nowrap}
 @keyframes bob{to{transform:translateY(-4px)}}
 @keyframes pulse{to{transform:scale(3.4);opacity:0}}
 .maplibregl-ctrl-attrib{font-size:10px}
-#err{position:absolute;z-index:9;inset:auto 10px 120px;background:#fff;border-radius:14px;padding:12px;font-size:14px;display:none}
+#err{position:absolute;z-index:9;inset:auto 10px 150px;background:#fff;border-radius:14px;padding:12px;font-size:14px;display:none}
 </style>
 </head>
 <body>
 <div id="map"></div>
-<div class="top"><span class="eb">Pureza Natural · Recogida</span><h1>Recoge tu purificador en Ferrecubiertas</h1></div>
+<div class="top">
+  <span class="eb">Pureza Natural · Recogida</span>
+  <h1>¿Cómo llego a Ferrecubiertas?</h1>
+  <div class="bar">
+    <input id="q" placeholder="Desde dónde sales: tu barrio o dirección" autocomplete="off" enterkeyhint="search" aria-label="Escribe tu barrio o dirección de salida">
+    <button id="loc" class="ib" type="button" title="Usar mi ubicación" aria-label="Usar mi ubicación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+    <button id="go" class="ib go" type="button" title="Trazar ruta" aria-label="Trazar ruta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</div>
 <div class="card">
   <b>Ferrecubiertas S.A.S.</b>
-  <p>Calle 35 A No. 27-86, San Isidro, Villavicencio. Te avisamos por WhatsApp cuándo está listo para recoger.</p>
+  <p id="txt">Calle 35 A No. 27-86, San Isidro, Villavicencio. Escribe de dónde sales o usa tu ubicación y te trazo la ruta.</p>
   <button type="button" id="volver">← Volver a mi pedido</button>
 </div>
 <div id="err"></div>
@@ -45,16 +64,64 @@ html,body{height:100%;overflow:hidden;background:var(--nb);color:var(--cs);font-
 <script>
 /* Ubicación de Ferrecubiertas [longitud, latitud]. Ajustar con el punto exacto de la tienda. */
 var TIENDA=[-73.6449,4.1455];
+var DIR='Calle 35 A No. 27-86, San Isidro, Villavicencio.';
+var txt=document.getElementById('txt');
+function say(h){txt.innerHTML=h}
 function volver(){window.close();setTimeout(function(){if(document.referrer)location.href=document.referrer;else history.back()},350)}
 document.getElementById('volver').onclick=volver;
-if(typeof maplibregl==='undefined'){var e=document.getElementById('err');e.style.display='block';e.textContent='No cargó el mapa. La dirección es Calle 35 A No. 27-86, San Isidro, Villavicencio.';}
+if(typeof maplibregl==='undefined'){var e=document.getElementById('err');e.style.display='block';e.textContent='No cargó el mapa. La dirección es '+DIR;}
 else{
   var map=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/positron',center:TIENDA,zoom:12.5,attributionControl:{compact:true}});
   map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
   var el=document.createElement('div');el.className='shop';
   el.innerHTML='<div class="chip">Ferrecubiertas · Pureza Natural</div><span class="ring"></span><svg viewBox="0 0 64 56" width="62" height="54" aria-hidden="true"><rect x="8" y="22" width="48" height="30" rx="2" fill="#FCFBF7" stroke="#174C46" stroke-width="2.5"/><path d="M4 22l6-14h44l6 14z" fill="#C66F45" stroke="#174C46" stroke-width="2.5" stroke-linejoin="round"/><path d="M4 22q4.5 6 9 0q4.5 6 9 0q4.5 6 9 0q4.5 6 9 0q4.5 6 9 0q4.5 6 9 0" fill="#FCFBF7" stroke="#174C46" stroke-width="2.5"/><rect x="26" y="34" width="12" height="18" rx="1.5" fill="#174C46"/><rect x="12" y="32" width="10" height="9" rx="1" fill="#78B9B2"/><rect x="42" y="32" width="10" height="9" rx="1" fill="#78B9B2"/><path d="M32 3q3 4 0 7q-3-3 0-7z" fill="#007585"/></svg>';
   new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat(TIENDA).addTo(map);
-  map.on('load',function(){map.flyTo({center:TIENDA,zoom:16.2,pitch:45,bearing:-12,duration:2600,essential:true})});
+  var meEl=document.createElement('div');meEl.className='me';meEl.innerHTML='<b></b><i></i><span>Tú sales de aquí</span>';
+  var me=null, listo=false;
+  function feat(g){return {type:'Feature',properties:{},geometry:g}}
+  map.on('load',function(){
+    listo=true;
+    map.addSource('ruta',{type:'geojson',data:feat({type:'LineString',coordinates:[TIENDA,TIENDA]})});
+    map.addLayer({id:'rutaC',type:'line',source:'ruta',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#fff','line-width':9}});
+    map.addLayer({id:'rutaL',type:'line',source:'ruta',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#C66F45','line-width':5}});
+    map.flyTo({center:TIENDA,zoom:16.2,pitch:45,bearing:-12,duration:2600,essential:true});
+  });
+  function km(m){return (m/1000).toFixed(1).replace('.',',')+' km'}
+  async function trazar(from){
+    if(!listo)return;
+    if(!me)me=new maplibregl.Marker({element:meEl,anchor:'center'});
+    me.setLngLat(from).addTo(map);
+    var coords=[from,TIENDA], dist=null, dur=null;
+    say('Trazando tu ruta…');
+    try{
+      var r=await fetch('https://router.project-osrm.org/route/v1/driving/'+from[0]+','+from[1]+';'+TIENDA[0]+','+TIENDA[1]+'?overview=full&geometries=geojson');
+      var j=await r.json();
+      if(j.routes&&j.routes[0]){coords=j.routes[0].geometry.coordinates;dist=j.routes[0].distance;dur=j.routes[0].duration}
+    }catch(e){}
+    map.getSource('ruta').setData(feat({type:'LineString',coordinates:coords}));
+    var b=coords.reduce(function(a,c){return a.extend(c)},new maplibregl.LngLatBounds(coords[0],coords[0]));
+    var small=innerWidth<800;
+    map.fitBounds(b,{padding:{top:small?190:80,bottom:small?190:80,left:small?50:470,right:50},pitch:0,bearing:0,maxZoom:16,duration:1600});
+    if(dist!=null) say('<span class="eta">≈ '+km(dist)+' · unos '+Math.max(1,Math.round(dur/60))+' min en carro.</span> '+DIR);
+    else say('Aquí tienes la línea hasta la tienda. '+DIR);
+  }
+  async function buscar(){
+    var q=document.getElementById('q').value.trim();if(!q)return;
+    say('Buscando…');
+    try{
+      var url='https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&viewbox=-73.78,4.25,-73.50,4.02&bounded=1&q='+encodeURIComponent(q+', Villavicencio, Meta, Colombia');
+      var j=await (await fetch(url)).json();
+      if(!j.length){say('No encontré ese lugar. Prueba con el nombre del barrio o usa el botón de ubicación. '+DIR);return}
+      trazar([+j[0].lon,+j[0].lat]);
+    }catch(e){say('Sin conexión para buscar. Usa el botón de ubicación. '+DIR)}
+  }
+  document.getElementById('go').onclick=buscar;
+  document.getElementById('q').addEventListener('keydown',function(ev){if(ev.key==='Enter')buscar()});
+  document.getElementById('loc').onclick=function(){
+    if(!navigator.geolocation){say('Tu navegador no permite ubicación. Escribe tu barrio. '+DIR);return}
+    say('Buscando tu ubicación…');
+    navigator.geolocation.getCurrentPosition(function(p){trazar([p.coords.longitude,p.coords.latitude])},function(){say('No pude obtener tu ubicación. Escribe tu barrio. '+DIR)},{enableHighAccuracy:true,timeout:10000});
+  };
 }
 </script>
 </body>
