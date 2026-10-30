@@ -1396,6 +1396,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         <svg class="check" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 24.5l6 6 12-13" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h3 id="fThanksT">¡Gracias por elegir Pureza Natural!</h3>
         <p id="fThanksP">Tu pedido quedó escrito en WhatsApp. <strong>Toca Enviar para que nos llegue.</strong></p>
+        <button type="button" class="btn btn-cta" id="fTrack" hidden>Consultar el estado de mi pedido</button>
         <a class="btn btn-cta" id="fRetry" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>¿No se abrió? Toca aquí</a>
         <button type="button" class="btn btn-line" id="fPdf" hidden>Descargar orden de pedido (PDF)</button>
         <button type="button" class="linkish" id="fEdit">Corregir mis datos</button>
@@ -2064,11 +2065,20 @@ form.addEventListener('submit', function(e){
       p.innerHTML = 'Recibimos tu pedido <strong>' + num + '</strong>. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmar disponibilidad, envío y fecha de entrega.';
       r.textContent = 'Escribirnos por WhatsApp'; r.href = url;
       ed.hidden = true;
+      var trk = document.getElementById('fTrack'); trk.hidden = false;
+      trk.onclick = function(){
+        var dlg = document.getElementById('buyd'); if(dlg && dlg.open) dlg.close();
+        document.getElementById('tkNum').value = num; document.getElementById('tkTel').value = pretty;
+        var box = document.getElementById('track'); var det = box.closest('details'); if(det) det.open = true;
+        box.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(function(){ var f = document.getElementById('tkForm'); if(f.requestSubmit) f.requestSubmit(); else f.dispatchEvent(new Event('submit',{cancelable:true})); }, 900);
+      };
     } else {
       window.open(url, '_blank', 'noopener');
       p.innerHTML = 'No pudimos registrar tu pedido en la página. Quedó escrito en WhatsApp: <strong>toca Enviar para que nos llegue.</strong>';
       r.textContent = '¿No se abrió? Toca aquí'; r.href = url;
       ed.hidden = false;
+      document.getElementById('fTrack').hidden = true;
     }
     document.getElementById('fThanksT').textContent = '¡Gracias, ' + name.split(' ')[0] + '!';
     form.classList.add('sent'); var bm=document.getElementById('buyMain'); if(bm) bm.scrollTop=0;
