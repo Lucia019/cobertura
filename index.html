@@ -137,6 +137,8 @@ if(SP)document.body.classList.add('sp');
 const ENV='El costo de envío se calcula al pagar';
 const TXT=SP?{1:ENV,2:ENV,3:ENV}:{1:'Entrega gratis',2:'$20.000 COP · sujeto a confirmación de cobertura',3:'$49.500 COP'};
 const DIAS={1:'5 días hábiles',2:'5 días hábiles',3:'10 días hábiles'};
+const RESERVA_TXT='Despacho bajo reserva: de 13 a 24 días desde tu compra';
+if(SP)document.querySelectorAll('.card .t').forEach(t=>{t.textContent=RESERVA_TXT});
 const center=[-73.6383,4.1515];
 const urban=[[-73.665,4.182],[-73.620,4.180],[-73.590,4.168],[-73.585,4.140],[-73.600,4.115],[-73.625,4.105],[-73.655,4.115],[-73.675,4.140],[-73.680,4.165]];
 const towns=[['Restrepo',-73.5626,4.2631],['Cumaral',-73.4881,4.2713],['Acacías',-73.7661,3.9917],['Puerto López',-72.9604,4.0874]];
@@ -221,7 +223,7 @@ function arrive(to,z,label,my,addr){
   destMarker=new maplibregl.Marker({element:pinEl(C[z]),draggable:true}).setLngLat(to).addTo(map);
   destMarker.on('dragend',()=>{const l=destMarker.getLngLat(),p=[l.lng,l.lat],zz=classify(p);select(zz,true);drive(p,zz);say('Zona '+zz+' (referencial). Confirmamos tu dirección exacta antes de despachar.')});
   const d=km(center,to).toFixed(1).replace('.',',');
-  const html=a=>'<div class="pp"><span class="eb">Zona '+z+'</span><div class="who">'+esc(ASESOR)+' llega a tu dirección</div><div class="big">'+esc(ZN[z])+'</div><div>'+esc(TXT[z])+'</div><small>Entrega en '+DIAS[z]+' · ≈ '+d+' km del centro</small>'+(a?'<small>'+esc(a)+'</small>':'')+''+(SP?'<button type="button" class="wa volver">Volver a mi pedido</button>':'<a class="wa" target="_blank" rel="noopener" href="'+waLink(z,a||label||addr,to)+'">Pedir por WhatsApp</a>')+'<button type="button" class="back">Volver al inicio</button><small>Arrastra el pin para ajustarlo a tu casa.</small></div>';
+  const html=a=>'<div class="pp"><span class="eb">Zona '+z+'</span><div class="who">'+esc(ASESOR)+' llega a tu dirección</div><div class="big">'+esc(ZN[z])+'</div><div>'+esc(TXT[z])+'</div><small>'+(SP?RESERVA_TXT:'Entrega en '+DIAS[z])+' · ≈ '+d+' km del centro</small>'+(a?'<small>'+esc(a)+'</small>':'')+''+(SP?'<button type="button" class="wa volver">Volver a mi pedido</button>':'<a class="wa" target="_blank" rel="noopener" href="'+waLink(z,a||label||addr,to)+'">Pedir por WhatsApp</a>')+'<button type="button" class="back">Volver al inicio</button><small>Arrastra el pin para ajustarlo a tu casa.</small></div>';
   popup=new maplibregl.Popup({offset:18,closeButton:false,closeOnClick:false,maxWidth:'270px'}).setLngLat(to).setHTML(html(addr||'')).addTo(map);
   if(!addr&&!label){
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=17&lat='+to[1]+'&lon='+to[0])
