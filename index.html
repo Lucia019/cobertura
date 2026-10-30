@@ -86,6 +86,8 @@ html,body{height:100%;overflow:hidden;background:var(--nb);color:var(--cs);font-
 }
 @media (max-height:520px){.top h1{display:none}.cards{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{opacity:1;transform:none}}
+button.wa{border:0;width:100%;cursor:pointer}
+#volverTop{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;border:0;background:#174C46;color:#fff;font:600 15px Figtree,system-ui,sans-serif;padding:13px 22px;border-radius:999px;box-shadow:0 10px 26px -10px rgba(0,0,0,.55);cursor:pointer}
 </style>
 </head>
 <body>
@@ -219,7 +221,7 @@ function arrive(to,z,label,my,addr){
   destMarker=new maplibregl.Marker({element:pinEl(C[z]),draggable:true}).setLngLat(to).addTo(map);
   destMarker.on('dragend',()=>{const l=destMarker.getLngLat(),p=[l.lng,l.lat],zz=classify(p);select(zz,true);drive(p,zz);say('Zona '+zz+' (referencial). Confirmamos tu dirección exacta antes de despachar.')});
   const d=km(center,to).toFixed(1).replace('.',',');
-  const html=a=>'<div class="pp"><span class="eb">Zona '+z+'</span><div class="who">'+esc(ASESOR)+' llega a tu dirección</div><div class="big">'+esc(ZN[z])+'</div><div>'+esc(TXT[z])+'</div><small>Entrega en '+DIAS[z]+' · ≈ '+d+' km del centro</small>'+(a?'<small>'+esc(a)+'</small>':'')+'<a class="wa" target="_blank" rel="noopener" href="'+waLink(z,a||label||addr,to)+'">Pedir por WhatsApp</a><button type="button" class="back">Volver al inicio</button><small>Arrastra el pin para ajustarlo a tu casa.</small></div>';
+  const html=a=>'<div class="pp"><span class="eb">Zona '+z+'</span><div class="who">'+esc(ASESOR)+' llega a tu dirección</div><div class="big">'+esc(ZN[z])+'</div><div>'+esc(TXT[z])+'</div><small>Entrega en '+DIAS[z]+' · ≈ '+d+' km del centro</small>'+(a?'<small>'+esc(a)+'</small>':'')+''+(SP?'<button type="button" class="wa volver">Volver a mi pedido</button>':'<a class="wa" target="_blank" rel="noopener" href="'+waLink(z,a||label||addr,to)+'">Pedir por WhatsApp</a>')+'<button type="button" class="back">Volver al inicio</button><small>Arrastra el pin para ajustarlo a tu casa.</small></div>';
   popup=new maplibregl.Popup({offset:18,closeButton:false,closeOnClick:false,maxWidth:'270px'}).setLngLat(to).setHTML(html(addr||'')).addTo(map);
   if(!addr&&!label){
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=17&lat='+to[1]+'&lon='+to[0])
@@ -330,6 +332,12 @@ document.getElementById('loc').onclick=()=>{
     say('Zona '+z+' (referencial). Confirmamos tu dirección exacta antes de despachar.');
   },()=>say('No pude obtener tu ubicación. Toca el mapa o escribe tu barrio.'),{enableHighAccuracy:true,timeout:10000});
 };
+
+if(SP){
+  const volverAlPedido=()=>{window.close();setTimeout(()=>{if(document.referrer)location.href=document.referrer;else history.back()},350)};
+  const b=document.createElement("button");b.id="volverTop";b.type="button";b.textContent="← Volver a mi pedido";b.onclick=volverAlPedido;document.body.appendChild(b);
+  document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest(".volver"))volverAlPedido()});
+}
 </script>
 </body>
 </html>
