@@ -1368,12 +1368,13 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         </fieldset>
         <label class="p">Dirección<input name="dir" id="fDir" autocomplete="street-address" placeholder="Calle, carrera, número, apto o casa" maxlength="90"></label>
         <label class="p">Barrio o punto de referencia<input name="ref" id="fRef" placeholder="Barrio y referencia (ej. frente al parque)" maxlength="90"></label>
-        <label class="p">¿Cuándo lo quieres?
+        <label class="p">¿En qué horario prefieres recibirlo?
           <select name="dia" id="fDia">
-            <option>Lo antes posible</option>
-            <option>En 2 o 3 días</option>
-            <option>La próxima semana</option>
+            <option>Cualquier hora</option>
+            <option>En la mañana</option>
+            <option>En la tarde</option>
           </select>
+          <small style="display:block;margin-top:6px;color:#4E5D58;font-weight:400">La fecha exacta te la confirmamos por WhatsApp dentro del rango de despacho.</small>
         </label>
       </div>
       <div class="pickup-note" id="fPick" hidden><b>Ferrecubiertas S.A.S.</b><span>Calle 35 A No. 27-86, San Isidro, Villavicencio. Te avisamos cuándo está listo para recoger.</span><a href="https://www.google.com/maps/dir/?api=1&destination=Calle+35A+%2327-86+Villavicencio" target="_blank" rel="noopener">Cómo llegar</a></div>
@@ -2049,7 +2050,7 @@ form.addEventListener('submit', function(e){
   var pagoTxt = pago === 'nequi' ? 'Nequi (coordinamos por este chat)' : (tienda ? 'En Ferrecubiertas al recoger' : 'Contraentrega');
   var msg = 'Pedido No. ' + num + '\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nDespacho estimado (bajo reserva): ' + reservaTxt().replace('Del','del') + '\nEnvío: ' + envio + '\nTotal a pagar: ' + total + '\nPago: ' + pagoTxt +
     '\n\n*' + (tienda ? 'Recogida' : 'Entrega') + '*\nNombre: ' + name + '\nCelular: ' + pretty + '\nMunicipio: ' + town + zonaTxt +
-    (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nDía preferido: ' + document.getElementById('fDia').value);
+    (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nHorario preferido: ' + document.getElementById('fDia').value);
   var url = waURL(msg);
   var btn = form.querySelector('button[type=submit]'), btnTxt = btn.innerHTML;
   btn.disabled = true; btn.textContent = 'Enviando tu pedido…';
@@ -2306,7 +2307,7 @@ function armaPdf(o, logo){
   /* Comprador y entrega */
   sec(o.tienda?'Comprador y recogida':'Comprador y destino de entrega'); kv('Nombre',o.nombre); kv('Celular',o.tel);
   if(o.tienda){ kv('Recoge en','Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio'); kv('Costo de envío','$0 (recogida en tienda)'); }
-  else { kv('Ciudad o municipio',o.town+', Meta'+(o.zona?' · '+o.zona:'')); kv('Dirección',o.dir); if(o.ref) kv('Referencia',o.ref); kv('Día preferido',o.dia); }
+  else { kv('Ciudad o municipio',o.town+', Meta'+(o.zona?' · '+o.zona:'')); kv('Dirección',o.dir); if(o.ref) kv('Referencia',o.ref); kv('Horario preferido',o.dia); }
   kv('Despacho estimado',o.despacho);
 
   /* Producto */
