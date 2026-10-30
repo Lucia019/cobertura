@@ -300,6 +300,19 @@ function go(item,exacto){
   select(z,true);drive(p,z,addr,addr);
   say(exacto?'Zona '+z+' (referencial). Confirmamos tu dirección exacta antes de despachar.':'Zona '+z+'. Es la ubicación de tu barrio. Mueve el pin hasta tu casa.');
 }
+function comunaFallback(){
+  say('No encontré ese barrio. Elige en qué comuna de Villavicencio queda, o toca el mapa donde vives.');
+  sug.innerHTML='';
+  for(let n=1;n<=8;n++){
+    const b=document.createElement('button');b.type='button';b.textContent='Comuna '+n;
+    b.onclick=()=>{hideSug();select(1,true);say('Comuna '+n+': queda dentro del perímetro urbano, Zona 1. '+TXT[1]+'. Confirmamos tu dirección exacta antes de despachar.')};
+    sug.appendChild(b);
+  }
+  const o=document.createElement('button');o.type='button';o.textContent='No sé en qué comuna queda';
+  o.onclick=()=>{hideSug();say('No hay problema. Escribe tu dirección completa en el pedido y confirmamos tu zona antes de despachar.')};
+  sug.appendChild(o);
+  sug.style.display='block';
+}
 async function buscar(){
   const q=document.getElementById('q').value.trim();if(!q)return;
   ctx();hideSug();say('Buscando…');
@@ -313,7 +326,7 @@ async function buscar(){
       const r=await fetch(url);const j=await r.json();
       if(j.length){hit=j;exacto=(t===base&&acotado===1);break}
     }
-    if(!hit)return say('No encontré esa dirección. Toca el mapa donde queda tu casa o usa el botón de ubicación.');
+    if(!hit)return comunaFallback();
     if(hit.length===1){return go(hit[0],exacto)}
     say('Elige tu dirección:');
     sug.innerHTML='';
