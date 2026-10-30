@@ -2043,10 +2043,9 @@ form.addEventListener('submit', function(e){
   var villa = town === 'Villavicencio', ev = calcEnvio(), envio = ev.txt, total = money(PRECIO + ev.v), num = mkNum();
   var zonaTxt = (!tienda && villa) ? '\nZona de entrega: ' + (zonaVal() === 'fuera' ? 'Fuera del perímetro urbano' : 'Dentro del perímetro urbano') : '';
   var pagoTxt = pago === 'nequi' ? 'Nequi (coordinamos por este chat)' : (tienda ? 'En Ferrecubiertas al recoger' : 'Contraentrega');
-  var msg = 'Hola Pureza Natural, quiero hacer este pedido.\nPedido No. ' + num + '\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nDespacho estimado (bajo reserva): ' + reservaTxt().replace('Del','del') + '\nEnvío: ' + envio + '\nTotal a pagar: ' + total + '\nPago: ' + pagoTxt +
-    '\n\n*' + (tienda ? 'Recogida' : 'Entrega') + '*\nNombre: ' + name + '\nCelular: ' + pretty + '\nMunicipio: ' + town + zonaTxt + '\nDepartamento: Meta' +
-    (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nDía preferido: ' + document.getElementById('fDia').value) +
-    '\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.';
+  var msg = 'Pedido No. ' + num + '\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nDespacho estimado (bajo reserva): ' + reservaTxt().replace('Del','del') + '\nEnvío: ' + envio + '\nTotal a pagar: ' + total + '\nPago: ' + pagoTxt +
+    '\n\n*' + (tienda ? 'Recogida' : 'Entrega') + '*\nNombre: ' + name + '\nCelular: ' + pretty + '\nMunicipio: ' + town + zonaTxt +
+    (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nDía preferido: ' + document.getElementById('fDia').value);
   var url = waURL(msg);
   var btn = form.querySelector('button[type=submit]'), btnTxt = btn.innerHTML;
   btn.disabled = true; btn.textContent = 'Enviando tu pedido…';
