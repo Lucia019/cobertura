@@ -1413,7 +1413,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <li><b>Confirmación:</b> antes del despacho te confirmamos disponibilidad, costo y tiempo de envío.</li>
       <li><b>Envío:</b> gratis en Villavicencio dentro del perímetro urbano.</li>
     </ul>
-    <p class="buy-legal">Vende FERRECUBIERTAS S.A.S., NIT 900.531.231-8, Calle 35 A No. 27-86, San Isidro, Villavicencio. <a href="terminos.html" target="_blank" rel="noopener">Términos</a> · <a href="privacidad.html" target="_blank" rel="noopener">Privacidad</a> · <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">Tratamiento de datos</a></p>
+    <p class="buy-legal">Vende FERRECUBIERTAS S.A.S., NIT 900.531.231-8, Calle 35 A No. 27-86, San Isidro, Villavicencio.</p>
   </div>
 </dialog>
 
@@ -2068,7 +2068,7 @@ form.addEventListener('submit', function(e){
     var p = document.getElementById('fThanksP'), r = document.getElementById('fRetry'), ed = document.getElementById('fEdit');
     if(ok){
       p.innerHTML = 'Recibimos tu pedido <strong>' + num + '</strong>. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmar disponibilidad, envío y fecha de entrega.';
-      r.textContent = 'Escribirnos por WhatsApp'; r.href = url;
+      r.textContent = 'Escribirnos por WhatsApp'; r.className = 'btn btn-line'; r.href = url;
       ed.hidden = true;
       var trk = document.getElementById('fTrack'); trk.hidden = false;
       trk.onclick = function(){
@@ -2081,7 +2081,7 @@ form.addEventListener('submit', function(e){
     } else {
       window.open(url, '_blank', 'noopener');
       p.innerHTML = 'No pudimos registrar tu pedido en la página. Quedó escrito en WhatsApp: <strong>toca Enviar para que nos llegue.</strong>';
-      r.textContent = '¿No se abrió? Toca aquí'; r.href = url;
+      r.textContent = '¿No se abrió? Toca aquí'; r.className = 'btn btn-cta'; r.href = url;
       ed.hidden = false;
       document.getElementById('fTrack').hidden = true;
     }
