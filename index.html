@@ -87,7 +87,7 @@ html,body{height:100%;overflow:hidden;background:var(--nb);color:var(--cs);font-
 @media (max-height:520px){.top h1{display:none}.cards{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{opacity:1;transform:none}}
 button.wa{border:0;width:100%;cursor:pointer}
-#volverTop{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;border:0;background:#174C46;color:#fff;font:600 15px Figtree,system-ui,sans-serif;padding:13px 22px;border-radius:999px;box-shadow:0 10px 26px -10px rgba(0,0,0,.55);cursor:pointer}
+#volverTop{position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;border:0;background:#174C46;color:#fff;font:600 15px Figtree,system-ui,sans-serif;padding:13px 22px;border-radius:999px;box-shadow:0 10px 26px -10px rgba(0,0,0,.55);cursor:pointer}
 </style>
 </head>
 <body>
