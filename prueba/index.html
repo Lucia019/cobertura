@@ -460,6 +460,16 @@ section{position:relative}
 .thanks h3{font-size:1.4rem;color:var(--deep)}
 .thanks p{margin-top:10px;color:var(--text-secondary);font-size:1rem}
 .thanks .btn{margin-top:20px}
+.pagobox{margin:18px 0 0;padding:16px;border:1.5px solid var(--deep);border-radius:16px;background:#fff;text-align:left}
+.pagobox[hidden]{display:none}
+.pagobox h4{margin:0;font-size:1.05rem;color:var(--deep)}
+.pagobox .pg-val{font-family:var(--display);font-size:1.7rem;color:var(--deep);margin:2px 0 10px}
+.pagobox .pg-key{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--bg,#F4F1E9);font-weight:600;word-break:break-all}
+.pagobox .pg-key span{flex:1}
+.pagobox .pg-key button{border:0;border-radius:10px;background:var(--deep);color:#fff;font:inherit;font-size:.9rem;font-weight:600;padding:9px 14px;cursor:pointer;white-space:nowrap}
+.pagobox .pg-tit{margin:8px 0 0;font-size:.92rem;color:var(--text-secondary)}
+.pagobox ol{margin:12px 0 0;padding-left:20px;font-size:.95rem;line-height:1.5;color:var(--text-secondary)}
+.pagobox .pg-test{display:inline-block;margin-top:10px;padding:3px 9px;border-radius:99px;background:#FBEEDD;color:#8A5426;font-size:.78rem;font-weight:700}
 .linkish{display:block;margin:14px auto 0;background:none;border:0;font:inherit;font-size:.92rem;color:var(--text-secondary);text-decoration:underline;cursor:pointer;min-height:44px;padding:0 12px}
 .form.sent .form-fields{display:none}
 .form.sent .thanks{display:block;animation:thanksIn .6s var(--ease-out)}
@@ -1402,6 +1412,19 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         <svg class="check" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 24.5l6 6 12-13" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h3 id="fThanksT">¡Gracias por elegir Pureza Natural!</h3>
         <p id="fThanksP">Tu pedido quedó escrito en WhatsApp. <strong>Toca Enviar para que nos llegue.</strong></p>
+        <div class="pagobox" id="fPago" hidden>
+          <h4>Paga para reservar tu pedido</h4>
+          <div class="pg-val" id="fPagoVal"></div>
+          <div class="pg-key"><span id="fPagoKey"></span><button type="button" id="fPagoCopy">Copiar llave</button></div>
+          <p class="pg-tit">A nombre de <b id="fPagoTit"></b></p>
+          <ol>
+            <li>Abre Nequi o tu banco y pega la llave.</li>
+            <li>Revisa que salga el nombre de arriba.</li>
+            <li>En la descripción escribe tu pedido <b id="fPagoNum"></b>.</li>
+          </ol>
+          <span class="pg-test" id="fPagoTest" hidden>DATOS DE PRUEBA</span>
+        </div>
+        <a class="btn btn-cta" id="fComp" href="#" target="_blank" rel="noopener" hidden>Ya pagué, enviar comprobante</a>
         <button type="button" class="btn btn-cta" id="fTrack" hidden>Consultar el estado de mi pedido</button>
         <a class="btn btn-cta" id="fRetry" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>¿No se abrió? Toca aquí</a>
         <button type="button" class="btn btn-line" id="fPdf" hidden>Descargar orden de pedido (PDF)</button>
@@ -1456,6 +1479,8 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 'use strict';
 var WA_NUMBER = '573053529366';
 var WA_DEFAULT = 'Hola Pureza, quiero información del producto y el valor.';
+/* Datos de pago por llave. Datos de PRUEBA: cambiar por la llave y el titular reales de Ferrecubiertas. */
+var PN_PAGO = { llave: 'LLAVE-DE-PRUEBA-123', titular: 'TITULAR DE PRUEBA S.A.S.' };
 var PN_HOOK = 'https://script.google.com/macros/s/AKfycbwftsLRlt29GHRbcG5VrVP0Y6QTwrrY7vDKNUpKe0tO3S9NbCOHrbZLC4D3oEzd0XzC/exec';
 /* Guarda el pedido o la visita en la hoja de la empresa. Responde true solo si el registro confirmó "ok". */
 function pnNombre(s){ var p={de:1,del:1,la:1,las:1,los:1,y:1,e:1}; return String(s||'').replace(/\s+/g,' ').trim().toLowerCase().split(' ').map(function(w,i){ return (i&&p[w])?w:w.charAt(0).toUpperCase()+w.slice(1); }).join(' '); }
@@ -2055,7 +2080,7 @@ form.addEventListener('submit', function(e){
   var pretty = phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
   var villa = town === 'Villavicencio', ev = calcEnvio(), envio = ev.txt, total = money(PRECIO + ev.v), num = mkNum();
   var zonaTxt = (!tienda && villa) ? '\nZona de entrega: ' + (zonaVal() === 'fuera' ? 'Fuera del perímetro urbano' : 'Dentro del perímetro urbano') : '';
-  var pagoTxt = pago === 'nequi' ? 'Nequi (coordinamos por este chat)' : (tienda ? 'En Ferrecubiertas al recoger' : 'Contraentrega');
+  var pagoTxt = pago === 'nequi' ? 'Nequi, llave de pago (datos en la página)' : (tienda ? 'En Ferrecubiertas al recoger' : 'Contraentrega');
   var msg = 'Pedido No. ' + num + '\n\n*Pedido*\n• 1 x Purificador Vidrio Verde ($810.000)\nDespacho estimado (bajo reserva): ' + reservaTxt().replace('Del','del') + '\nEnvío: ' + envio + '\nTotal a pagar: ' + total + '\nPago: ' + pagoTxt +
     '\n\n*' + (tienda ? 'Recogida' : 'Entrega') + '*\nNombre: ' + name + '\nCelular: ' + pretty + '\nMunicipio: ' + town + zonaTxt +
     (tienda ? '\nRecoge en: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro' : '\nDirección: ' + dir + '\nPunto de referencia: ' + (ref || 'No indicado') + '\nHorario preferido: ' + document.getElementById('fDia').value);
@@ -2073,6 +2098,22 @@ form.addEventListener('submit', function(e){
       r.textContent = 'Escribirnos por WhatsApp'; r.className = 'btn btn-line'; r.href = url;
       ed.hidden = true;
       var trk = document.getElementById('fTrack'); trk.hidden = false;
+      var pg = document.getElementById('fPago'), comp = document.getElementById('fComp');
+      if(pago === 'nequi'){
+        document.getElementById('fPagoVal').textContent = total;
+        document.getElementById('fPagoKey').textContent = PN_PAGO.llave;
+        document.getElementById('fPagoTit').textContent = PN_PAGO.titular;
+        document.getElementById('fPagoNum').textContent = num;
+        document.getElementById('fPagoTest').hidden = !/PRUEBA/.test(PN_PAGO.llave + PN_PAGO.titular);
+        var cp = document.getElementById('fPagoCopy'); cp.textContent = 'Copiar llave';
+        cp.onclick = function(){
+          var ok2 = function(){ cp.textContent = '¡Copiada!'; setTimeout(function(){ cp.textContent = 'Copiar llave'; }, 2500); };
+          try { navigator.clipboard.writeText(PN_PAGO.llave).then(ok2, function(){ cp.textContent = 'Mantén presionada la llave'; }); } catch(e){ cp.textContent = 'Mantén presionada la llave'; }
+        };
+        comp.href = waURL('Pedido No. ' + num + '\nYa pagué ' + total + ' por llave. Te envío el comprobante.');
+        pg.hidden = false; comp.hidden = false;
+        r.className = 'btn btn-line'; trk.className = 'btn btn-line';
+      } else { pg.hidden = true; comp.hidden = true; trk.className = 'btn btn-cta'; }
       trk.onclick = function(){
         var dlg = document.getElementById('buyd'); if(dlg && dlg.open) dlg.close();
         document.getElementById('tkNum').value = num; document.getElementById('tkTel').value = pretty;
@@ -2086,6 +2127,7 @@ form.addEventListener('submit', function(e){
       r.textContent = '¿No se abrió? Toca aquí'; r.className = 'btn btn-cta'; r.href = url;
       ed.hidden = false;
       document.getElementById('fTrack').hidden = true;
+      document.getElementById('fPago').hidden = true; document.getElementById('fComp').hidden = true;
     }
     document.getElementById('fThanksT').textContent = '¡Gracias, ' + name.split(' ')[0] + '!';
     form.classList.add('sent'); var bm=document.getElementById('buyMain'); if(bm) bm.scrollTop=0;
