@@ -1066,11 +1066,11 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
         </div>
         <div class="ringbox" aria-live="polite">
           <svg class="ring2" viewBox="0 0 120 120" role="img" aria-label="Comparación a 2 años"><circle cx="60" cy="60" r="48" fill="none" stroke="#C9B9A4" stroke-width="14"/><circle id="rgArc" cx="60" cy="60" r="48" fill="none" stroke="#2e7d4f" stroke-width="14" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="301.6" transform="rotate(-90 60 60)"/><text id="rgPct" x="60" y="66" text-anchor="middle" font-size="24" font-weight="700" fill="#174C46">51%</text></svg>
-          <div class="rg-txt"><b id="rgHead">En 2 años, el purificador cuesta el 51 % de lo que gastarías en botellones.</b>
-            <span id="rgMonth">Botellones: $66.000 al mes. Purificador repartido en 24 meses: $33.750 al mes.</span>
-            <small>Compra única de $810.000 frente a tu gasto de arriba. La vasija de barro dura 2 años.</small></div>
+          <div class="rg-txt"><b id="rgHead">En 2 años ahorras $774.000.</b>
+            <span id="rgMonth">Hoy pagas $66.000 al mes. Con el purificador, $33.750 al mes.</span>
+            <small id="rgNote">Botellones: $1.584.000 en 2 años. Purificador: $810.000, un solo pago (vasija de barro: 2 años).</small></div>
         </div>
-        <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas hechas con los datos que pusiste arriba.</p></div>
+        <div class="think"><span class="label">Para pensarlo mejor</span><ul id="oThink"></ul><p class="think-note">Cuentas hechas con los datos que pusiste.</p></div>
         <a class="btn btn-cta" href="#producto">Ver cuánto cuesta</a>
       </div>
     </div>
@@ -1914,8 +1914,9 @@ function updateCalc(){
   var two = year * 2, pct = Math.round(810000 / two * 100), arc = document.getElementById('rgArc');
   arc.style.strokeDashoffset = 301.6 * (1 - Math.min(pct, 100) / 100);
   document.getElementById('rgPct').textContent = pct + '%';
-  document.getElementById('rgHead').textContent = pct < 100 ? 'En 2 años, el purificador cuesta el ' + pct + ' % de lo que gastarías en botellones.' : 'Con este gasto, el purificador tarda más de 2 años en pagarse.';
-  document.getElementById('rgMonth').textContent = 'Botellones: ' + fmtCOP(year / 12) + ' al mes. Purificador repartido en 24 meses: ' + fmtCOP(810000 / 24) + ' al mes.';
+  document.getElementById('rgHead').textContent = pct < 100 ? 'En 2 años ahorras ' + fmtCOP(two - 810000) + '.' : 'Con este gasto, el purificador tarda más de 2 años en pagarse.';
+  document.getElementById('rgNote').textContent = 'Botellones: ' + fmtCOP(two) + ' en 2 años. Purificador: $810.000, un solo pago (vasija de barro: 2 años).';
+  document.getElementById('rgMonth').textContent = 'Hoy pagas ' + fmtCOP(year / 12) + ' al mes. Con el purificador, ' + fmtCOP(810000 / 24) + ' al mes.';
 }
 cBot.addEventListener('input', updateCalc);
 cPrice.addEventListener('input', updateCalc);
@@ -1924,9 +1925,9 @@ updateCalc();
 var oThink = document.getElementById('oThink');
 function updateThink(){
   var bot = +cBot.value, price = +cPrice.value, year = bot * price * 12;
-  var l1 = 'Al precio que pusiste, cada litro de agua te cuesta <b>' + fmtCOP(price / 20) + '</b>.';
-  var l2 = 'En 2 años gastas <b>' + fmtCOP(year * 2) + '</b> en botellones. Más abajo ves cuánto cuesta el purificador para compararlo con esta cifra.';
-  var l3 = 'Son <b>' + (bot * 12) + ' botellones</b> al año. ¿Quién los carga, dónde los guardas y qué haces si se acaba uno el domingo?';
+  var l1 = 'Hoy cada litro te cuesta <b>' + fmtCOP(price / 20) + '</b>.';
+  var l2 = 'En 2 años gastas <b>' + fmtCOP(year * 2) + '</b> en botellones.';
+  var l3 = 'Son <b>' + (bot * 12) + ' botellones</b> al año: ¿quién los carga y qué haces si se acaba uno el domingo?';
   oThink.innerHTML = '<li>' + l1 + '</li><li>' + l2 + '</li><li>' + l3 + '</li>';
 }
 cBot.addEventListener('input', updateThink);
