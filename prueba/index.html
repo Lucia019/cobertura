@@ -2112,7 +2112,8 @@ form.addEventListener('submit', function(e){
         };
         comp.href = waURL('Pedido No. ' + num + '\nYa pagué ' + total + ' por llave. Te envío el comprobante.');
         pg.hidden = false; comp.hidden = false;
-        r.className = 'btn btn-line'; trk.className = 'btn btn-line';
+        r.className = 'btn btn-line'; trk.hidden = true;
+        p.innerHTML = 'Recibimos tu pedido <strong>' + num + '</strong>. <strong>Para reservarlo, haz el pago.</strong> Cuando confirmemos tu pago podrás seguir tu pedido en "Consulta tu pedido".';
       } else { pg.hidden = true; comp.hidden = true; trk.className = 'btn btn-cta'; }
       trk.onclick = function(){
         var dlg = document.getElementById('buyd'); if(dlg && dlg.open) dlg.close();
@@ -2243,6 +2244,15 @@ function pnBocina(){
         if(fin) return; fin=true; clearTimeout(tm); listo();
         if(!r || !r.ok){ msg.hidden=false; msg.textContent='No encontramos un pedido con esos datos. Revisa el número y el celular, o escríbenos por WhatsApp.'; return; }
         var i=MAPA[String(r.estado||'').trim().toLowerCase()]; if(i===undefined) i=0;
+        if(i===0 && r.datos){
+          var od=null; try{ od=JSON.parse(r.datos); }catch(e){}
+          if(od && od.nequi){
+            var wa=waURL('Pedido No. '+num+'\nYa pagué '+od.total+' por llave. Te envío el comprobante.');
+            msg.hidden=false;
+            msg.innerHTML='<b>Estamos esperando tu pago.</b> Paga <b>'+od.total+'</b> a la llave <b>'+PN_PAGO.llave+'</b> (a nombre de '+PN_PAGO.titular+'), escribe '+num+' en la descripción y envíanos el comprobante. En cuanto lo confirmemos, aquí podrás seguir tu pedido.<br><a class="btn btn-cta" href="'+wa+'" target="_blank" rel="noopener">Ya pagué, enviar comprobante</a>';
+            return;
+          }
+        }
         var sc=document.getElementById('tkScene'); sc.hidden=false; sc.innerHTML=pnRuta(i); if(i===5) setTimeout(pnBocina,2300); var bar=document.getElementById('tkBar'), cap=document.getElementById('tkCap'); bar.hidden=false; cap.hidden=false; bar.firstElementChild.style.setProperty('--p',(i/5*100)+'%'); bar.firstElementChild.style.animation='none'; void bar.offsetWidth; bar.firstElementChild.style.animation=''; cap.textContent=(i===5?'¡Tu pedido ya llegó!':'Tu pedido va en: '+ETAPAS[i]+' (paso '+(i+1)+' de 6)');
         box.innerHTML=ETAPAS.map(function(x,n){ return '<li style="--n:'+n+'" class="'+(n<i?'hecho':n===i?'actual':'')+'"><span>'+(n<i?'✓':n+1)+'</span>'+x+'</li>'; }).join('');
         box.hidden=false;
