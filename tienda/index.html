@@ -101,7 +101,7 @@ else{
     map.getSource('ruta').setData(feat({type:'LineString',coordinates:coords}));
     var b=coords.reduce(function(a,c){return a.extend(c)},new maplibregl.LngLatBounds(coords[0],coords[0]));
     var small=innerWidth<800;
-    map.fitBounds(b,{padding:{top:small?190:80,bottom:small?190:80,left:small?50:470,right:50},pitch:0,bearing:0,maxZoom:16,duration:1600});
+    map.fitBounds(b,{padding:{top:small?190:80,bottom:small?190:80,left:small?95:470,right:small?60:50},pitch:0,bearing:0,maxZoom:16,duration:1600});
     if(dist!=null) say('<span class="eta">≈ '+km(dist)+' · unos '+Math.max(1,Math.round(dur/60))+' min en carro.</span> '+DIR);
     else say('Aquí tienes la línea hasta la tienda. '+DIR);
   }
