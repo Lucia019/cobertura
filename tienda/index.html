@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#174C46">
+<meta name="robots" content="noindex,nofollow">
+<title>Recoge en Ferrecubiertas | Pureza Natural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&family=Figtree:wght@500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+:root{--vp:#174C46;--nb:#F4F1E9;--bc:#FCFBF7;--ar:#C66F45;--cs:#24302E;--mut:#5b6663}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--nb);color:var(--cs);font-family:Figtree,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-weight:500}
+#map{position:absolute;inset:0}
+.top{position:absolute;z-index:5;left:10px;right:56px;top:calc(10px + env(safe-area-inset-top));max-width:440px;background:var(--nb);border-radius:18px;padding:11px 14px;box-shadow:0 6px 22px #24302e33;border:1px solid #24302e14}
+.eb{font:500 9.5px/1.3 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--vp)}
+.top h1{font:700 21px/1.15 "Bricolage Grotesque",system-ui,sans-serif;margin:3px 0 0;color:var(--cs)}
+.card{position:absolute;z-index:5;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:440px;background:var(--nb);border-radius:18px;padding:14px;box-shadow:0 8px 26px #24302e40;border:1px solid #24302e14}
+.card b{display:block;font:700 18px/1.2 "Bricolage Grotesque",system-ui,sans-serif;color:var(--vp)}
+.card p{margin:6px 0 12px;font-size:14px;line-height:1.4;color:var(--mut)}
+.card button{width:100%;border:0;background:var(--vp);color:#fff;font:600 15px Figtree,system-ui,sans-serif;padding:13px 18px;border-radius:999px;cursor:pointer}
+.pin{width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--ar);border:3px solid #fff;box-shadow:0 4px 12px #24302e66}
+.pin::after{content:"";position:absolute;left:9px;top:9px;width:10px;height:10px;border-radius:50%;background:#fff}
+.maplibregl-ctrl-attrib{font-size:10px}
+#err{position:absolute;z-index:9;inset:auto 10px 120px;background:#fff;border-radius:14px;padding:12px;font-size:14px;display:none}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="top"><span class="eb">Pureza Natural · Recogida</span><h1>Recoge tu purificador en Ferrecubiertas</h1></div>
+<div class="card">
+  <b>Ferrecubiertas S.A.S.</b>
+  <p>Calle 35 A No. 27-86, San Isidro, Villavicencio. Te avisamos por WhatsApp cuándo está listo para recoger.</p>
+  <button type="button" id="volver">← Volver a mi pedido</button>
+</div>
+<div id="err"></div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+/* Ubicación de Ferrecubiertas [longitud, latitud]. Ajustar con el punto exacto de la tienda. */
+var TIENDA=[-73.6449,4.1455];
+function volver(){window.close();setTimeout(function(){if(document.referrer)location.href=document.referrer;else history.back()},350)}
+document.getElementById('volver').onclick=volver;
+if(typeof maplibregl==='undefined'){var e=document.getElementById('err');e.style.display='block';e.textContent='No cargó el mapa. La dirección es Calle 35 A No. 27-86, San Isidro, Villavicencio.';}
+else{
+  var map=new maplibregl.Map({container:'map',style:'https://tiles.openfreemap.org/styles/positron',center:TIENDA,zoom:15.5,attributionControl:{compact:true}});
+  map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
+  var el=document.createElement('div');el.className='pin';
+  new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat(TIENDA).addTo(map);
+}
+</script>
+</body>
+</html>
