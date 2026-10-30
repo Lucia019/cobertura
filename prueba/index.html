@@ -2257,7 +2257,9 @@ function pnBocina(){
         box.innerHTML=ETAPAS.map(function(x,n){ return '<li style="--n:'+n+'" class="'+(n<i?'hecho':n===i?'actual':'')+'"><span>'+(n<i?'✓':n+1)+'</span>'+x+'</li>'; }).join('');
         box.hidden=false;
         if(r.datos && i>=1){ try{ tkOrd=JSON.parse(r.datos); tkOrd.confirmado=true; tkOrd.pagado = tkOrd.nequi ? true : i>=5; tkPdf.hidden=false; }catch(e){ tkOrd=null; } }
-        if(r.guia){ msg.hidden=false; msg.textContent='Guía de envío: '+r.guia; }
+        var okTxt='';
+        if(r.datos && i>=1){ try{ var o2=JSON.parse(r.datos); if(o2.nequi) okTxt='<b>¡Pago confirmado! Tu pedido está reservado.</b>'+(o2.despacho?' Despacho estimado: '+String(o2.despacho).replace(/[<>&]/g,'')+'.':'')+' Te escribimos antes del despacho para coordinar la entrega.'; }catch(e){} }
+        if(okTxt || r.guia){ msg.hidden=false; msg.innerHTML=okTxt+(okTxt && r.guia?'<br>':'')+(r.guia?'Guía de envío: '+String(r.guia).replace(/[<>&]/g,''):''); }
       })
       .catch(function(){ if(fin) return; fin=true; clearTimeout(tm); listo(); msg.hidden=false; msg.textContent='No pudimos consultar ahora. Escríbenos por WhatsApp y te contamos.'; });
   });
