@@ -2260,7 +2260,7 @@ function pnBocina(){
     var bad = name.length<3 ? [n,'Escribe tu nombre completo.'] : !/^3\d{9}$/.test(phone) ? [p,'Escribe un celular de 10 dígitos que empiece por 3.'] : !fDate.value ? [fDate,'Escoge el día de tu visita.'] : !fTime.value ? [fTime,'Escoge una hora disponible.'] : !ok.checked ? [ok,'Acepta la política de datos para continuar.'] : null;
     if(bad){ bad[0].setAttribute('aria-invalid','true'); err.textContent=bad[1]; err.classList.add('on'); bad[0].focus(); return; }
     var dt=parse(fDate.value), pretty=phone.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3');
-    var msg='Hola Pureza Natural, quiero agendar una visita a Ferrecubiertas para ver el purificador de vidrio verde.\n\n*Visita*\nNombre: '+name+'\nCelular: '+pretty+'\nDía: '+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+'\nHora: '+fTime.value+'\nLugar: Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro\n\nAcepto la política de tratamiento de datos. Quedo atento a su confirmación.';
+    var msg='Visita a Ferrecubiertas\nNombre: '+name+'\nCelular: '+pretty+'\nDía: '+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+'\nHora: '+fTime.value;
     var vb=document.querySelector('#visForm button[type=submit]'), vbt=vb.textContent; vb.disabled=true; vb.textContent='Agendando…';
     enviarRegistro({ tipo:'visita', nombre:name, celular:pretty, detalle:msg }).then(function(ok){
       vb.disabled=false; vb.textContent=vbt;
