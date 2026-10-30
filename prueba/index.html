@@ -1446,6 +1446,7 @@ var WA_NUMBER = '573053529366';
 var WA_DEFAULT = 'Hola Pureza, quiero información del producto y el valor.';
 var PN_HOOK = 'https://script.google.com/macros/s/AKfycbwftsLRlt29GHRbcG5VrVP0Y6QTwrrY7vDKNUpKe0tO3S9NbCOHrbZLC4D3oEzd0XzC/exec';
 /* Guarda el pedido o la visita en la hoja de la empresa. Responde true solo si el registro confirmó "ok". */
+function pnNombre(s){ var p={de:1,del:1,la:1,las:1,los:1,y:1,e:1}; return String(s||'').replace(/\s+/g,' ').trim().toLowerCase().split(' ').map(function(w,i){ return (i&&p[w])?w:w.charAt(0).toUpperCase()+w.slice(1); }).join(' '); }
 function enviarRegistro(datos){
   return new Promise(function(resolve){
     var fin = false;
@@ -2021,7 +2022,7 @@ form.addEventListener('submit', function(e){
   e.preventDefault();
   var fName = document.getElementById('fName'), fPhone = document.getElementById('fPhone'), fErr = document.getElementById('fErr');
   var fDir = document.getElementById('fDir'), fOk = document.getElementById('fOk');
-  var name = fName.value.trim();
+  var name = pnNombre(fName.value);
   var phone = fPhone.value.replace(/\D/g, '').replace(/^57(?=3\d{9}$)/, '');
   var town = document.getElementById('fTown').value;
   var pago = fPago.value, tienda = esTienda();
@@ -2200,7 +2201,7 @@ function pnBocina(){
   f.addEventListener('submit',function(e){ e.preventDefault(); });
   f.addEventListener('click',function(e){
     var c=e.target.closest('.qchip'); if(!c) return;
-    var nm=document.getElementById('qName').value.trim(), tema=c.textContent.replace(/^\S+\s*/,'').trim(), q=c.getAttribute('data-t');
+    var nm=pnNombre(document.getElementById('qName').value), tema=c.textContent.replace(/^\S+\s*/,'').trim(), q=c.getAttribute('data-t');
     try{ fetch(PN_HOOK,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({tipo:'duda',nombre:nm||'(sin nombre)',celular:'',detalle:'Duda sobre: '+tema}),keepalive:true}).catch(function(){}); }catch(x){}
     pnTrack('Lead', {content_name:'Duda: '+tema});
     window.open(waURL('Hola Pureza Natural'+(nm?', soy '+nm:'')+'. '+q),'_blank','noopener');
@@ -2255,7 +2256,7 @@ function pnBocina(){
   document.getElementById('visForm').addEventListener('submit', function(e){
     e.preventDefault();
     var n=document.getElementById('vName'), p=document.getElementById('vPhone'), ok=document.getElementById('vOk');
-    var name=n.value.trim(), phone=p.value.replace(/\D/g,'').replace(/^57(?=3\d{9}$)/,'');
+    var name=pnNombre(n.value), phone=p.value.replace(/\D/g,'').replace(/^57(?=3\d{9}$)/,'');
     [n,p,fDate,fTime,ok].forEach(function(x){x.removeAttribute('aria-invalid');});
     var bad = name.length<3 ? [n,'Escribe tu nombre completo.'] : !/^3\d{9}$/.test(phone) ? [p,'Escribe un celular de 10 dígitos que empiece por 3.'] : !fDate.value ? [fDate,'Escoge el día de tu visita.'] : !fTime.value ? [fTime,'Escoge una hora disponible.'] : !ok.checked ? [ok,'Acepta la política de datos para continuar.'] : null;
     if(bad){ bad[0].setAttribute('aria-invalid','true'); err.textContent=bad[1]; err.classList.add('on'); bad[0].focus(); return; }
