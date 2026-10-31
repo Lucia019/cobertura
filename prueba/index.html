@@ -770,6 +770,8 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
 .vday{flex:none;scroll-snap-align:start;width:62px;padding:8px 0;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:#174C46;display:grid;gap:1px;justify-items:center;font-family:inherit;cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
 .vday span{font-size:.74rem;color:#4E5D58}.vday b{font-size:1.25rem;line-height:1.1}.vday em{font-style:normal;font-size:.72rem;color:#4E5D58;text-transform:uppercase;letter-spacing:.04em}
 .vday:active{transform:scale(.94)}
+.vday:disabled{opacity:.45;cursor:not-allowed;background:#EEF1EF;border-style:dashed}.vday:disabled b{text-decoration:line-through}
+.d-day:disabled{opacity:.45;cursor:not-allowed;border-style:dashed}.d-day:disabled b{text-decoration:line-through}
 .vday.on{background:#174C46;border-color:#174C46;color:#fff}.vday.on span,.vday.on em{color:#CFE9E4}
 
 .ft-links svg.ic2{padding:5px;stroke:none;background:rgba(120,185,178,.14)}
@@ -1247,7 +1249,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <details><summary>¿Hacen envíos fuera de Villavicencio?<i aria-hidden="true"></i></summary><p class="ans">Sí, a municipios del Meta como Acacías, Restrepo y Cumaral. El envío se suma al pagar y lo ves antes de confirmar tu pedido.</p></details>
       <details><summary>¿Tiene garantía?<i aria-hidden="true"></i></summary><p class="ans">Sí. Si hay un defecto de fábrica, Pureza Natural hace el trámite de la garantía ante AguaLogic en tu nombre.</p></details>
       <details><summary>¿Puedo devolverlo?<i aria-hidden="true"></i></summary><p class="ans">Sí. Tienes 5 días hábiles desde la entrega para retractarte, con el producto en su estado original.</p></details>
-      <details><summary>¿Puedo verlo antes de comprar?<i aria-hidden="true"></i></summary><p class="ans">Sí. Puedes verlo en <b>Ferrecubiertas</b> (Calle 35 A No. 27-86, San Isidro, Villavicencio). <a href="#" data-vis style="color:#174C46;font-weight:700">Agenda tu visita aquí</a> y te confirmamos por WhatsApp.</p></details>
+      <details><summary>¿Puedo verlo antes de comprar?<i aria-hidden="true"></i></summary><p class="ans">Sí. Puedes verlo en <b>Ferrecubiertas</b> (Calle 35 A No. 27-86, San Isidro, Villavicencio). <a href="#" data-vis style="color:#174C46;font-weight:700">Agenda tu visita aquí</a>: escoges el día y la hora, y la hora queda reservada para ti al instante.</p></details>
     </div>
   </div>
 </section>
@@ -1290,8 +1292,8 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
     <p class="vis-h" id="vHint"></p>
     <label class="chk"><input type="checkbox" id="vOk" required><span>Acepto la <a href="tratamiento-de-datos.html" target="_blank" rel="noopener">política de tratamiento de datos</a>. Usarán mi nombre y celular solo para confirmar y recordarme la visita.</span></label>
     <p class="err" id="vErr" role="alert"></p>
-    <div class="vis-thanks" id="vThanks" role="status" tabindex="-1" hidden><b>¡Gracias, <span id="vThN"></span>!</b><p>Tu visita quedó escrita en WhatsApp. <strong>Toca Enviar para que nos llegue.</strong> En poco nos comunicamos contigo para confirmarla.</p><button type="button" class="btn btn-cta" id="vThX">Listo</button></div>
-    <div class="vis-b" id="vBtns"><button type="button" class="btn btn-line" id="vNo">Cancelar</button><button type="submit" class="btn btn-cta">Agendar por WhatsApp</button></div>
+    <div class="vis-thanks" id="vThanks" role="status" tabindex="-1" hidden><b>¡Gracias, <span id="vThN"></span>!</b><p></p><button type="button" class="btn btn-cta" id="vThX">Listo</button></div>
+    <div class="vis-b" id="vBtns"><button type="button" class="btn btn-line" id="vNo">Cancelar</button><button type="submit" class="btn btn-cta">Reservar mi hora</button></div>
   </form>
 </dialog>
 
@@ -1315,7 +1317,7 @@ body.rm .product-shot .dim path{stroke-dashoffset:0;transition:none}
       <div class="d-card d-visit">
         <h3><span class="d-ic" aria-hidden="true">📅</span> Agenda tu visita</h3>
         <p>Míralo en persona en Ferrecubiertas y compra ahí mismo. Toma 1 minuto:</p>
-        <ol class="d-steps"><li><b>1</b> Toca un día</li><li><b>2</b> Escoge la hora</li><li><b>3</b> Te confirmamos por WhatsApp</li></ol>
+        <ol class="d-steps"><li><b>1</b> Toca un día</li><li><b>2</b> Escoge la hora</li><li><b>3</b> Tu hora queda reservada</li></ol>
         <div class="d-days" id="dDays" role="group" aria-label="Escoge el día de tu visita"></div>
         <button type="button" class="btn btn-cta" data-vis>Ver más días y horas</button>
       </div>
@@ -1486,13 +1488,13 @@ var PN_HOOK = 'https://script.google.com/macros/s/AKfycbwftsLRlt29GHRbcG5VrVP0Y6
 function pnNombre(s){ var p={de:1,del:1,la:1,las:1,los:1,y:1,e:1}; return String(s||'').replace(/\s+/g,' ').trim().toLowerCase().split(' ').map(function(w,i){ return (i&&p[w])?w:w.charAt(0).toUpperCase()+w.slice(1); }).join(' '); }
 function enviarRegistro(datos){
   return new Promise(function(resolve){
-    var fin = false;
+    var fin = false; enviarRegistro.ultimo = '';
     function cierra(v){ if(!fin){ fin = true; clearTimeout(t); resolve(v); } }
     var t = setTimeout(function(){ cierra(false); }, 12000);
     try{
       fetch(PN_HOOK, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(datos) })
         .then(function(r){ return r.text(); })
-        .then(function(x){ cierra(x.trim() === 'ok'); })
+        .then(function(x){ enviarRegistro.ultimo = x.trim(); cierra(enviarRegistro.ultimo === 'ok'); })
         .catch(function(){ cierra(false); });
     }catch(e){ cierra(false); }
   });
@@ -2293,21 +2295,30 @@ function pnBocina(){
   function parse(v){ var p=v.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
   function rango(dow){ return dow===0 ? [8*60,12*60+30,'8:00 a.m. a 1:00 p.m.'] : dow===6 ? [7*60+30,16*60+30,'7:30 a.m. a 5:00 p.m.'] : [7*60+30,17*60+30,'7:30 a.m. a 6:00 p.m.']; }
   function hora(m){ var h=Math.floor(m/60), mm=m%60, ap=h>=12?'p.m.':'a.m.'; h=h%12||12; return h+':'+String(mm).padStart(2,'0')+' '+ap; }
+  var ocupadas=[];
+  function cargaOcupadas(cb){ var fin=false; function ya(){ if(!fin){ fin=true; if(cb) cb(); } } setTimeout(ya,6000);
+    try{ fetch(PN_HOOK+'?visitas=1').then(function(r){ return r.json(); }).then(function(j){ ocupadas=(j&&j.ocupadas)||[]; ya(); }).catch(ya); }catch(e){ ya(); } }
+  function horas(v){ var dt=parse(v), r=rango(dt.getDay()), now=new Date(), hoy=iso(now)===v, nowM=now.getHours()*60+now.getMinutes()+60, out=[]; for(var m=r[0]; m<=r[1]; m+=30){ if(hoy && m<nowM) continue; out.push(hora(m)); } return out; }
+  function libre(v,h){ return ocupadas.indexOf(v+'|'+h)===-1; }
+  function hayLibre(v){ return horas(v).some(function(h){ return libre(v,h); }); }
   function fill(){
     fTime.innerHTML='';
     if(!fDate.value){ hint.textContent='Escoge primero el día.'; return; }
-    var dt=parse(fDate.value), r=rango(dt.getDay()), now=new Date(), hoy=iso(now)===fDate.value, nowM=now.getHours()*60+now.getMinutes()+60;
-    for(var m=r[0]; m<=r[1]; m+=30){ if(hoy && m<nowM) continue; var o=document.createElement('option'); o.value=hora(m); o.textContent=hora(m); fTime.appendChild(o); }
-    hint.textContent='Atendemos el '+DIAS[dt.getDay()]+' de '+r[2]+(fTime.options.length?'':'. Ya no hay horas hoy; escoge otro día.');
+    var dt=parse(fDate.value), r=rango(dt.getDay()), hs=horas(fDate.value), libres=0, primera=-1;
+    hs.forEach(function(h,i){ var ok=libre(fDate.value,h), o=document.createElement('option'); o.value=h; o.textContent=ok?h:h+' · ya reservada'; o.disabled=!ok; if(ok){ libres++; if(primera<0) primera=i; } fTime.appendChild(o); });
+    fTime.selectedIndex=primera;
+    hint.textContent='Atendemos el '+DIAS[dt.getDay()]+' de '+r[2]+(!hs.length?'. Ya no hay horas hoy; escoge otro día.':!libres?'. Este día ya no tiene horas libres; escoge otro.':'. Las horas marcadas como reservadas ya las tomó otra persona.');
   }
   var vDays=document.getElementById('vDays'), dn2=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   function pinta(){
-    var t0=new Date(), base=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()), html='', first='';
+    var t0=new Date(), base=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()), html='', first='', lista=[];
     for(var i=0,k=0;k<14&&i<20;i++){ var x=new Date(base.getFullYear(),base.getMonth(),base.getDate()+i);
       if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
-      var v=iso(x); if(!first) first=v; if(!fDate.value||fDate.value<first) fDate.value=first;
-      html+='<button type="button" role="radio" class="vday" data-d="'+v+'" aria-label="'+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]+'"><span>'+(i===0?'Hoy':i===1?'Mañana':dn2[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+MES[x.getMonth()]+'</em></button>'; }
-    vDays.innerHTML=html; if(!vDays.querySelector('[data-d="'+fDate.value+'"]')) fDate.value=first;
+      var v=iso(x), lleno=!hayLibre(v); lista.push(v); if(!first && !lleno) first=v;
+      html+='<button type="button" role="radio" class="vday'+(lleno?' full':'')+'"'+(lleno?' disabled':'')+' data-d="'+v+'" aria-label="'+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]+(lleno?', sin horas libres':'')+'"><span>'+(i===0?'Hoy':i===1?'Mañana':dn2[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+(lleno?'lleno':MES[x.getMonth()])+'</em></button>'; }
+    if(!first) first=lista[0];
+    if(lista.indexOf(fDate.value)===-1 || !hayLibre(fDate.value)) fDate.value=first;
+    vDays.innerHTML=html;
     vDays.querySelectorAll('.vday').forEach(function(b){ var on=b.getAttribute('data-d')===fDate.value; b.setAttribute('aria-checked',on); b.classList.toggle('on',on); if(on){ vDays.scrollLeft=Math.max(0,b.offsetLeft-12); } });
   }
   vDays.addEventListener('click',function(e){ var b=e.target.closest('.vday'); if(!b) return; fDate.value=b.getAttribute('data-d'); fill(); pinta(); });
@@ -2316,14 +2327,16 @@ function pnBocina(){
     var t=new Date(), min=new Date(t.getFullYear(),t.getMonth(),t.getDate()), max=new Date(min); max.setDate(max.getDate()+30);
     document.querySelectorAll('#visForm > label, #visForm .vday-wrap, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=false;}); document.getElementById('vThanks').hidden=true;
     fDate.min=iso(min); fDate.max=iso(max); if(!fDate.value) fDate.value=iso(min); pinta(); fill(); err.classList.remove('on'); d.showModal();
+    cargaOcupadas(function(){ pinta(); fill(); rapidos(); });
   }
   btn.addEventListener('click', abrir);
   document.querySelectorAll('[data-vis]').forEach(function(x){ x.addEventListener('click', abrir); });
   var box=document.getElementById('dDays'), dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-  if(box){ var t0=new Date(); for(var i=0,k=0;k<4&&i<10;i++){ var x=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i); if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
-    var bt=document.createElement('button'); bt.type='button'; bt.className='d-day'; bt.setAttribute('data-d',iso(x)); bt.setAttribute('aria-label','Agendar el '+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]);
-    bt.innerHTML='<span>'+(i===0?'Hoy':i===1?'Mañana':dn[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+MES[x.getMonth()]+'</em>'; box.appendChild(bt); }
-    box.addEventListener('click',function(e){ var q=e.target.closest('.d-day'); if(!q) return; abrir(e); fDate.value=q.getAttribute('data-d'); pinta(); fill(); }); }
+  function rapidos(){ if(!box) return; box.innerHTML=''; var t0=new Date(); for(var i=0,k=0;k<4&&i<10;i++){ var x=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i); if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
+    var v=iso(x), lleno=!hayLibre(v), bt=document.createElement('button'); bt.type='button'; bt.className='d-day'; bt.disabled=lleno; bt.setAttribute('data-d',v); bt.setAttribute('aria-label','Agendar el '+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]+(lleno?', sin horas libres':''));
+    bt.innerHTML='<span>'+(i===0?'Hoy':i===1?'Mañana':dn[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+(lleno?'lleno':MES[x.getMonth()])+'</em>'; box.appendChild(bt); } }
+  if(box){ rapidos(); cargaOcupadas(rapidos);
+    box.addEventListener('click',function(e){ var q=e.target.closest('.d-day'); if(!q||q.disabled) return; abrir(e); fDate.value=q.getAttribute('data-d'); pinta(); fill(); }); }
   fDate.addEventListener('change', fill);
   document.getElementById('vThX').addEventListener('click', function(){ d.close(); });
   document.getElementById('vNo').addEventListener('click', function(){ d.close(); });
@@ -2338,12 +2351,13 @@ function pnBocina(){
     var dt=parse(fDate.value), pretty=phone.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3');
     var msg='Visita a Ferrecubiertas\nNombre: '+name+'\nCelular: '+pretty+'\nDía: '+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+'\nHora: '+fTime.value;
     var vb=document.querySelector('#visForm button[type=submit]'), vbt=vb.textContent; vb.disabled=true; vb.textContent='Agendando…';
-    enviarRegistro({ tipo:'visita', nombre:name, celular:pretty, detalle:msg }).then(function(ok){
+    enviarRegistro({ tipo:'visita', nombre:name, celular:pretty, detalle:msg, clave:fDate.value+'|'+fTime.value }).then(function(ok){
       vb.disabled=false; vb.textContent=vbt;
+      if(enviarRegistro.ultimo==='ocupado'){ cargaOcupadas(function(){ pinta(); fill(); rapidos(); }); err.textContent='Otra persona acaba de reservar esa hora. Ya actualizamos las horas libres: escoge otra.'; err.classList.add('on'); return; }
       if(ok) pnTrack('Schedule', {content_name:'Visita a Ferrecubiertas'});
       var vp=document.querySelector('#vThanks p');
-      if(ok){ vp.innerHTML='Agendamos tu visita. <strong>En poco nos comunicamos contigo</strong> por WhatsApp para confirmarla.'; }
-      else { window.open(waURL(msg),'_blank','noopener'); vp.innerHTML='No pudimos registrar tu visita en la página. Quedó escrita en WhatsApp: <strong>toca Enviar para que nos llegue.</strong>'; }
+      if(ok){ vp.innerHTML='Tu visita quedó agendada para el <strong>'+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+' a las '+fTime.value+'</strong>. Te esperamos en Ferrecubiertas, Calle 35 A No. 27-86. No necesitas confirmar nada. Si no puedes venir, escríbenos por WhatsApp para liberar tu hora.'; ocupadas.push(fDate.value+'|'+fTime.value); rapidos(); }
+      else { window.open(waURL(msg),'_blank','noopener'); vp.innerHTML='No pudimos reservar tu hora desde la página. Quedó escrita en WhatsApp: <strong>toca Enviar para que nos llegue</strong> y allí te decimos si esa hora sigue libre.'; }
       document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vday-wrap, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
     });
   });
