@@ -2307,7 +2307,7 @@ function pnBocina(){
     var dt=parse(fDate.value), r=rango(dt.getDay()), hs=horas(fDate.value), libres=0, primera=-1;
     hs.forEach(function(h,i){ var ok=libre(fDate.value,h), o=document.createElement('option'); o.value=h; o.textContent=ok?h:h+' · ya reservada'; o.disabled=!ok; if(ok){ libres++; if(primera<0) primera=i; } fTime.appendChild(o); });
     fTime.selectedIndex=primera;
-    hint.textContent='Atendemos el '+DIAS[dt.getDay()]+' de '+r[2]+(!hs.length?'. Ya no hay horas hoy; escoge otro día.':!libres?'. Este día ya no tiene horas libres; escoge otro.':'. Las horas marcadas como reservadas ya las tomó otra persona.');
+    hint.textContent='Atendemos el '+DIAS[dt.getDay()]+' de '+r[2]+(!hs.length?' Ya no hay horas hoy; escoge otro día.':!libres?' Este día ya no tiene horas libres; escoge otro.':' Las horas marcadas como reservadas ya las tomó otra persona.');
   }
   var vDays=document.getElementById('vDays'), dn2=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   function pinta(){
