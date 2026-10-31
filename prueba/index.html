@@ -2299,6 +2299,8 @@ function pnBocina(){
   function cargaOcupadas(cb){ var fin=false; function ya(){ if(!fin){ fin=true; if(cb) cb(); } } setTimeout(ya,6000);
     try{ fetch(PN_HOOK+'?visitas=1').then(function(r){ return r.json(); }).then(function(j){ ocupadas=(j&&j.ocupadas)||[]; ya(); }).catch(ya); }catch(e){ ya(); } }
   function horas(v){ var dt=parse(v), r=rango(dt.getDay()), now=new Date(), hoy=iso(now)===v, nowM=now.getHours()*60+now.getMinutes()+60, out=[]; for(var m=r[0]; m<=r[1]; m+=30){ if(hoy && m<nowM) continue; out.push(hora(m)); } return out; }
+  function calUrl(v,h){ var m=/^(\d+):(\d+) (a|p)\.m\./.exec(h), hh=(+m[1])%12+(m[3]==='p'?12:0), mm=+m[2], f=v.replace(/-/g,''), z=function(n){ return String(n).padStart(2,'0'); }, fin=hh*60+mm+30;
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('Visita a Ferrecubiertas (Pureza Natural)')+'&dates='+f+'T'+z(hh)+z(mm)+'00/'+f+'T'+z(Math.floor(fin/60))+z(fin%60)+'00&ctz=America/Bogota&location='+encodeURIComponent('Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio')+'&details='+encodeURIComponent('Ven a ver el purificador AguaLogic. Si no puedes venir, escríbenos por WhatsApp al 305 352 9366 para liberar tu hora.'); }
   function libre(v,h){ return ocupadas.indexOf(v+'|'+h)===-1; }
   function hayLibre(v){ return horas(v).some(function(h){ return libre(v,h); }); }
   function fill(){
@@ -2356,7 +2358,7 @@ function pnBocina(){
       if(enviarRegistro.ultimo==='ocupado'){ cargaOcupadas(function(){ pinta(); fill(); rapidos(); }); err.textContent='Otra persona acaba de reservar esa hora. Ya actualizamos las horas libres: escoge otra.'; err.classList.add('on'); return; }
       if(ok) pnTrack('Schedule', {content_name:'Visita a Ferrecubiertas'});
       var vp=document.querySelector('#vThanks p');
-      if(ok){ vp.innerHTML='Tu visita quedó agendada para el <strong>'+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+' a las '+fTime.value+'</strong>. Te esperamos en Ferrecubiertas, Calle 35 A No. 27-86. No necesitas confirmar nada. Si no puedes venir, escríbenos por WhatsApp para liberar tu hora.'; ocupadas.push(fDate.value+'|'+fTime.value); rapidos(); }
+      if(ok){ vp.innerHTML='Tu visita quedó agendada para el <strong>'+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+' a las '+fTime.value+'</strong>. Te esperamos en Ferrecubiertas, Calle 35 A No. 27-86. No necesitas confirmar nada. Si no puedes venir, escríbenos por WhatsApp para liberar tu hora.<br><a class="btn btn-line" style="margin-top:10px;display:inline-block" target="_blank" rel="noopener" href="'+calUrl(fDate.value,fTime.value)+'">Guardar en mi Google Calendar</a>'; ocupadas.push(fDate.value+'|'+fTime.value); rapidos(); }
       else { window.open(waURL(msg),'_blank','noopener'); vp.innerHTML='No pudimos reservar tu hora desde la página. Quedó escrita en WhatsApp: <strong>toca Enviar para que nos llegue</strong> y allí te decimos si esa hora sigue libre.'; }
       document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vday-wrap, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
     });
