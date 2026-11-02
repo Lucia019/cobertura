@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Avance Landing Pureza Natural</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Concepto: informe de avance en tres tiempos. Antes y ahora, cada mejora una por una, y lo que falta con responsable. Paleta y tipos de la landing. */
+:root {
+  --bg: #F4F1E9;
+  --panel: #FBF9F4;
+  --ink: #24302E;
+  --ink-2: #4E5D58;
+  --line: #DDD6C6;
+  --green: #174C46;
+  --on-green: #E3EEEA;
+  --on-green-2: #B9D0C9;
+  --terra: #A85A36;
+  --water: #007585;
+  --ok-bg: #DCEBE5;
+  --ok-fg: #174C46;
+  --wait-bg: #F3E3D6;
+  --wait-fg: #8A4623;
+  --test-bg: #D8EAEE;
+  --test-fg: #005A67;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101A18; --panel: #16231F; --ink: #E6EEEB; --ink-2: #A9BCB6; --line: #2B3B36;
+    --green: #0E2E2A; --on-green: #E3EEEA; --on-green-2: #A9C6BE; --terra: #E39A74; --water: #5FC3CF;
+    --ok-bg: #1F3A33; --ok-fg: #A9DCCB; --wait-bg: #3A2A20; --wait-fg: #EDB28F; --test-bg: #17363C; --test-fg: #9ADBE5;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101A18; --panel: #16231F; --ink: #E6EEEB; --ink-2: #A9BCB6; --line: #2B3B36;
+  --green: #0E2E2A; --on-green: #E3EEEA; --on-green-2: #A9C6BE; --terra: #E39A74; --water: #5FC3CF;
+  --ok-bg: #1F3A33; --ok-fg: #A9DCCB; --wait-bg: #3A2A20; --wait-fg: #EDB28F; --test-bg: #17363C; --test-fg: #9ADBE5;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; margin: 0; }
+.wrap { max-width: 880px; margin: 0 auto; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+header.top { background: var(--green); color: var(--on-green); padding-block: 40px 36px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--on-green-2); margin: 0 0 12px; }
+h1 { font-family: var(--font-display); font-size: clamp(30px, 6vw, 46px); line-height: 1.08; margin: 0 0 14px; font-weight: 700; text-wrap: balance; }
+.lead { color: var(--on-green); max-width: 62ch; margin: 0 0 22px; font-size: 17px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--on-green-2); }
+.meta a { color: var(--on-green); }
+.sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 28px; border-top: 1px solid rgba(227,238,234,.25); }
+.sum div { padding: 16px 12px 0 0; }
+.sum b { font-family: var(--font-display); font-size: 34px; display: block; line-height: 1; color: #fff; }
+.sum span { font-size: 13px; color: var(--on-green-2); }
+main { padding-block: 36px 56px; }
+h2 { font-family: var(--font-display); font-size: clamp(22px, 4vw, 28px); margin: 48px 0 6px; line-height: 1.15; text-wrap: balance; }
+h2:first-child { margin-top: 0; }
+.sub { color: var(--ink-2); margin: 0 0 20px; max-width: 64ch; }
+.group { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--terra); margin: 30px 0 10px; }
+.item { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; margin: 0 0 10px; }
+.item .row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
+.item h3 { font-family: var(--font-display); font-size: 18px; margin: 0; line-height: 1.25; flex: 1 1 260px; min-width: 0; }
+.item p { margin: 6px 0 0; color: var(--ink-2); font-size: 15px; }
+.item p b, p b { color: var(--ink); font-weight: 600; }
+.tag { font-family: var(--font-mono); font-size: 12px; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+.t-ok { background: var(--ok-bg); color: var(--ok-fg); }
+.t-test { background: var(--test-bg); color: var(--test-fg); }
+.t-wait { background: var(--wait-bg); color: var(--wait-fg); }.msg { border-left: 3px solid var(--water); background: var(--panel); margin: 10px 0 0; padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 14px; }
+.msg b { color: var(--ink); margin-right: 10px; }
+.msg span { font-size: 13px; color: var(--ink-2); }
+.msg p { margin: 4px 0 0 !important; white-space: normal; }
+.vids { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 18px; font-size: 15px; }
+.vids a { color: var(--water); text-underline-offset: 3px; }
+@media (max-width: 520px) { .vids { grid-template-columns: 1fr; } }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 15px; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td.who { white-space: nowrap; font-weight: 600; }
+td.k { font-weight: 600; width: 22%; }
+td.old { color: var(--ink-2); }
+td small { display: block; color: var(--ink-2); font-size: 13px; margin-top: 2px; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.decide { background: var(--green); color: var(--on-green); border-radius: 6px; padding: 22px 22px 8px; margin-top: 8px; }
+.decide h3 { font-family: var(--font-display); margin: 0 0 12px; font-size: 20px; }
+.decide ol { margin: 0 0 14px; padding-left: 22px; }
+.decide li { margin-bottom: 10px; }
+.decide li span { color: var(--on-green-2); }
+.note { font-size: 14px; color: var(--ink-2); border-left: 3px solid var(--water); padding: 2px 0 2px 14px; margin: 22px 0 0; max-width: 66ch; }
+.explain { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 22px; }
+.explain div { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+.explain b { font-family: var(--font-display); display: block; margin-bottom: 2px; }
+.explain span { font-size: 14px; color: var(--ink-2); }
+.verdict { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--water); border-radius: 6px; padding: 16px 18px; margin-top: 16px; }
+.verdict p { margin: 0 0 8px; }
+.verdict p:last-child { margin: 0; }
+footer { color: var(--ink-2); font-size: 13px; padding-block: 0 40px; }
+@media (max-width: 620px) { .explain { grid-template-columns: 1fr; } .sum b { font-size: 28px; } header.top { padding-block: 30px 28px; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Pureza Natural · Informe de avance</p>
+    <h1>Landing de compra: lo que mejoramos y lo que falta</h1>
+    <p class="lead">Una página de compra sin distracciones, con pago, seguimiento del pedido, mapas, agenda de visitas y avisos al cliente en cada etapa. Este informe compara con la landing anterior, muestra cada mejora una por una y cierra con lo que necesitamos para publicarla.</p>
+    <div class="meta">
+      <span>31 de octubre de 2026</span>
+      <span>Estado: borrador, no publicado</span>
+      <a href="https://lucia019.github.io/cobertura/prueba/" target="_blank" rel="noopener">Ver la landing de prueba</a>
+    </div>
+    <div class="sum" aria-label="Resumen">
+      <div><b>15</b><span>mejoras entregadas</span></div>
+      <div><b>13</b><span>funcionando en la página de prueba</span></div>
+      <div><b>18</b><span>pendientes: 9 datos del negocio y 9 pasos</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2>Antes y ahora</h2>
+  <p class="sub">La landing anterior ya presentaba bien el producto. La nueva conserva esa parte y suma todo lo que pasa después de que el cliente decide comprar.</p>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Aspecto</th><th>Landing anterior</th><th>Landing nueva</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Cerrar la compra</td><td class="old">No tenía pago ni cierre del pedido dentro de la página.</td><td>El cliente finaliza el pedido en la página: pago por Nequi, contraentrega o recogida en tienda.</td></tr>
+        <tr><td class="k">Pago</td><td class="old">No existía.</td><td>Pantalla de pago con la llave para copiar, el valor exacto y el envío del comprobante.</td></tr>
+        <tr><td class="k">Seguimiento</td><td class="old">No existía.</td><td>"Consulta tu pedido" con número de pedido y celular. Bloqueado hasta confirmar el pago.</td></tr>
+        <tr><td class="k">Cobertura y entrega</td><td class="old">No mostraba mapas.</td><td>Mapa de cobertura con barrio y comuna, y mapa de recogida con ruta hasta la tienda.</td></tr>
+        <tr><td class="k">Visita a la tienda</td><td class="old">No tenía agenda.</td><td>El cliente escoge día y hora para visitar Ferrecubiertas. La hora queda reservada al instante y a nadie más le aparece libre.</td></tr>
+        <tr><td class="k">Fecha de entrega</td><td class="old">Sin fecha estimada visible.</td><td>Rango de fechas de despacho, bajo reserva.</td></tr>
+        <tr><td class="k">Dudas frecuentes</td><td class="old">Preguntas generales.</td><td>Se suma "¿Llegan a mi barrio?" y el formulario pide barrio y comuna.</td></tr>
+        <tr><td class="k">Aviso al cliente</td><td class="old">Todo manual, mensaje por mensaje.</td><td>Mensajes y videos por etapa, y avisos automáticos al cambiar el estado (falta activar Meta).</td></tr>
+        <tr><td class="k">Control de pedidos</td><td class="old">No guardaba pedidos, visitas ni dudas en ninguna hoja.</td><td>Una hoja de cálculo con panel, filtros, estados, guía de envío, visitas y dudas, que recibe todo directo desde la página.</td></tr>
+        <tr><td class="k">Registro de clientes</td><td class="old">A mano.</td><td>Cada pedido crea el contacto en Google Contactos.</td></tr>
+        <tr><td class="k">Presentación del producto</td><td class="old">Problema, cómo funciona, laboratorio, producto, calculadora, opiniones y preguntas.</td><td>Se conserva. La calculadora ahora se explica en lenguaje sencillo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Lo que ya está hecho</h2>
+  <p class="sub">Cada mejora indica si ya funciona o si todavía depende de un dato o de una cuenta.</p>
+
+  <p class="group">Compra y pago</p>
+
+  <div class="item">
+    <div class="row"><h3>1. Pago por llave Nequi</h3><span class="tag t-test">Listo, con llave de prueba</span></div>
+    <p>Una pantalla de pago sin enlaces que distraigan. Muestra el valor exacto, la llave con botón para copiarla y el nombre del titular, y el cliente envía el comprobante por WhatsApp. <b>Aún no se sabe si se usará la llave de Ferrecubiertas.</b> La llave que aparece hoy es de prueba.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>2. Calculadora más fácil de entender</h3><span class="tag t-ok">Listo</span></div>
+    <p>La explicación se reescribió en lenguaje sencillo, con la ayuda justo donde el cliente se detiene. Se mantienen todas las cifras importantes.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>3. Fecha estimada de despacho, bajo reserva</h3><span class="tag t-ok">Listo</span></div>
+    <p>El cliente ve un rango de fechas y entiende que es una reserva, no una entrega inmediata.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>4. Foto de la cocina completa en computador</h3><span class="tag t-ok">Listo</span></div>
+    <p>La imagen ya no se corta en pantallas anchas.</p>
+  </div>
+
+  <p class="group">Seguimiento del pedido</p>
+
+  <div class="item">
+    <div class="row"><h3>5. Seguimiento bloqueado hasta confirmar el pago</h3><span class="tag t-ok">Listo</span></div>
+    <p>Antes, un pedido pagado por Nequi aparecía como "recibido" sin que hubiera pago. Ahora el cliente ve <b>"Estamos esperando tu pago"</b> y un botón para enviar el comprobante. Cuando se confirma el dinero, aparece <b>"¡Pago confirmado!"</b> y se habilita la ruta del pedido con su guía.</p>
+  </div>
+
+  <p class="group">Entrega, cobertura y visitas</p>
+
+  <div class="item">
+    <div class="row"><h3>6. Mapa de recogida propio</h3><span class="tag t-ok">Listo</span></div>
+    <p>Muestra solo la tienda de Ferrecubiertas, con la marca de Pureza Natural. El cliente escribe su punto de partida o usa su ubicación y ve la ruta dentro de la misma página. Ya no lo envía a Google ni se pierde.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>7. Mapa de cobertura sin distracciones</h3><span class="tag t-ok">Listo</span></div>
+    <p>Se quitó el enlace desde la pantalla de pago. Si el cliente no encuentra su barrio, el mapa le pide el nombre o el número de su comuna. La zona 1 muestra <b>envío gratis</b>.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>8. Pregunta "¿Llegan a mi barrio?"</h3><span class="tag t-ok">Listo</span></div>
+    <p>Está en las preguntas frecuentes, y el formulario ahora pide <b>barrio y comuna</b> para evitar errores en el despacho.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>9. Agenda de visitas a Ferrecubiertas</h3><span class="tag t-test">Listo, falta confirmar horarios</span></div>
+    <p>El cliente toca un día, escoge la hora y agenda su visita para ver el purificador en persona y comprar ahí mismo. La hora que elige es definitiva: no hay que coordinar nada ni confirmar por WhatsApp. Si una hora ya fue tomada, aparece marcada como reservada, y un día sin horas libres aparece tachado y como "lleno", así nunca coinciden dos clientes. Cada visita queda en la hoja y, en la pestaña <b>Agenda</b>, ordenada por día y hora para que la vea quien dirige el negocio. Al agendar, al cliente le aparece una ventana con su nombre, el día y la hora de la visita, un botón para guardarla en su Google Calendar y otro para volver a la página. Falta confirmar con Ferrecubiertas los días y las horas que se ofrecen. Un recordatorio automático por WhatsApp el día anterior es posible, pero necesitaría una plantilla más en Meta, así que queda para cuando los avisos estén activos.</p>
+  </div>
+
+  <p class="group">Comunicación con el cliente</p>
+
+  <div class="item">
+    <div class="row"><h3>10. Mensajes de WhatsApp para cada etapa</h3><span class="tag t-ok">Listo</span></div>
+    <p>Nueve mensajes, uno por etapa, todos en el tono de la marca. Los datos del ejemplo (nombre, pedido, total, fechas) los completa la hoja sola con los de cada cliente. El último es nuevo: avisa la visita agendada con el día y la hora, y un enlace para guardarla en Google Calendar.</p>
+<div class="msg"><b>1. Pedido recibido</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/01-pedido-recibido.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía 😊 Recibimos tu pedido PN-20261030-S2LP. Gracias por confiar en Pureza Natural.<br>Despacho estimado (bajo reserva): del 12 al 23 de noviembre de 2026. Antes de enviarlo te escribimos para coordinar el día y la hora.</p></div>
+<div class="msg"><b>2. Esperando tu pago (Nequi)</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/02-esperando-pago.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. Para reservar tu pedido PN-20261030-S2LP, haz la transferencia por $810.000 a la llave [llave del negocio]. Al confirmar debe aparecer el nombre FERRECUBIERTAS S.A.S.<br>En la descripción escribe tu número de pedido y envíanos aquí la captura del comprobante.</p></div>
+<div class="msg"><b>3. Pago confirmado</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/03-pago-confirmado.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. Ya recibimos tu pago ✅ Tu pedido PN-20261030-S2LP por $810.000 quedó reservado.<br>Despacho estimado: del 12 al 23 de noviembre de 2026. Puedes ver cómo va en "Consulta tu pedido", en nuestra página, con tu número de pedido y tu celular.</p></div>
+<div class="msg"><b>4. En preparación</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/04-en-preparacion.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. Ya estamos alistando tu purificador PN-20261030-S2LP. Te avisamos apenas salga hacia ti.</p></div>
+<div class="msg"><b>5. Despachado</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/05-despachado.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. Tu purificador PN-20261030-S2LP ya salió 📦 Te escribo para coordinar la entrega.</p></div>
+<div class="msg"><b>6. En camino</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/06-en-camino.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. Tu purificador PN-20261030-S2LP va en camino 🚚 Por favor, ten a la mano tu número de pedido.</p></div>
+<div class="msg"><b>7. Pedido entregado</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/07-entregado.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. ¡Ya tienes tu purificador! 🎉 Gracias por confiar en Pureza Natural.<br>Si tienes dudas con el primer uso o el primer curado de la vasija, responde este mensaje y te guiamos. Tienes 5 días hábiles desde la entrega para retractarte, con el producto en su estado original.</p></div>
+<div class="msg"><b>8. Listo para recoger</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/08-listo-para-recoger.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. Tu purificador PN-20261030-S2LP ya está listo para recoger 🎉<br>📍 Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio. Horario: lunes a viernes de 8:00 a. m. a 5:00 p. m.<br>Trae tu número de pedido y tu cédula.</p></div>
+<div class="msg"><b>9. Visita agendada (nuevo)</b><span>Video: <a href="https://lucia019.github.io/cobertura/estados/09-visita-agendada.mp4" target="_blank" rel="noopener">ver</a></span><p>Hola, Lucía. Tu visita quedó agendada para el sábado 12 de diciembre a las 10:00 a. m. 📅<br>📍 Te esperamos en Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio.<br>Guarda el día en tu calendario: {enlace a Google Calendar}. Si no puedes venir, responde este mensaje para liberar tu hora.</p></div>
+
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>11. Nueve videos animados, uno por mensaje</h3><span class="tag t-ok">Listo</span></div>
+    <p>Son verticales (formato de celular, 9:16), duran 6 segundos, pesan unos 100 KB, usan los colores y el lema de la landing y llevan un sonido suave. Toca cada enlace para verlo:</p>
+    <ul class="vids">
+      <li><a href="https://lucia019.github.io/cobertura/estados/01-pedido-recibido.mp4" target="_blank" rel="noopener">1. Pedido recibido</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/02-esperando-pago.mp4" target="_blank" rel="noopener">2. Esperando tu pago</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/03-pago-confirmado.mp4" target="_blank" rel="noopener">3. Pago confirmado</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/04-en-preparacion.mp4" target="_blank" rel="noopener">4. En preparación</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/05-despachado.mp4" target="_blank" rel="noopener">5. Despachado</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/06-en-camino.mp4" target="_blank" rel="noopener">6. En camino</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/07-entregado.mp4" target="_blank" rel="noopener">7. Pedido entregado</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/08-listo-para-recoger.mp4" target="_blank" rel="noopener">8. Listo para recoger</a></li>
+      <li><a href="https://lucia019.github.io/cobertura/estados/09-visita-agendada.mp4" target="_blank" rel="noopener">9. Visita agendada (nuevo)</a></li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>12. Aviso automático de WhatsApp al cambiar el estado</h3><span class="tag t-wait">Código listo, falta Meta</span></div>
+    <p>Al cambiar el estado en la hoja, sale solo el mensaje con su video, con el nombre, el pedido y el total ya completos. Usa la API oficial de WhatsApp, sin proveedor intermedio y sin mensualidad. Falta crear la cuenta de Meta y aprobar las plantillas (ver abajo).</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>13. Contacto creado automáticamente por cada pedido</h3><span class="tag t-ok">Probado</span></div>
+    <p>Cada pedido nuevo crea el cliente en Google Contactos como <b>"Ana · PN-20261030-S2LP"</b>, con su celular. Se probó de principio a fin desde la landing. En el celular aparece al activar la sincronización de la cuenta.</p>
+  </div>
+
+  <p class="group">Control del negocio</p>
+
+  <div class="item">
+    <div class="row"><h3>14. Hoja de cálculo como centro de control</h3><span class="tag t-ok">Listo</span></div>
+    <p>Todo lo que pasa en la página llega solo a una hoja de Google, ordenada en pestañas: <b>Panel, Agenda, Pedidos, Visitas, Gráficos y Dudas</b>. No hay que copiar nada a mano.</p>
+    <p><b>Panel:</b> cuenta los pedidos por estado, el total de pedidos, la suma de ventas y los pedidos por municipio, con filtros por estado, municipio, fechas, forma de pago, año y búsqueda por texto.</p>
+    <p><b>Pedidos:</b> cada pedido entra con fecha, nombre, celular, detalle y número. El estado se cambia con un desplegable (Nuevo, Confirmado, En preparación, Despachado, En camino, Entregado), con columnas para la guía de envío y las notas. Ese cambio es el que luego dispara el aviso al cliente y alimenta el seguimiento de la página.</p>
+    <p><b>Visitas y Dudas:</b> las visitas agendadas y las preguntas de los clientes quedan separadas, para responderlas sin mezclar con los pedidos. Cada pedido nuevo también llega por correo.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>15. Agenda con filtros por estado, día y hora, y notas</h3><span class="tag t-ok">Listo</span></div>
+    <p>Una pestaña de la hoja, con el mismo encabezado de las demás, muestra todas las visitas a Ferrecubiertas ordenadas por día y hora: quién viene, su celular, el estado y las notas. Se arma sola desde las visitas que llegan de la página.</p>
+    <p><b>Todo en una sola pestaña:</b> la Agenda muestra todas las visitas y arriba a la derecha tiene un desplegable para ver solo las <b>Atendidas</b>, las de <b>Reprogramar</b>, las <b>Canceladas</b>, las <b>Nuevas</b> o <b>Todas</b>, sin cambiar de página.</p>
+    <p><b>Filtros:</b> cada columna tiene su botón de filtro en el encabezado (día, hora, nombre, estado o notas), y arriba a la derecha hay casillas para ver solo un día o una hora.</p>
+    <p><b>Estados:</b> cada visita se marca con un desplegable: Nuevo, Atendida, Reprogramar o Cancelada. Con "Cancelada" o "Reprogramar" la hora vuelve a quedar libre en la página, y la visita sigue en la Agenda para consultarla con el desplegable de estado.</p>
+    <p><b>Notas:</b> hay una columna para escribir lo que haga falta de cada visita; se ve también en la Agenda. El estado y las notas se escriben en la pestaña Visitas. Para que el jefe lo vea, basta compartirle la hoja.</p>
+  </div>
+
+  <h2>Cómo explicar las pruebas de velocidad</h2>
+  <p class="sub">PageSpeed Insights es una prueba gratuita de Google. Funciona como una revisión técnico-mecánica de la página: la abre como lo haría un cliente y le pone una nota de 0 a 100. De 90 a 100 es verde, la mejor zona.</p>
+
+  <div class="explain">
+    <div><b>Rendimiento</b><span>Qué tan rápido carga y se deja usar, sobre todo en celular.</span></div>
+    <div><b>Accesibilidad</b><span>Que cualquier persona pueda leerla y usarla: letra legible, botones claros, contraste.</span></div>
+    <div><b>Buenas prácticas</b><span>Que la página esté bien construida y sea segura.</span></div>
+    <div><b>SEO</b><span>Qué tan fácil le resulta a Google encontrarla y mostrarla en las búsquedas.</span></div>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Medición en computador</th><th>Landing anterior</th><th>Landing nueva</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Rendimiento</td><td class="num">91</td><td class="num">90</td></tr>
+        <tr><td class="k">Accesibilidad</td><td class="num">97</td><td class="num">97</td></tr>
+        <tr><td class="k">Buenas prácticas</td><td class="num">100</td><td class="num">100</td></tr>
+        <tr><td class="k">SEO</td><td class="num">92</td><td class="num">66 *</td></tr>
+        <tr><td class="k">Primer contenido visible</td><td class="num">1,7 s</td><td class="num">1,1 s</td></tr>
+        <tr><td class="k">Imagen principal cargada</td><td class="num">3,3 s</td><td class="num">3,6 s</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="verdict">
+    <p><b>Qué decirle al cliente:</b> la landing nueva hace mucho más que la anterior (pago, seguimiento, mapas, agenda) y carga igual de rápido. En computador, el contenido empieza a verse en 1,1 segundos, y las notas de rendimiento, accesibilidad y buenas prácticas quedan en la zona verde. Es una página más completa que no se volvió más lenta.</p>
+    <p><b>Celular:</b> la landing nueva saca 89 en rendimiento, 97 en accesibilidad y 100 en buenas prácticas. La prueba de la landing anterior en celular dio error en la herramienta de Google, así que no tenemos comparación en ese formato.</p>
+    <p>* <b>El SEO de 66 es esperado.</b> La página de prueba está oculta a propósito para los buscadores mientras es borrador. Se confirma al publicarla.</p>
+  </div>
+
+  <p class="note">Mediciones hechas el 31 de octubre de 2026 con PageSpeed Insights, una por página. La nota puede variar unos puntos entre una prueba y otra. La imagen principal tarda unos 3,7 s en celular en la página nueva, y Google recomienda menos de 2,5 s: es un ajuste posible, no un error.</p>
+
+  <h2>Antes de activar los avisos</h2>
+  <p class="sub">Los avisos automáticos usan la plataforma oficial de WhatsApp (Meta). Por ser oficial, piden tres cosas que conviene conocer desde ya.</p>
+
+  <div class="decide" style="margin:0 0 20px">
+    <h3>¿Qué es la API de WhatsApp y para qué sirve?</h3>
+    <p style="margin:0 0 10px">Es la conexión oficial de WhatsApp con nuestra hoja de pedidos. Cuando se cambia el estado de un pedido, el cliente recibe solo un mensaje con video que le avisa en qué va su compra, sin que nadie lo escriba a mano. Le ahorra tiempo al equipo, evita las preguntas de "¿ya salió mi pedido?" y deja una imagen de empresa ordenada.</p>
+    <p style="margin:0 0 10px"><b>En una frase:</b> es un mensajero automático de WhatsApp. Cada vez que cambiamos el estado de un pedido, el cliente recibe su aviso con video, y solo pagamos por los mensajes que se envían.</p>
+    <p style="margin:0 0 14px"><b>Qué necesita el negocio:</b> un número de WhatsApp para los avisos, la cuenta de Meta del negocio con sus documentos de verificación y una tarjeta para pagar los mensajes. No hay mensualidad.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Comprobar que el negocio existe</h3><span class="tag t-wait">Pendiente</span></div>
+    <p>Meta puede pedir documentos de la empresa que vende, como el RUT o NIT y, a veces, el certificado de cámara de comercio. Sirve para que los mensajes salgan con el nombre del negocio y los clientes confíen en ellos. Qué documentos pedirá depende de la cuenta; se confirma al crearla.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Una cuenta para pagar los mensajes</h3><span class="tag t-wait">Por definir</span></div>
+    <p>Meta cobra una tarifa pequeña por cada aviso enviado, y por eso pide dejar registrada una tarjeta o forma de pago. No hay mensualidad ni cuota de instalación: solo se paga lo que se envía. La tarifa cambia, así que se revisa la vigente al activar el número. <b>Hay que definir quién paga</b>, Ferrecubiertas o Pureza Natural, para que el cobro llegue a la tarjeta correcta.</p>
+  </div>
+
+  <div class="item">
+    <div class="row"><h3>Una línea nueva, no vinculada a WhatsApp</h3><span class="tag t-wait">Por definir</span></div>
+    <p>Los avisos salen desde una línea (una SIM) que se usa <b>solo para eso</b>. Un número que ya está en la aplicación de WhatsApp normalmente no puede estar a la vez conectado al sistema automático, y usarlo podría afectar las conversaciones de hoy con los clientes. Por eso se recomienda una SIM nueva, o un número que nunca se haya usado en WhatsApp ni en WhatsApp Business.</p>
+    <p>La SIM se pone en cualquier celular una sola vez: Meta envía un código por mensaje de texto o llamada, se escribe y queda registrada. Después el celular ya no hace falta para los avisos. La línea debe mantenerse activa, por ejemplo con una recarga de vez en cuando. Los clientes que respondan a ese número deben ser dirigidos al WhatsApp de siempre, y conviene que el texto de los avisos lo indique.</p>
+  </div>
+
+  <h2>Lo que falta para avanzar</h2>
+  <p class="sub">El primer bloque depende de datos o decisiones del negocio. La tabla es configuración que ya tiene guía.</p>
+
+  <div class="decide">
+    <h3>Decisiones y datos que necesitamos del negocio</h3>
+    <ol>
+      <li><b>Definir la llave de pago.</b> <span>Aún no se sabe si se usará la llave de Ferrecubiertas. La llave que muestra la página hoy es de prueba y hay que cambiarla antes de publicar, junto con el nombre del titular.</span></li>
+      <li><b>Horario de la tienda y horas para agendar visitas.</b> <span>Va en la agenda de visitas y en el aviso de "listo para recoger".</span></li>
+      <li><b>Número de WhatsApp que enviará los avisos.</b> <span>Recomendamos un número nuevo solo para esto, para no interferir con el WhatsApp Business actual. Si se usa el 305 352 9366, hay que revisar con Meta que pueda convivir.</span></li>
+      <li><b>Correos y rol de Francisco Clara Tafur y de Mateo</b> <span>para invitarlos a Meta Business y darles los permisos que corresponden a cada uno (administrador o empleado con acceso a WhatsApp).</span></li>
+      <li><b>Un celular a mano un momento</b> para recibir el código de verificación de Meta.</li>
+      <li><b>Los tres testimonios de clientes.</b> <span>Faltan por recibir, con el permiso de cada persona para mostrarlos.</span></li>
+      <li><b>El texto de tratamiento de datos personales: revisión del abogado.</b> <span>La página recoge nombre, celular, dirección y la hora de la visita de cada cliente. El texto ya está redactado para esta versión de la landing y publicado como enlace, para que el abogado del negocio lo revise y lo apruebe: <a href="https://lucia019.github.io/cobertura/prueba/tratamiento-de-datos.html" target="_blank" rel="noopener">abrir la política de tratamiento de datos</a>. Puntos para que el abogado confirme: quién es el responsable (Ferrecubiertas S.A.S.), que los datos pasan por Google (hoja, correo y contactos) y Meta (avisos de WhatsApp), que esos proveedores tienen servidores fuera de Colombia, el texto de la autorización y los plazos para consultas y reclamos.</span></li>
+      <li><b>Fecha en que se quiere publicar</b> la landing nueva.</li>
+      <li><b>Una tarjeta para la publicidad pagada.</b> <span>Para promover la landing en Instagram y Facebook hace falta una tarjeta donde se cargue el gasto. Se registra cuando el feed esté completo.</span></li>
+      <li><b>Sesión fotográfica del producto.</b> <span>Falta hacerla para tener fotos nuevas y clips de video cortos del purificador, y cargarlos en la landing.</span></li>
+    </ol>
+  </div>
+
+  <div class="tbl" style="margin-top:24px">
+    <table>
+      <thead><tr><th>Paso</th><th>Qué falta</th><th>Quién</th></tr></thead>
+      <tbody>
+        <tr><td>Personas en Meta Business<small>Francisco Clara Tafur y Mateo</small></td><td>Agregarlos en Configuración del negocio &gt; Usuarios &gt; Personas con su correo, que cada uno acepte la invitación y activar su verificación en dos pasos. Darles acceso a la cuenta de WhatsApp Business y a la app; al menos dos personas deben quedar como administradoras para no perder el acceso.</td><td class="who">Pureza Natural</td></tr>
+        <tr><td>Cuenta de Meta<small>Avisos automáticos</small></td><td>Activar la verificación en dos pasos, crear la app de WhatsApp, registrar el número y generar el token de acceso.</td><td class="who">Pureza Natural</td></tr>
+        <tr><td>Plantillas de mensaje<small>9 textos ya redactados</small></td><td>Cargarlas en Meta y esperar la aprobación, que tarda entre minutos y un par de días.</td><td class="who">Pureza Natural</td></tr>
+        <tr><td>Conectar la hoja con WhatsApp</td><td>Pegar el código de avisos, poner la llave definitiva y el horario, y probar con un celular los 9 mensajes.</td><td class="who">En conjunto</td></tr>
+        <tr><td>Texto del primer curado</td><td>Confirmar con AguaLogic cuántas cargas del primer curado pueden saber a arcilla, antes de decirlo en el video de "entregado".</td><td class="who">AguaLogic</td></tr>
+        <tr><td>Sincronizar contactos</td><td>Agregar la cuenta del negocio en el Android y activar la sincronización de contactos.</td><td class="who">Pureza Natural</td></tr>
+        <tr><td>Prueba con pedido real</td><td>Recorrer la compra completa, con un pago real pequeño o un pedido de confianza, incluida una visita agendada, y revisar cada aviso.</td><td class="who">En conjunto</td></tr>
+        <tr><td>Velocidad en celular</td><td>Opcional: acortar la carga de la imagen principal, hoy de unos 3,7 s, hacia los 2,5 s que recomienda Google.</td><td class="who">Pureza Natural</td></tr>
+        <tr><td>Publicación</td><td>Quitar el bloqueo para buscadores de la página de prueba y apuntar el dominio purezanatural.co a la versión nueva.</td><td class="who">Decisión del negocio</td></tr>
+        <tr><td>Segunda etapa, opcional</td><td>Respuestas automáticas por WhatsApp: consulta del estado del pedido, preguntas frecuentes y creación de clientes cuando escriben primero.</td><td class="who">Después de publicar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">Costos: la configuración no tiene mensualidad. Meta cobra una tarifa pequeña por cada aviso enviado, y esa tarifa y las reglas de cobro cambian, así que conviene revisar la vigente al activar el número.</p>
+</main>
+
+<footer class="wrap">Pureza Natural · Distribuidor autorizado AguaLogic · Villavicencio</footer>
+
+</html>
