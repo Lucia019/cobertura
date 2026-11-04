@@ -1605,7 +1605,8 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
       <label>Dirección<input name="dir" autocomplete="street-address" required maxlength="120" placeholder="Calle, carrera, número, apto o casa"></label>
       <label>Punto de referencia<input name="ref" required maxlength="120" placeholder="Barrio y referencia (ej. frente al parque)"></label>
       <h4>Entrega</h4>
-      <div class="row2"><label>Día preferido<select name="dia" id="f-dia" required></select></label><label>Franja<select name="franja" required><option>Mañana</option><option>Tarde</option><option>Indiferente</option></select></label></div>
+      <div class="row2"><label><span id="f-dia-l">Día preferido</span><select name="dia" id="f-dia" required></select></label><label>Horario preferido<select name="franja" required><option>Mañana</option><option>Tarde</option><option>Indiferente</option></select></label></div>
+      <p class="rsv-note" id="rsv-note" hidden><b>Pedido bajo reserva.</b> Lo pedimos a fábrica cuando compras. La fecha exacta te la confirmamos por WhatsApp dentro del rango de despacho.</p>
       <h4>Forma de pago</h4>
       <div class="pays" role="radiogroup" aria-label="Forma de pago">
         <label class="pay"><input type="radio" name="pago" value="Contraentrega" checked><span class="pay-dot" aria-hidden="true"></span><div><b>Contraentrega</b><small>Pagas cuando recibes tu pedido. No pagas nada ahora.</small></div></label>
@@ -1698,7 +1699,7 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
       var m=head+"\n"+orderTxt+window.pnReservaLinea()+"\nEnvío: "+window.pnShipTxt(v("ciudad"))+"\nTotal a pagar: "+window.pnMoney(window.pnSub()+window.pnShip(v("ciudad")))+"\n\nDatos de entrega:\nNombre: "+v("nombre")+" "+v("apellido")+"\nCelular: "+v("tel")+"\nCiudad: "+v("ciudad")+"\nDepartamento: "+v("municipio")+window.pnZonaTxt(v("ciudad"))+"\nDirección: "+v("dir")+"\nPunto de referencia: "+v("ref")+"\nDía preferido de entrega: "+v("dia")+" ("+v("franja")+")\nPago: "+pg+(paid?"\nReferencia de pago Nequi: "+nr:"")+"\n\n¿Me confirman disponibilidad y fecha de entrega?\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.";
       return "https://wa.me/"+NUM+"?text="+encodeURIComponent(m);};
     var url=mk("");
-    window.__pnOrder={url:url,mk:mk,name:v("nombre"),ciudad:v("ciudad"),municipio:v("municipio"),dia:v("dia"),franja:v("franja"),total:window.pnMoney(window.pnSub()+window.pnShip(v("ciudad"))),sub:window.pnSub(),ship:window.pnShip(v("ciudad")),zona:window.pnZona(),pago:pg,items:window.pnItems(),full:v("nombre")+" "+v("apellido"),tel:v("tel"),dir:v("dir"),ref:v("ref")};if(window.__pnConfirm){window.__pnConfirm();}else{var w=window.open(url,"_blank","noopener");if(!w)location.href=url;}
+    window.__pnOrder={url:url,mk:mk,name:v("nombre"),ciudad:v("ciudad"),municipio:v("municipio"),dia:v("dia"),franja:v("franja"),despacho:((window.pnRangoReserva&&window.pnRangoReserva())||{}).txt||"",total:window.pnMoney(window.pnSub()+window.pnShip(v("ciudad"))),sub:window.pnSub(),ship:window.pnShip(v("ciudad")),zona:window.pnZona(),pago:pg,items:window.pnItems(),full:v("nombre")+" "+v("apellido"),tel:v("tel"),dir:v("dir"),ref:v("ref")};if(window.__pnConfirm){window.__pnConfirm();}else{var w=window.open(url,"_blank","noopener");if(!w)location.href=url;}
   });
   render();
 })();
@@ -1761,16 +1762,20 @@ var $=function(i){return document.getElementById(i);};
 function addDays(n){var x=new Date();while(n>0){x.setDate(x.getDate()+1);if(x.getDay()!==0)n--;}return x;}
 var F=new Intl.DateTimeFormat("es-CO",{weekday:"long",day:"numeric",month:"long"});
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
-function est(o){var loc=/vi?l+a+v(i+[cs]?e+n+[cs]i+o|o)/i.test(o.ciudad||"");var r=loc?ENVIO.local:ENVIO.otros;return {txt:(r[1]!==r[0]?cap(F.format(addDays(r[0])))+" a "+F.format(addDays(r[1])):"Hacia el "+F.format(addDays(r[0]))+" ("+r[0]+" días hábiles)"),loc:loc};}
+function est(o){if(o&&o.despacho)return {txt:o.despacho,loc:true};var loc=/vi?l+a+v(i+[cs]?e+n+[cs]i+o|o)/i.test(o.ciudad||"");var r=loc?ENVIO.local:ENVIO.otros;return {txt:(r[1]!==r[0]?cap(F.format(addDays(r[0])))+" a "+F.format(addDays(r[1])):"Hacia el "+F.format(addDays(r[0]))+" ("+r[0]+" días hábiles)"),loc:loc};}
 /* días preferidos */
 var sel=$("f-dia");
-function fillDias(){if(!sel)return;var cf=document.getElementById("cart-form"),ci=cf?cf.elements["ciudad"].value:"",loc=/vi?l+a+v(i+[cs]?e+n+[cs]i+o|o)/i.test(ci),lead=(loc?ENVIO.local:ENVIO.otros)[0],prev=sel.value;sel.innerHTML="";var o0=document.createElement("option");o0.textContent="Lo antes posible";sel.appendChild(o0);var x=addDays(lead-1),k=0;while(k<6){x.setDate(x.getDate()+1);if(x.getDay()===0)continue;var op=document.createElement("option");op.textContent=cap(new Intl.DateTimeFormat("es-CO",{weekday:"long",day:"numeric",month:"short"}).format(x));sel.appendChild(op);k++;}
+function fillDias(){if(!sel)return;var rg=window.pnRangoReserva&&window.pnRangoReserva(),nt=$("rsv-note"),lb=$("f-dia-l");
+ if(nt)nt.hidden=!rg;
+ document.querySelectorAll(".pi-r b").forEach(function(x){if(/Elige abajo|Te avisamos cuando tu pedido/.test(x.textContent))x.textContent=rg?"Te avisamos cuando tu pedido esté listo":"Elige abajo el día que pasas";});
+ if(rg){sel.innerHTML="";var oo=document.createElement("option");oo.value="Dentro del rango de despacho";oo.textContent=rg.txt.charAt(0).toUpperCase()+rg.txt.slice(1);sel.appendChild(oo);if(lb)lb.textContent="Despacho estimado";var rw=sel.closest(".row2");if(rw)rw.style.gridTemplateColumns="1fr";return;}
+ if(lb)lb.textContent="Día preferido";var rw0=sel.closest(".row2");if(rw0)rw0.style.gridTemplateColumns="";var cf=document.getElementById("cart-form"),ci=cf?cf.elements["ciudad"].value:"",loc=/vi?l+a+v(i+[cs]?e+n+[cs]i+o|o)/i.test(ci),lead=(loc?ENVIO.local:ENVIO.otros)[0],prev=sel.value;sel.innerHTML="";var o0=document.createElement("option");o0.textContent="Lo antes posible";sel.appendChild(o0);var x=addDays(lead-1),k=0;while(k<6){x.setDate(x.getDate()+1);if(x.getDay()===0)continue;var op=document.createElement("option");op.textContent=cap(new Intl.DateTimeFormat("es-CO",{weekday:"long",day:"numeric",month:"short"}).format(x));sel.appendChild(op);k++;}
  for(var q=0;q<sel.options.length;q++){if(sel.options[q].textContent===prev){sel.selectedIndex=q;break;}}}
-fillDias();var cf0=document.getElementById("cart-form");if(cf0){cf0.addEventListener("input",function(e){if(e.target.name==="ciudad")fillDias();});cf0.addEventListener("change",function(e){if(e.target.name==="ciudad")fillDias();});}
+window.pnFillDias=fillDias;fillDias();(function(){var cd=document.getElementById("cartd");if(cd&&window.MutationObserver)new MutationObserver(function(){if(cd.open)fillDias();}).observe(cd,{attributes:true,attributeFilter:["open"]});})();var cf0=document.getElementById("cart-form");if(cf0){cf0.addEventListener("input",function(e){if(e.target.name==="ciudad")fillDias();});cf0.addEventListener("change",function(e){if(e.target.name==="ciudad")fillDias();});}
 function show(id){["ok-review","ok-pay","ok-done"].forEach(function(s){$(s).hidden=s!==id;});var sc=d.querySelector("#"+id+" .sch");if(sc){sc.style.animation="none";void sc.getBoundingClientRect();sc.style.animation="";}}
 function openWA(u){var w=window.open(u,"_blank","noopener");if(!w)location.href=u;}
 function done(o,u){var e=est(o),nq=o.pago==="Nequi";$("dn-n").textContent=o.name||"";$("dn-est").textContent=(window.pnPickup&&window.pnPickup())?"Te avisamos cuando esté listo para recoger":e.txt;
- $("dn-note").textContent="Días hábiles"+(nq?", contados desde que confirmemos tu pago":"")+". Te confirmamos la fecha exacta por WhatsApp.";
+ $("dn-note").textContent=o.despacho?"Producto bajo reserva: lo pedimos a fábrica al comprar"+(nq?" y el plazo cuenta desde que confirmemos tu pago":"")+". Te confirmamos la fecha exacta por WhatsApp.":"Días hábiles"+(nq?", contados desde que confirmemos tu pago":"")+". Te confirmamos la fecha exacta por WhatsApp.";
  $("dn-l1").innerHTML=nq?"Envía la <b>captura del comprobante</b> en el chat de WhatsApp si no se adjuntó.":"Pagas <b>contraentrega</b>, cuando recibes tu pedido.";
  $("dn-wa").href=u;show("ok-done");}
 window.pnEst=est;window.pnOkd=d;
@@ -1974,6 +1979,14 @@ $("dn-close").addEventListener("click",function(){d.close();var c=$("cart-clear"
     var P={};try{P=JSON.parse(document.getElementById("pdata").textContent);}catch(e){}
     return Object.keys(c).filter(function(k){return c[k]>0&&Object.prototype.hasOwnProperty.call(BAJO_PEDIDO,k);}).map(function(k){return {n:(P[k]||{}).n||k,f:est(k)};});
   }
+  window.pnRangoReserva=function(){
+    var c={};try{c=JSON.parse(localStorage.getItem("pn-cart")||"{}")||{};}catch(e){}
+    var a=null,b=null;Object.keys(c).forEach(function(k){if(c[k]>0&&Object.prototype.hasOwnProperty.call(BAJO_PEDIDO,k)){var v=BAJO_PEDIDO[k];a=a===null?v[0]:Math.min(a,v[0]);b=b===null?v[1]:Math.max(b,v[1]);}});
+    if(a===null)return null;
+    var h=new Date();h.setHours(12,0,0,0);var d1=new Date(h.getTime()+a*864e5),d2=new Date(h.getTime()+b*864e5);
+    var txt=d1.getMonth()===d2.getMonth()?"del "+d1.getDate()+" al "+d2.getDate()+" de "+MESES[d2.getMonth()]:"del "+d1.getDate()+" de "+MESES[d1.getMonth()]+" al "+d2.getDate()+" de "+MESES[d2.getMonth()];
+    return {txt:txt+" de "+d2.getFullYear()};
+  };
   window.pnReservaLinea=function(){var r=reservados();return r.length?"\nDespacho estimado (bajo pedido): "+r.map(function(x){return x.n+", "+x.f;}).join("; "):"";};
   var go=$("ok-go"),box=null;
   if(go){
@@ -2044,7 +2057,7 @@ function items(o){return o.items.map(function(i){return "- "+i.q+" x "+i.n+(i.p?
 function fullMsg(o,nq){
  var head=nq?"Hola Pureza Natural 👋\nAcabo de pagar mi pedido *No. "+o.num+"* por Nequi y quiero consultar el estado de envío.\n\n*Pago*\nReferencia Nequi: "+S.ref+"\nValor pagado: "+o.total
   :"Hola Pureza Natural 👋\nQuiero confirmar mi pedido *No. "+o.num+"* con pago contraentrega.\n\n*Pago*\nTotal a pagar al recibir: "+o.total;
- return head+"\n\n*Pedido*\n"+items(o)+window.pnReservaLinea()+"\nEnvío: "+window.pnShipTxt(o.ciudad,o.zona)+"\n\n*Entrega*\nNombre: "+o.full+"\nCelular: "+o.tel+"\nCiudad: "+o.ciudad+(o.zona&&window.pnIsVillavo(o.ciudad)?" ("+(o.zona==="fuera"?"fuera":"dentro")+" del perímetro urbano)":"")+"\nDepartamento: "+o.municipio+"\nDirección: "+o.dir+"\nPunto de referencia: "+o.ref+"\nDía preferido: "+o.dia+" ("+o.franja+")"+(nq?"\n\nAdjunto la captura del comprobante.":"")+"\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.";}
+ return head+"\n\n*Pedido*\n"+items(o)+window.pnReservaLinea()+"\nEnvío: "+window.pnShipTxt(o.ciudad,o.zona)+"\n\n*Entrega*\nNombre: "+o.full+"\nCelular: "+o.tel+"\nCiudad: "+o.ciudad+(o.zona&&window.pnIsVillavo(o.ciudad)?" ("+(o.zona==="fuera"?"fuera":"dentro")+" del perímetro urbano)":"")+"\nDepartamento: "+o.municipio+"\nDirección: "+o.dir+"\nPunto de referencia: "+o.ref+"\n"+(o.despacho?"Horario preferido: "+o.franja+" (fecha exacta dentro del rango de despacho)":"Día preferido: "+o.dia+" ("+o.franja+")")+(nq?"\n\nAdjunto la captura del comprobante.":"")+"\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.";}
 /* Registro de pedidos: pega aquí la URL de tu Apps Script (termina en /exec). Vacío = el mensaje sale completo. */
 var ORDER_HOOK="https://script.google.com/macros/s/AKfycbwftsLRlt29GHRbcG5VrVP0Y6QTwrrY7vDKNUpKe0tO3S9NbCOHrbZLC4D3oEzd0XzC/exec";
 function saveOrder(o,nq){return new Promise(function(res){if(!ORDER_HOOK){res(false);return;}var fin=false,t;function done(v){if(!fin){fin=true;clearTimeout(t);res(v);}}t=setTimeout(function(){done(false);},12000);try{fetch(ORDER_HOOK,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tipo:"pedido",numero:o.num,nombre:o.full,celular:o.tel,datos:JSON.stringify({o:o,nq:nq,ref:S.ref||"",date:S.date}),detalle:"Pedido No. "+o.num+(nq?" · Pago Nequi por llave (pendiente de comprobante)":"")+"\n"+fullMsg(o,nq)})}).then(function(r){return r.text();}).then(function(x){done(x.trim()==="ok");}).catch(function(){done(false);});}catch(e){done(false);}});}
@@ -2248,6 +2261,8 @@ bp.addEventListener("click",function(){if(!cur)return;var old=bp.textContent;bp.
 .vday span{font-size:.74rem;color:#4E5D58}.vday b{font-size:1.25rem;line-height:1.1}.vday em{font-style:normal;font-size:.72rem;color:#4E5D58;text-transform:uppercase;letter-spacing:.04em}
 .vday:active{transform:scale(.94)}
 .vday:disabled{opacity:.45;cursor:not-allowed;background:#EEF1EF;border-style:dashed}.vday:disabled b{text-decoration:line-through}
+#f-dia,.row2 select{min-width:0;max-width:100%;text-overflow:ellipsis}
+.rsv-note{margin:2px 0 0;padding:10px 12px;border-radius:12px;background:#fbeedd;color:#6b4220;font-size:13.5px;line-height:1.4}
 #visd [hidden]{display:none!important}
 #visd .vbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;border:0;cursor:pointer;border-radius:999px;padding:13px 22px;min-height:48px;text-decoration:none}
 #visd .vcta{background:#A15A2C;color:#fff}#visd .vcta:hover{background:#8a4a22}
