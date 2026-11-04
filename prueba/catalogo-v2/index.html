@@ -1264,21 +1264,20 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
     </section>
     <section id="ok-pay" hidden>
       <h3>Paga por Nequi</h3>
-      <p class="ok-sub">Dos pasos. Primero pagas, luego envías el comprobante.</p>
+      <p class="ok-sub">Recibimos tu pedido <b id="nq-num"></b>. <b>Para reservarlo, haz el pago.</b> Cuando lo confirmemos podrás seguirlo en "Consulta tu pedido".</p>
       <ol class="nq-steps">
         <li><b class="n">1</b><div><b>Abre Nequi y paga con la llave</b>
           <div class="nq-row"><span>Valor</span><strong id="nq-amt"></strong><button type="button" class="nq-copy" data-copy="amt">Copiar</button></div>
           <div class="nq-row"><span>Llave de pago</span><strong id="nq-key">LLAVE-DE-PRUEBA-123</strong><button type="button" class="nq-copy" data-copy="num">Copiar</button></div>
           <div class="nq-row"><span>Debe aparecer a nombre de</span><strong id="nq-tit">TITULAR DE PRUEBA S.A.S.</strong></div>
           <span class="nq-test" id="nq-test">DATOS DE PRUEBA</span>
-          <small>Si el nombre no coincide, no envíes el pago y escríbenos. Distribuidor autorizado AguaLogic · Pureza Natural.</small></div></li>
-        <li><b class="n">2</b><div><b>Escribe la referencia del comprobante</b>
-          <input id="nq-ref" aria-label="Referencia del pago de Nequi" inputmode="text" maxlength="30" placeholder="Referencia del pago" autocomplete="off">
-          <small>Al enviar, adjunta la captura del comprobante en el chat de WhatsApp.</small></div></li>
+          <small>En la descripción escribe tu pedido <b id="nq-num2"></b>. Si el nombre no coincide, no envíes el pago y escríbenos. Distribuidor autorizado AguaLogic · Pureza Natural.</small></div></li>
+        <li><b class="n">2</b><div><b>Envía el comprobante</b>
+          <small>Toca el botón y adjunta la captura del pago en el chat de WhatsApp.</small></div></li>
       </ol>
       <p class="ok-sub">Validamos tu pago en máximo 10 minutos y te escribimos por WhatsApp para confirmar tu pedido.</p>
-      <button type="button" class="btn-wa big" id="nq-go" disabled>Ya pagué, enviar comprobante</button>
-      <button type="button" class="ok-back" id="nq-back">Volver</button>
+      <button type="button" class="btn-wa big" id="nq-go">Ya pagué, enviar comprobante</button>
+      <button type="button" class="ok-back" id="nq-pdf">Descargar mi orden en PDF</button>
     </section>
     <section id="ok-done" hidden>
       <svg class="ok-sh" viewBox="0 0 48 56" aria-hidden="true"><path d="M24 2l19 7v15c0 14-8 24-19 30C13 48 5 38 5 24V9z" fill="#2e7d4f"/><path class="sch" d="M16 26l6 6 11-13" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1781,11 +1780,16 @@ window.__pnConfirm=function(){var o=window.__pnOrder||{};$("ok-n").textContent=o
  show("ok-review");if(!d.open)d.showModal();};
 $("ok-back").addEventListener("click",function(){d.close();});
 $("ok-go").addEventListener("click",function(){var o=window.__pnOrder;if(!o)return;
- if(o.pago==="Nequi"){$("nq-amt").textContent=o.total||"";$("nq-ref").value="";$("nq-go").disabled=true;show("ok-pay");}
- else{window.pnShowConf(o,"");}});
-$("nq-back").addEventListener("click",function(){show("ok-review");});
-$("nq-ref").addEventListener("input",function(){$("nq-go").disabled=this.value.trim().length<4;});
-$("nq-go").addEventListener("click",function(){var o=window.__pnOrder;var r=$("nq-ref").value.trim();if(!o||r.length<4)return;window.pnShowConf(o,r);});
+ if(o.pago!=="Nequi"){window.pnShowConf(o,"");return;}
+ var b=$("ok-go"),bt=b.textContent;b.disabled=true;b.textContent="Registrando tu pedido…";
+ window.pnRegistrar(o).then(function(r){b.disabled=false;b.textContent=bt;
+  if(!r.ok){openWA(r.full);done(o,r.full);$("dn-l1").innerHTML="No pudimos registrar tu pedido en la página. Quedó escrito en WhatsApp: <b>toca Enviar para que nos llegue</b>.";return;}
+  $("nq-amt").textContent=o.total||"";$("nq-num").textContent=r.num;$("nq-num2").textContent=r.num;
+  $("nq-test").hidden=!/PRUEBA/.test($("nq-key").textContent+$("nq-tit").textContent);show("ok-pay");});});
+$("nq-go").addEventListener("click",function(){var o=window.__pnOrder;if(!o)return;
+ var u="https://wa.me/573053529366?text="+encodeURIComponent("Pedido No. "+o.num+"\nYa pagué "+(o.total||"")+" por llave. Te envío el comprobante.");
+ openWA(u);done(o,u);});
+$("nq-pdf").addEventListener("click",function(){var o=window.__pnOrder;if(o&&window.pnPdf)window.pnPdf(o);});
 d.addEventListener("click",function(e){var b=e.target.closest(".nq-copy");if(!b)return;var o=window.__pnOrder||{};var v=b.getAttribute("data-copy")==="num"?NEQ.replace(/\s/g,""):(o.total||"").replace(/[^0-9]/g,"");
  function ok(){var t=b.textContent;b.textContent="Copiado";setTimeout(function(){b.textContent="Copiar";},1400);}
  try{navigator.clipboard.writeText(v).then(ok,ok);}catch(_){ok();}});
@@ -2043,7 +2047,7 @@ function fullMsg(o,nq){
  return head+"\n\n*Pedido*\n"+items(o)+window.pnReservaLinea()+"\nEnvío: "+window.pnShipTxt(o.ciudad,o.zona)+"\n\n*Entrega*\nNombre: "+o.full+"\nCelular: "+o.tel+"\nCiudad: "+o.ciudad+(o.zona&&window.pnIsVillavo(o.ciudad)?" ("+(o.zona==="fuera"?"fuera":"dentro")+" del perímetro urbano)":"")+"\nDepartamento: "+o.municipio+"\nDirección: "+o.dir+"\nPunto de referencia: "+o.ref+"\nDía preferido: "+o.dia+" ("+o.franja+")"+(nq?"\n\nAdjunto la captura del comprobante.":"")+"\n\n——————\n✅ Pedido seguro · Pureza Natural, distribuidor autorizado AguaLogic\nAl enviar este pedido acepto los términos de venta: garantía legal y del fabricante, retracto de 5 días hábiles desde la entrega con el producto en su estado original, y confirmación de disponibilidad, costo y tiempo de envío antes del despacho.";}
 /* Registro de pedidos: pega aquí la URL de tu Apps Script (termina en /exec). Vacío = el mensaje sale completo. */
 var ORDER_HOOK="https://script.google.com/macros/s/AKfycbwftsLRlt29GHRbcG5VrVP0Y6QTwrrY7vDKNUpKe0tO3S9NbCOHrbZLC4D3oEzd0XzC/exec";
-function saveOrder(o,nq){return new Promise(function(res){if(!ORDER_HOOK){res(false);return;}var fin=false,t;function done(v){if(!fin){fin=true;clearTimeout(t);res(v);}}t=setTimeout(function(){done(false);},12000);try{fetch(ORDER_HOOK,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tipo:"pedido",numero:o.num,nombre:o.full,celular:o.tel,datos:JSON.stringify({o:o,nq:nq,ref:S.ref||"",date:S.date}),detalle:"Pedido No. "+o.num+(nq?" · Referencia Nequi: "+(S.ref||""):"")+"\n"+fullMsg(o,nq)})}).then(function(r){return r.text();}).then(function(x){done(x.trim()==="ok");}).catch(function(){done(false);});}catch(e){done(false);}});}
+function saveOrder(o,nq){return new Promise(function(res){if(!ORDER_HOOK){res(false);return;}var fin=false,t;function done(v){if(!fin){fin=true;clearTimeout(t);res(v);}}t=setTimeout(function(){done(false);},12000);try{fetch(ORDER_HOOK,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({tipo:"pedido",numero:o.num,nombre:o.full,celular:o.tel,datos:JSON.stringify({o:o,nq:nq,ref:S.ref||"",date:S.date}),detalle:"Pedido No. "+o.num+(nq?" · Pago Nequi por llave (pendiente de comprobante)":"")+"\n"+fullMsg(o,nq)})}).then(function(r){return r.text();}).then(function(x){done(x.trim()==="ok");}).catch(function(){done(false);});}catch(e){done(false);}});}
 function briefMsg(o,nq){return (nq?"Hola Pureza Natural 👋\nAcabo de pagar mi pedido *No. "+o.num+"* por Nequi (ref. "+S.ref+") y quiero consultar el estado de envío.":"Hola Pureza Natural 👋\nQuiero confirmar mi pedido *No. "+o.num+"* con pago contraentrega.")+"\n\n"+o.full+" · "+o.ciudad+" · "+o.total+"\nAcepté los términos de venta.";}
 function shortMsg(o,nq){return nq?"Hola Pureza Natural 👋 Acabo de pagar mi pedido *No. "+o.num+"* por Nequi (ref. "+S.ref+") y quiero consultar el estado de envío.":"Hola Pureza Natural 👋 Tengo el pedido *No. "+o.num+"* (contraentrega) y necesito ayuda o cambiar el horario de entrega.";}
 
@@ -2080,6 +2084,8 @@ function render(){
 window.pnShowConf=function(o,ref){
  S.o=o;S.ref=ref||"";S.sent=false;o.num=o.num||mkNum();S.date=fdate();render();
  if(!c.open)c.showModal();var bd=$("cf-body");bd.setAttribute("tabindex","-1");bd.focus({preventScroll:true});bd.scrollTop=0;};
+window.pnRegistrar=function(o){o.num=o.num||mkNum();S.o=o;S.ref="";S.date=fdate();return saveOrder(o,true).then(function(sv){S.sent=sv;return {ok:sv,num:o.num,full:wa(fullMsg(o,true))};});};
+window.pnPdf=function(o){S.o=o;S.ref="";S.date=S.date||fdate();S.sent=true;loadPdf(function(ok){if(!ok){toast("No se pudo generar el PDF. Toma una captura de esta pantalla.");return;}try{build(o,true);}catch(x){console.error(x);toast("No se pudo generar el PDF. Toma una captura de esta pantalla.");}});};
 function finish(){c.close();var d=window.pnOkd;if(d&&d.open)d.close();var cl=$("cart-clear");if(cl)cl.click();var x=$("cart-x");if(x&&$("cartd").open)x.click();}
 c.addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.getAttribute("data-a"),o=S.o,nq=o.pago==="Nequi";
  if(a==="send"){if(b.disabled)return;b.disabled=true;b.textContent="Enviando tu pedido…";saveOrder(o,nq).then(function(sv){b.disabled=false;openWA(wa(sv?briefMsg(o,nq):fullMsg(o,nq)));S.sent=true;render();$("cf-body").scrollTop=0;});}
@@ -2116,7 +2122,7 @@ function build(o,nq){
  y+=7;var st=o.__pagado?"PAGO RECIBIDO":nq?(S.sent?"PAGO EN VERIFICACION":"PENDIENTE DE ENVIO POR WHATSAPP"):(S.sent?"PEDIDO CONFIRMADO - PAGO AL RECIBIR":"PENDIENTE DE ENVIO POR WHATSAPP");
  var ok=S.sent;d.setFillColor.apply(d,ok?[223,241,230]:[251,238,221]);var sw=d.getTextWidth(st)+0;d.setFont("helvetica","bold");d.setFontSize(8.5);sw=d.getTextWidth(st)+10;d.roundedRect(M,y-4.8,sw,7.2,3.6,3.6,"F");t(st,M+5,y,8.5,"bold",ok?GRN:[138,84,38]);
  if(!nq){y+=7;d.setFillColor(234,245,238);d.roundedRect(M,y,R-M,22,3,3,"F");t(o.__pagado?"TOTAL PAGADO AL RECIBIR":"TOTAL A PAGAR AL RECIBIR",M+6,y+7,8,"bold",GRN);t(o.total,M+6,y+17,20,"bold");t("Pago contraentrega. No se cobra nada antes de la entrega.",R-6,y+17,8.5,"normal",GRY,"right");y+=22;}
- if(nq){sec("Pago");ln(y+1.5);kv("Método","Nequi");kv("Referencia",S.ref);kv("Cuenta destino","Llave LLAVE-DE-PRUEBA-123  ·  TITULAR DE PRUEBA S.A.S.");kv("Estado",o.__pagado?"Pago recibido":S.sent?"En verificación":"Pendiente de envío");}
+ if(nq){sec("Pago");ln(y+1.5);kv("Método","Nequi");if(S.ref)kv("Referencia",S.ref);kv("Cuenta destino","Llave LLAVE-DE-PRUEBA-123  ·  TITULAR DE PRUEBA S.A.S.");kv("Estado",o.__pagado?"Pago recibido":S.sent?"En verificación":"Pendiente de envío");}
  sec(nq?"Entrega":"Destino de entrega");ln(y+1.5);
  var e=window.pnEst(o);
  kv("Para",o.full);kv("Celular",o.tel);kv("Dirección",o.dir);kv("Ciudad",o.ciudad+(o.municipio?", "+o.municipio:"")+(o.zona&&window.pnIsVillavo(o.ciudad)?" ("+(o.zona==="fuera"?"fuera":"dentro")+" del perímetro)":""));if(o.ref)kv("Referencia",o.ref);kv("Día y franja",o.dia+" · "+o.franja);kv("Llegada estimada",e.txt);
