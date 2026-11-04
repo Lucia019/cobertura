@@ -279,6 +279,21 @@ footer { color: var(--ink-2); font-size: 13px; padding-block: 0 40px; }
     <p><b>3. Pedido registrado antes del pago, como en la landing.</b> Al pasar al pago, el pedido se guarda en la hoja y el cliente ve su número. El botón "Ya pagué, enviar comprobante" abre WhatsApp con el número del pedido, y hay un botón para descargar la orden en PDF. Si la página no puede guardar el pedido, lo deja escrito completo en WhatsApp para que no se pierda.</p>
     <p><b>4. Aviso "Pago confirmado".</b> En "Consulta tu pedido", un pedido pagado por Nequi y en estado Confirmado muestra "¡Pago confirmado! Tu pedido está reservado", con el despacho estimado y la guía de envío cuando existe.</p>
     <p><b>Correcciones:</b> se quitó la referencia obligatoria en el pago, y el comprobante en PDF ahora muestra la llave en lugar del número de Nequi.</p>
+    <p><b>Comparación con el catálogo anterior:</b></p>
+    <div class="tbl"><table>
+      <thead><tr><th>Aspecto</th><th>Catálogo anterior</th><th>Catálogo de prueba</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Dónde quedan los pedidos</td><td class="old">No se guardaban en ninguna hoja: el pedido solo llegaba escrito por WhatsApp.</td><td>Cada pedido queda en la misma hoja de Google que los de la landing.</td></tr>
+        <tr><td class="k">Cuándo se registra el pedido</td><td class="old">Solo cuando el cliente enviaba el mensaje por WhatsApp.</td><td>Al pasar al pago, con su número de pedido visible para el cliente. Si la página falla, el pedido queda completo en WhatsApp.</td></tr>
+        <tr><td class="k">Pago por Nequi</td><td class="old">Pedía una referencia del comprobante y el pago se confirmaba con "Ya pagué" por WhatsApp.</td><td>Muestra la llave, el titular y el valor con botón para copiar. Sin referencia obligatoria; el botón abre WhatsApp con el número del pedido.</td></tr>
+        <tr><td class="k">Orden en PDF</td><td class="old">Descarga de comprobante con los datos del pago.</td><td>Descarga de la orden en PDF, con la llave en lugar del número de Nequi.</td></tr>
+        <tr><td class="k">Seguimiento</td><td class="old">No existía.</td><td>"Consulta tu pedido", con aviso "Pago confirmado" para pedidos Nequi en estado Confirmado.</td></tr>
+        <tr><td class="k">Fecha de despacho</td><td class="old">No mostraba fecha estimada.</td><td>Aviso de compra bajo reserva con fecha estimada de despacho.</td></tr>
+        <tr><td class="k">Entrega</td><td class="old">Envío a Villavicencio y alrededores, sin distinguir zona.</td><td>Domicilio o recogida en Ferrecubiertas, con zona urbana o rural y envío gratis o de $20.000.</td></tr>
+        <tr><td class="k">Mapas</td><td class="old">Sin mapa de cobertura.</td><td>Mapa de cobertura y de recogida.</td></tr>
+        <tr><td class="k">Visita a la tienda</td><td class="old">No existía.</td><td>Agenda de visita: 14 días y horas únicas, con Google Calendar y registro en la hoja.</td></tr>
+      </tbody>
+    </table></div>
   </div>
 
   <h2>Cómo explicar las pruebas de velocidad</h2>
