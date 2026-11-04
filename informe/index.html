@@ -121,7 +121,7 @@ footer { color: var(--ink-2); font-size: 13px; padding-block: 0 40px; }
     <div class="sum" aria-label="Resumen">
       <div><b>16</b><span>mejoras entregadas</span></div>
       <div><b>13</b><span>funcionando en la página de prueba</span></div>
-      <div><b>20</b><span>pendientes: 10 datos del negocio y 10 pasos</span></div>
+      <div><b>21</b><span>pendientes: 10 datos del negocio y 11 pasos</span></div>
     </div>
   </div>
 </header>
@@ -279,12 +279,19 @@ footer { color: var(--ink-2); font-size: 13px; padding-block: 0 40px; }
     <p><b>3. Pedido registrado antes del pago, como en la landing.</b> Al pasar al pago, el pedido se guarda en la hoja y el cliente ve su número. El botón "Ya pagué, enviar comprobante" abre WhatsApp con el número del pedido, y hay un botón para descargar la orden en PDF. Si la página no puede guardar el pedido, lo deja escrito completo en WhatsApp para que no se pierda.</p>
     <p><b>4. Aviso "Pago confirmado".</b> En "Consulta tu pedido", un pedido pagado por Nequi y en estado Confirmado muestra "¡Pago confirmado! Tu pedido está reservado", con el despacho estimado y la guía de envío cuando existe.</p>
     <p><b>Correcciones:</b> se quitó la referencia obligatoria en el pago, y el comprobante en PDF ahora muestra la llave en lugar del número de Nequi.</p>
+    <p><b>Cuándo se registra el pedido, explicado fácil (pago por Nequi):</b></p>
+    <p><b>Antes:</b> el cliente llenaba sus datos, la página le abría WhatsApp con el pedido escrito y el pedido solo existía si él tocaba "Enviar". Si cerraba WhatsApp o se arrepentía a medio camino, el negocio no se enteraba de nada.</p>
+    <p><b>Ahora, paso a paso:</b></p>
+    <p>1. El cliente llena sus datos y toca para pasar al pago. <b>En ese momento el pedido queda guardado en la hoja</b> con estado "Nuevo" y se le muestra su número de pedido (por ejemplo PN-20261030-S2LP). Todavía no ha pagado.</p>
+    <p>2. Ve la llave, el titular y el valor, hace la transferencia desde su banco o Nequi y toca "Ya pagué, enviar comprobante". Se abre WhatsApp con su número de pedido ya escrito; solo adjunta la captura.</p>
+    <p>3. Quien atiende revisa que el dinero llegó y cambia el estado a "Confirmado". Desde ahí el cliente ve en "Consulta tu pedido": "¡Pago confirmado! Tu pedido está reservado".</p>
+    <p><b>Qué gana el negocio:</b> ve todos los pedidos que se iniciaron, incluso los que no se pagaron, y puede escribirles. Si la página no logra guardar el pedido (por ejemplo, sin internet), lo deja escrito completo en WhatsApp para que no se pierda.</p>
     <p><b>Comparación con el catálogo anterior:</b></p>
     <div class="tbl"><table>
       <thead><tr><th>Aspecto</th><th>Catálogo anterior</th><th>Catálogo de prueba</th></tr></thead>
       <tbody>
         <tr><td class="k">Dónde quedan los pedidos</td><td class="old">No se guardaban en ninguna hoja: el pedido solo llegaba escrito por WhatsApp.</td><td>Cada pedido queda en la misma hoja de Google que los de la landing.</td></tr>
-        <tr><td class="k">Cuándo se registra el pedido</td><td class="old">Solo cuando el cliente enviaba el mensaje por WhatsApp.</td><td>Al pasar al pago, con su número de pedido visible para el cliente. Si la página falla, el pedido queda completo en WhatsApp.</td></tr>
+        <tr><td class="k">Cuándo se registra el pedido</td><td class="old">Solo si el cliente enviaba el mensaje por WhatsApp. Si no lo enviaba, el pedido se perdía.</td><td>En cuanto el cliente toca para pasar al pago, aunque todavía no haya pagado. Así el pedido nunca se pierde.</td></tr>
         <tr><td class="k">Pago por Nequi</td><td class="old">Pedía una referencia del comprobante y el pago se confirmaba con "Ya pagué" por WhatsApp.</td><td>Muestra la llave, el titular y el valor con botón para copiar. Sin referencia obligatoria; el botón abre WhatsApp con el número del pedido.</td></tr>
         <tr><td class="k">Orden en PDF</td><td class="old">Descarga de comprobante con los datos del pago.</td><td>Descarga de la orden en PDF, con la llave en lugar del número de Nequi.</td></tr>
         <tr><td class="k">Seguimiento</td><td class="old">No existía.</td><td>"Consulta tu pedido", con aviso "Pago confirmado" para pedidos Nequi en estado Confirmado.</td></tr>
@@ -294,6 +301,16 @@ footer { color: var(--ink-2); font-size: 13px; padding-block: 0 40px; }
         <tr><td class="k">Visita a la tienda</td><td class="old">No existía.</td><td>Agenda de visita: 14 días y horas únicas, con Google Calendar y registro en la hoja.</td></tr>
       </tbody>
     </table></div>
+  </div>
+
+  <p class="group">Asistente de WhatsApp</p>
+
+  <div class="item">
+    <div class="row"><h3>17. Asistente automático de WhatsApp para atender a los clientes</h3><span class="tag t-wait">En pruebas, falta autorización</span></div>
+    <p>Es un asistente que contesta por WhatsApp a cualquier hora, usando la plataforma oficial de Meta. Es distinto de los avisos del pedido (ítems 10 a 12): los avisos salen al cambiar el estado; el asistente conversa con quien escribe primero.</p>
+    <p><b>Qué hace:</b> da la bienvenida a cada cliente nuevo, muestra un menú (modelos, precio, cómo funciona, garantía, entrega), contesta las dudas y objeciones más comunes siguiendo el guion de ventas del negocio, manda imágenes de apoyo, toma los datos del pedido y, cuando el cliente quiere comprar o escribe su nombre, <b>lo pasa a Clara</b>, la asesora comercial. Si le preguntan, dice con honestidad que es un asistente automático.</p>
+    <p><b>En qué punto está:</b> ya conversa con el guion completo y fue probado con el número de prueba de Meta, incluido el envío de una plantilla que llegó al celular. Falta que Meta verifique el negocio con los documentos de Ferrecubiertas S.A.S. y conectarlo al número real. Eso necesita la autorización del representante legal.</p>
+    <p><b>Lo que todavía no hace:</b> el seguimiento del pedido por chat necesita una plantilla aprobada por Meta, y la ubicación y el horario los da Clara.</p>
   </div>
 
   <h2>Cómo explicar las pruebas de velocidad</h2>
@@ -378,6 +395,7 @@ footer { color: var(--ink-2); font-size: 13px; padding-block: 0 40px; }
       <thead><tr><th>Paso</th><th>Qué falta</th><th>Quién</th></tr></thead>
       <tbody>
         <tr><td>Personas en Meta Business<small>Francisco Clara Tafur y Mateo</small></td><td>Agregarlos en Configuración del negocio &gt; Usuarios &gt; Personas con su correo, que cada uno acepte la invitación y activar su verificación en dos pasos. Darles acceso a la cuenta de WhatsApp Business y a la app; al menos dos personas deben quedar como administradoras para no perder el acceso.</td><td class="who">Pureza Natural</td></tr>
+        <tr><td>Asistente de WhatsApp<small>Autorización y conexión</small></td><td>Autorización del representante legal para verificar el negocio en Meta con sus documentos, conectar el número real, aprobar la plantilla de seguimiento y probar el asistente con un celular.</td><td class="who">Decisión del negocio</td></tr>
         <tr><td>Cuenta de Meta<small>Avisos automáticos</small></td><td>Activar la verificación en dos pasos, crear la app de WhatsApp, registrar el número y generar el token de acceso.</td><td class="who">Pureza Natural</td></tr>
         <tr><td>Plantillas de mensaje<small>9 textos ya redactados</small></td><td>Cargarlas en Meta y esperar la aprobación, que tarda entre minutos y un par de días.</td><td class="who">Pureza Natural</td></tr>
         <tr><td>Conectar la hoja con WhatsApp</td><td>Pegar el código de avisos, poner la llave definitiva y el horario, y probar con un celular los 9 mensajes.</td><td class="who">En conjunto</td></tr>
