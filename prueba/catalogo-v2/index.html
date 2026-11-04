@@ -1266,10 +1266,11 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
       <h3>Paga por Nequi</h3>
       <p class="ok-sub">Dos pasos. Primero pagas, luego envías el comprobante.</p>
       <ol class="nq-steps">
-        <li><b class="n">1</b><div><b>Abre Nequi y envía plata</b>
+        <li><b class="n">1</b><div><b>Abre Nequi y paga con la llave</b>
           <div class="nq-row"><span>Valor</span><strong id="nq-amt"></strong><button type="button" class="nq-copy" data-copy="amt">Copiar</button></div>
-          <div class="nq-row"><span>Número</span><strong>305 352 9366</strong><button type="button" class="nq-copy" data-copy="num">Copiar</button></div>
-          <div class="nq-row"><span>Debe aparecer a nombre de</span><strong>Cla*** Taf***</strong></div>
+          <div class="nq-row"><span>Llave de pago</span><strong id="nq-key">LLAVE-DE-PRUEBA-123</strong><button type="button" class="nq-copy" data-copy="num">Copiar</button></div>
+          <div class="nq-row"><span>Debe aparecer a nombre de</span><strong id="nq-tit">TITULAR DE PRUEBA S.A.S.</strong></div>
+          <span class="nq-test" id="nq-test">DATOS DE PRUEBA</span>
           <small>Si el nombre no coincide, no envíes el pago y escríbenos. Distribuidor autorizado AguaLogic · Pureza Natural.</small></div></li>
         <li><b class="n">2</b><div><b>Escribe la referencia del comprobante</b>
           <input id="nq-ref" aria-label="Referencia del pago de Nequi" inputmode="text" maxlength="30" placeholder="Referencia del pago" autocomplete="off">
@@ -1306,6 +1307,7 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
       <h4>Tu pedido e información legal</h4>
       <ul>
         <li><button class="linkbtn" type="button" data-open="pedido">Consulta tu pedido</button></li>
+        <li><button class="linkbtn" type="button" data-vis>Agendar visita</button></li>
         <li><button class="linkbtn" type="button" data-open="datos">Tratamiento de datos</button></li>
         <li><button class="linkbtn" type="button" data-open="cookies">Política de cookies</button></li>
       </ul>
@@ -1589,6 +1591,7 @@ dialog.conf::backdrop{background:rgba(10,30,26,.65);backdrop-filter:blur(3px)}
           <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>Horario</b>Lun–vie 7:30–6 · Sáb 7:30–5 · Dom 8–1</span></p>
           <p class="pi-r"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span><b>Elige abajo el día que pasas</b>Te escribimos por WhatsApp cuando esté listo. Te lo guardamos <span id="pick-dias">5</span> días hábiles.</span></p>
           <button type="button" class="pi-btn" id="pi-map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Ver mapa aquí</button>
+          <button type="button" class="pi-btn" data-vis><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Agendar visita</button>
         </div>
       </div>
       <div class="row2"><label>Ciudad<input name="ciudad" autocomplete="address-level2" required maxlength="50" placeholder="Villavicencio" list="pn-ciudades"></label><label>Departamento<input name="municipio" autocomplete="address-level1" required maxlength="50" placeholder="Meta"></label></div>
@@ -1754,7 +1757,7 @@ s.hidden=false;})();
 <script>
 (function(){var d=document.getElementById("okd");if(!d)return;
 /* Plazos de entrega estimados en días hábiles (lunes a sábado). AJUSTAR a los tiempos reales. */
-var ENVIO={local:[5,5],otros:[10,10]},NEQ="305 352 9366";
+var ENVIO={local:[5,5],otros:[10,10]},NEQ="LLAVE-DE-PRUEBA-123";
 var $=function(i){return document.getElementById(i);};
 function addDays(n){var x=new Date();while(n>0){x.setDate(x.getDate()+1);if(x.getDay()!==0)n--;}return x;}
 var F=new Intl.DateTimeFormat("es-CO",{weekday:"long",day:"numeric",month:"long"});
@@ -2059,7 +2062,7 @@ function render(){
  var h='<div class="cf-hero"><svg class="ok-sh" viewBox="0 0 48 56" aria-hidden="true"><path d="M24 2l19 7v15c0 14-8 24-19 30C13 48 5 38 5 24V9z" fill="#2e7d4f"/><path class="sch" d="M16 26l6 6 11-13" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg><h2>'+title+'</h2><p>'+sub+'</p><span class="cf-chip '+chip[0]+'">'+chip[1]+'</span></div>';
  h+='<article class="cf-card" id="cf-card"><header class="cf-ch"><div class="cf-brand">'+(logo?'<img src="'+logo+'" alt="">':'')+'<div><b>Pureza Natural</b><small>Distribuidor autorizado AguaLogic</small></div></div><div class="cf-no"><small>'+(nq?"COMPROBANTE DE PAGO":"ORDEN DE PEDIDO")+'</small><b>'+o.num+'</b><span>'+esc(S.date)+'</span></div></header>';
  if(!nq)h+='<div class="cf-due"><small>Total a pagar al recibir</small><b>'+esc(o.total)+'</b><span>Pago contraentrega. No se cobra nada antes de la entrega.</span></div>';
- if(nq)h+='<section class="cf-sec"><h4>Pago</h4><div class="cf-kv"><span>Método</span><b>Nequi</b></div><div class="cf-kv"><span>Referencia</span><b>'+esc(S.ref)+'</b></div><div class="cf-kv"><span>Cuenta destino</span><b>Cla*** Taf*** · 305 352 9366</b></div><div class="cf-kv"><span>Estado</span><b>'+(sent?"En verificación":"Pendiente de envío")+'</b></div></section>';
+ if(nq)h+='<section class="cf-sec"><h4>Pago</h4><div class="cf-kv"><span>Método</span><b>Nequi</b></div><div class="cf-kv"><span>Referencia</span><b>'+esc(S.ref)+'</b></div><div class="cf-kv"><span>Cuenta destino</span><b>Llave LLAVE-DE-PRUEBA-123 · TITULAR DE PRUEBA S.A.S.</b></div><div class="cf-kv"><span>Estado</span><b>'+(sent?"En verificación":"Pendiente de envío")+'</b></div></section>';
  h+='<section class="cf-sec"><h4>'+(nq?"Entrega":"Destino de entrega")+'</h4><div class="cf-kv"><span>Para</span><b>'+esc(o.full)+'</b></div><div class="cf-kv"><span>Celular</span><b>'+esc(o.tel)+'</b></div><div class="cf-kv"><span>Dirección</span><b>'+esc(o.dir)+'</b></div><div class="cf-kv"><span>Ciudad</span><b>'+esc(o.ciudad)+(o.municipio?", "+esc(o.municipio):"")+'</b></div>'+(o.zona&&window.pnIsVillavo(o.ciudad)?'<div class="cf-kv"><span>Zona</span><b>'+(o.zona==="fuera"?"Fuera":"Dentro")+' del perímetro urbano</b></div>':'')+(o.ref?'<div class="cf-kv"><span>Referencia</span><b>'+esc(o.ref)+'</b></div>':'')+'<div class="cf-kv"><span>Día y franja</span><b>'+esc(o.dia)+' · '+esc(o.franja)+'</b></div><div class="cf-kv"><span>Llegada estimada</span><b>'+esc(e.txt)+'</b></div></section>';
  h+='<section class="cf-sec cf-tot"><h4>Productos</h4>'+o.items.map(function(i){return '<div class="cf-it"><span>'+esc(i.n)+' <i>× '+i.q+'</i></span><em>'+(i.p?money(i.s):"Por cotizar")+'</em></div>';}).join("")+'<div class="cf-kv" style="margin-top:6px"><span>Productos</span><b>'+money(o.sub)+'</b></div><div class="cf-kv"><span>Envío</span><b>'+esc(window.pnShipTxt(o.ciudad,o.zona))+'</b></div><div class="cf-big"><span>'+(nq?"Total pagado":"Total a pagar al recibir")+'</span><b>'+esc(o.total)+'</b></div></section>';
  h+='<footer class="cf-fine"><div class="cf-seal"><svg width="16" height="18" viewBox="0 0 48 56" aria-hidden="true"><path d="M24 2l19 7v15c0 14-8 24-19 30C13 48 5 38 5 24V9z" fill="#2e7d4f"/><path d="M16 26l6 6 11-13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Pedido seguro · Distribuidor autorizado AguaLogic</div>'+(nq?'Este comprobante soporta tu pedido y <b>no reemplaza la factura electrónica</b>. El pago queda sujeto a verificación en nuestra cuenta Nequi. ':'Esta orden confirma tu pedido y <b>no es una factura de pago</b>. ')+'Garantía legal y del fabricante. Retracto de 5 días hábiles desde la entrega, con el producto en su estado original. Confirmamos disponibilidad, costo y tiempo de envío antes del despacho.</footer></article>';
@@ -2113,7 +2116,7 @@ function build(o,nq){
  y+=7;var st=o.__pagado?"PAGO RECIBIDO":nq?(S.sent?"PAGO EN VERIFICACION":"PENDIENTE DE ENVIO POR WHATSAPP"):(S.sent?"PEDIDO CONFIRMADO - PAGO AL RECIBIR":"PENDIENTE DE ENVIO POR WHATSAPP");
  var ok=S.sent;d.setFillColor.apply(d,ok?[223,241,230]:[251,238,221]);var sw=d.getTextWidth(st)+0;d.setFont("helvetica","bold");d.setFontSize(8.5);sw=d.getTextWidth(st)+10;d.roundedRect(M,y-4.8,sw,7.2,3.6,3.6,"F");t(st,M+5,y,8.5,"bold",ok?GRN:[138,84,38]);
  if(!nq){y+=7;d.setFillColor(234,245,238);d.roundedRect(M,y,R-M,22,3,3,"F");t(o.__pagado?"TOTAL PAGADO AL RECIBIR":"TOTAL A PAGAR AL RECIBIR",M+6,y+7,8,"bold",GRN);t(o.total,M+6,y+17,20,"bold");t("Pago contraentrega. No se cobra nada antes de la entrega.",R-6,y+17,8.5,"normal",GRY,"right");y+=22;}
- if(nq){sec("Pago");ln(y+1.5);kv("Método","Nequi");kv("Referencia",S.ref);kv("Cuenta destino","Cla*** Taf***  ·  305 352 9366");kv("Estado",o.__pagado?"Pago recibido":S.sent?"En verificación":"Pendiente de envío");}
+ if(nq){sec("Pago");ln(y+1.5);kv("Método","Nequi");kv("Referencia",S.ref);kv("Cuenta destino","Llave LLAVE-DE-PRUEBA-123  ·  TITULAR DE PRUEBA S.A.S.");kv("Estado",o.__pagado?"Pago recibido":S.sent?"En verificación":"Pendiente de envío");}
  sec(nq?"Entrega":"Destino de entrega");ln(y+1.5);
  var e=window.pnEst(o);
  kv("Para",o.full);kv("Celular",o.tel);kv("Dirección",o.dir);kv("Ciudad",o.ciudad+(o.municipio?", "+o.municipio:"")+(o.zona&&window.pnIsVillavo(o.ciudad)?" ("+(o.zona==="fuera"?"fuera":"dentro")+" del perímetro)":""));if(o.ref)kv("Referencia",o.ref);kv("Día y franja",o.dia+" · "+o.franja);kv("Llegada estimada",e.txt);
@@ -2210,7 +2213,7 @@ f.addEventListener("submit",function(e){e.preventDefault();err.textContent="";bo
   var scn=$("tk-scene");scn.hidden=false;scn.innerHTML=pnRuta(i);if(i===5)setTimeout(pnBocina,2300);var br=$("tk-bar"),cp=$("tk-cap");br.hidden=false;cp.hidden=false;br.firstElementChild.style.setProperty("--p",(i/5*100)+"%");br.firstElementChild.style.animation="none";void br.offsetWidth;br.firstElementChild.style.animation="";cp.textContent=i===5?"¡Tu pedido ya llegó!":"Tu pedido va en: "+ET[i]+" (paso "+(i+1)+" de 6)";
   box.innerHTML=ET.map(function(x,n){return '<li style="--n:'+n+'" class="'+(n<i?"hecho":n===i?"actual":"")+'"><span>'+(n<i?"✓":n+1)+'</span>'+x+'</li>';}).join("");box.hidden=false;
   if(r.guia){msg.hidden=false;msg.textContent="Guía de envío: "+r.guia;}
-  if(r.datos&&i>=1){try{var D=JSON.parse(r.datos);D.o.__pagado=D.nq?true:i>=5;cur=D;bp.hidden=false;}catch(x){cur=null;}}
+  if(r.datos&&i>=1){try{var D=JSON.parse(r.datos);D.o.__pagado=D.nq?true:i>=5;cur=D;bp.hidden=false;if(D.nq){msg.hidden=false;msg.textContent="¡Pago confirmado! Tu pedido está reservado."+(D.o&&D.o.despacho?" Despacho estimado: "+D.o.despacho+".":"")+(r.guia?" Guía de envío: "+r.guia:"");}}catch(x){cur=null;}}
  }).catch(function(){if(fin)return;fin=true;clearTimeout(tm);listo();msg.hidden=false;msg.textContent="No pudimos consultar ahora. Escríbenos por WhatsApp y te contamos.";});});
 bp.addEventListener("click",function(){if(!cur)return;var old=bp.textContent;bp.textContent="Generando PDF…";bp.disabled=true;
  loadPdf(function(ok){function fin2(m){bp.textContent=m||old;bp.disabled=false;if(m)setTimeout(function(){bp.textContent=old;},1800);}
@@ -2218,6 +2221,150 @@ bp.addEventListener("click",function(){if(!cur)return;var old=bp.textContent;bp.
   try{S.o=cur.o;S.ref=cur.ref||"";S.date=cur.date||"";S.sent=true;build(cur.o,cur.nq);fin2("PDF descargado");}catch(x){console.error(x);fin2();toast("No se pudo generar el PDF. Toma una captura de esta pantalla.");}});});
 })();
 })();
+</script>
+
+<style>
+#visd{border:0;border-radius:20px;padding:0;width:min(92vw,440px);max-height:92vh;background:#F4F1E8;color:#17302c}
+#visd::backdrop{background:rgba(8,28,25,.6)}
+#visForm{display:grid;gap:14px;padding:22px 20px}
+#visForm h2{font-family:var(--display);font-size:1.6rem;margin:0}
+#visForm label{display:grid;gap:6px;font-weight:700;font-size:.95rem}
+#visForm input:not([type=checkbox]),#visForm select{min-height:48px;padding:0 14px;border-radius:12px;border:1.5px solid #cfc7b4;background:#fff;font:inherit;font-weight:400;color:#17302c}
+#visForm label.chk{display:flex;flex-direction:row;gap:10px;font-weight:400;font-size:.9rem}
+.vis-sub,.vis-h{margin:0;font-size:.92rem;color:#3d5550}
+.vis-b{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+#visForm .err{margin:0}
+
+.vis-ok{width:54px;height:54px;border-radius:50%;background:#174C46;color:#fff;font-size:1.8rem;line-height:54px;margin:0 auto}.vis-when{background:#fff;border:1.5px solid #174C46;border-radius:16px;padding:14px 12px;display:grid;gap:2px}.vis-when strong{font-size:1.35rem;color:#0f3a35;display:block}.vis-when strong::first-letter{text-transform:uppercase}.vis-when em{font-style:normal;font-size:1.6rem;font-weight:700;color:#174C46}.vis-when small{color:#4E5D58}.vis-thanks{text-align:center;display:grid;gap:12px;padding:10px 0}.vis-thanks b{font-size:1.4rem;color:#0f3a35}.vis-thanks p{margin:0}
+.vday-wrap{display:grid;gap:8px}.vday-l{font-weight:600}
+.vdays{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.vday{flex:none;scroll-snap-align:start;width:62px;padding:8px 0;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:#174C46;display:grid;gap:1px;justify-items:center;font-family:inherit;cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
+.vday span{font-size:.74rem;color:#4E5D58}.vday b{font-size:1.25rem;line-height:1.1}.vday em{font-style:normal;font-size:.72rem;color:#4E5D58;text-transform:uppercase;letter-spacing:.04em}
+.vday:active{transform:scale(.94)}
+.vday:disabled{opacity:.45;cursor:not-allowed;background:#EEF1EF;border-style:dashed}.vday:disabled b{text-decoration:line-through}
+#visd [hidden]{display:none!important}
+#visd .vbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;border:0;cursor:pointer;border-radius:999px;padding:13px 22px;min-height:48px;text-decoration:none}
+#visd .vcta{background:#A15A2C;color:#fff}#visd .vcta:hover{background:#8a4a22}
+#visd .vline{background:transparent;color:#174C46;box-shadow:inset 0 0 0 1.5px #174C46}#visd .vline:hover{background:#174C46;color:#fff}
+#visd .err{display:none;font-weight:700;color:#A8402A;font-size:.9rem}#visd .err.on{display:block}
+#visd [aria-invalid=true]{border-color:#A8402A}
+.nq-test{display:inline-block;margin:2px 0 8px;padding:3px 9px;border-radius:999px;background:#fbeedd;color:#8a5426;font:800 12px var(--body);letter-spacing:.08em}
+</style>
+<dialog id="visd" aria-labelledby="visT">
+  <form method="dialog" id="visForm" novalidate>
+    <h2 id="visT">Agenda tu visita</h2>
+    <p class="vis-sub">Ven a Ferrecubiertas, mira el purificador y compra ahí mismo. Calle 35 A No. 27-86, San Isidro, Villavicencio.</p>
+    <label>Tu nombre completo<input id="vName" autocomplete="name" placeholder="Ej: Laura Gómez" required></label>
+    <label>Tu celular<input id="vPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="Ej: 310 987 6543" maxlength="18" required></label>
+    <div class="vday-wrap"><span class="vday-l" id="vDayL">Día de la visita</span><div class="vdays" id="vDays" role="radiogroup" aria-labelledby="vDayL"></div><input id="vDate" type="hidden"></div>
+    <label>Hora<select id="vTime" required></select></label>
+    <p class="vis-h" id="vHint"></p>
+    <label class="chk"><input type="checkbox" id="vOk" required><span>Acepto la <a href="../tratamiento-de-datos.html" target="_blank" rel="noopener">política de tratamiento de datos</a>. Usarán mi nombre y celular solo para confirmar y recordarme la visita.</span></label>
+    <p class="err" id="vErr" role="alert"></p>
+    <div class="vis-thanks" id="vThanks" role="status" tabindex="-1" hidden><span class="vis-ok" aria-hidden="true">✓</span><b>¡Listo, <span id="vThN"></span>!</b><div class="vis-when" id="vWhen" hidden><small>Tu visita es el</small><strong id="vWD"></strong><em id="vWH"></em><small>Ferrecubiertas · Calle 35 A No. 27-86, San Isidro</small></div><p></p><a class="vbtn vline" id="vCal" target="_blank" rel="noopener" hidden>Guardar en mi Google Calendar</a><button type="button" class="vbtn vcta" id="vThX">Volver a la página</button></div>
+    <div class="vis-b" id="vBtns"><button type="button" class="vbtn vline" id="vNo">Cancelar</button><button type="submit" class="vbtn vcta">Reservar mi hora</button></div>
+  </form>
+</dialog>
+<script>
+var WA_NUMBER='573053529366';
+var PN_HOOK='https://script.google.com/macros/s/AKfycbwftsLRlt29GHRbcG5VrVP0Y6QTwrrY7vDKNUpKe0tO3S9NbCOHrbZLC4D3oEzd0XzC/exec';
+function waURL(m){ return 'https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(m||'Hola Pureza, quiero información del producto y el valor.'); }
+function pnTrack(){}
+function pnNombre(s){ var p={de:1,del:1,la:1,las:1,los:1,y:1,e:1}; return String(s||'').replace(/\s+/g,' ').trim().toLowerCase().split(' ').map(function(w,i){ return (i&&p[w])?w:w.charAt(0).toUpperCase()+w.slice(1); }).join(' '); }
+function enviarRegistro(datos){
+  return new Promise(function(resolve){
+    var fin=false; enviarRegistro.ultimo='';
+    function cierra(v){ if(!fin){ fin=true; clearTimeout(tm); resolve(v); } }
+    var tm=setTimeout(function(){ cierra(false); },12000);
+    try{
+      fetch(PN_HOOK,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(datos)})
+        .then(function(r){ return r.text(); })
+        .then(function(x){ enviarRegistro.ultimo=x.trim(); cierra(enviarRegistro.ultimo==='ok'); })
+        .catch(function(){ cierra(false); });
+    }catch(e){ cierra(false); }
+  });
+}
+/* ===== Agendar visita a Ferrecubiertas ===== */
+(function(){
+  var d = document.getElementById('visd');
+  if (!d || !d.showModal) return;
+  var fDate = document.getElementById('vDate'), fTime = document.getElementById('vTime'), hint = document.getElementById('vHint'), err = document.getElementById('vErr');
+  var DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  var MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  function iso(x){ return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); }
+  function parse(v){ var p=v.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
+  function rango(dow){ return dow===0 ? [8*60,12*60+30,'8:00 a.m. a 1:00 p.m.'] : dow===6 ? [7*60+30,16*60+30,'7:30 a.m. a 5:00 p.m.'] : [7*60+30,17*60+30,'7:30 a.m. a 6:00 p.m.']; }
+  function hora(m){ var h=Math.floor(m/60), mm=m%60, ap=h>=12?'p.m.':'a.m.'; h=h%12||12; return h+':'+String(mm).padStart(2,'0')+' '+ap; }
+  var ocupadas=[];
+  function cargaOcupadas(cb){ var fin=false; function ya(){ if(!fin){ fin=true; if(cb) cb(); } } setTimeout(ya,6000);
+    try{ fetch(PN_HOOK+'?visitas=1').then(function(r){ return r.json(); }).then(function(j){ ocupadas=(j&&j.ocupadas)||[]; ya(); }).catch(ya); }catch(e){ ya(); } }
+  function horas(v){ var dt=parse(v), r=rango(dt.getDay()), now=new Date(), hoy=iso(now)===v, nowM=now.getHours()*60+now.getMinutes()+60, out=[]; for(var m=r[0]; m<=r[1]; m+=30){ if(hoy && m<nowM) continue; out.push(hora(m)); } return out; }
+  function calUrl(v,h){ var m=/^(\d+):(\d+) (a|p)\.m\./.exec(h), hh=(+m[1])%12+(m[3]==='p'?12:0), mm=+m[2], f=v.replace(/-/g,''), z=function(n){ return String(n).padStart(2,'0'); }, fin=hh*60+mm+30;
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('Visita a Ferrecubiertas (Pureza Natural)')+'&dates='+f+'T'+z(hh)+z(mm)+'00/'+f+'T'+z(Math.floor(fin/60))+z(fin%60)+'00&ctz=America/Bogota&location='+encodeURIComponent('Ferrecubiertas S.A.S., Calle 35 A No. 27-86, San Isidro, Villavicencio')+'&details='+encodeURIComponent('Ven a ver el purificador AguaLogic. Si no puedes venir, escríbenos por WhatsApp al 305 352 9366 para liberar tu hora.'); }
+  function libre(v,h){ return ocupadas.indexOf(v+'|'+h)===-1; }
+  function hayLibre(v){ return horas(v).some(function(h){ return libre(v,h); }); }
+  function fill(){
+    fTime.innerHTML='';
+    if(!fDate.value){ hint.textContent='Escoge primero el día.'; return; }
+    var dt=parse(fDate.value), r=rango(dt.getDay()), hs=horas(fDate.value), libres=0, primera=-1;
+    hs.forEach(function(h,i){ var ok=libre(fDate.value,h), o=document.createElement('option'); o.value=h; o.textContent=ok?h:h+' · ya reservada'; o.disabled=!ok; if(ok){ libres++; if(primera<0) primera=i; } fTime.appendChild(o); });
+    fTime.selectedIndex=primera;
+    hint.textContent='Atendemos el '+DIAS[dt.getDay()]+' de '+r[2]+(!hs.length?' Ya no hay horas hoy; escoge otro día.':!libres?' Este día ya no tiene horas libres; escoge otro.':' Las horas marcadas como reservadas ya las tomó otra persona.');
+  }
+  var vDays=document.getElementById('vDays'), dn2=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  function pinta(){
+    var t0=new Date(), base=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()), html='', first='', lista=[];
+    for(var i=0,k=0;k<14&&i<20;i++){ var x=new Date(base.getFullYear(),base.getMonth(),base.getDate()+i);
+      if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
+      var v=iso(x), lleno=!hayLibre(v); lista.push(v); if(!first && !lleno) first=v;
+      html+='<button type="button" role="radio" class="vday'+(lleno?' full':'')+'"'+(lleno?' disabled':'')+' data-d="'+v+'" aria-label="'+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]+(lleno?', sin horas libres':'')+'"><span>'+(i===0?'Hoy':i===1?'Mañana':dn2[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+(lleno?'lleno':MES[x.getMonth()])+'</em></button>'; }
+    if(!first) first=lista[0];
+    if(lista.indexOf(fDate.value)===-1 || !hayLibre(fDate.value)) fDate.value=first;
+    vDays.innerHTML=html;
+    vDays.querySelectorAll('.vday').forEach(function(b){ var on=b.getAttribute('data-d')===fDate.value; b.setAttribute('aria-checked',on); b.classList.toggle('on',on); if(on){ vDays.scrollLeft=Math.max(0,b.offsetLeft-12); } });
+  }
+  vDays.addEventListener('click',function(e){ var b=e.target.closest('.vday'); if(!b) return; fDate.value=b.getAttribute('data-d'); fill(); pinta(); });
+  function abrir(e){
+    e.preventDefault();
+    var t=new Date(), min=new Date(t.getFullYear(),t.getMonth(),t.getDate()), max=new Date(min); max.setDate(max.getDate()+30);
+    document.querySelectorAll('#visForm > label, #visForm .vday-wrap, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=false;}); document.getElementById('vThanks').hidden=true;
+    fDate.min=iso(min); fDate.max=iso(max); if(!fDate.value) fDate.value=iso(min); pinta(); fill(); err.classList.remove('on'); d.showModal();
+    cargaOcupadas(function(){ pinta(); fill(); rapidos(); });
+  }
+  document.querySelectorAll('[data-vis]').forEach(function(x){ x.addEventListener('click', abrir); });
+  var box=document.getElementById('dDays'), dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  function rapidos(){ if(!box) return; box.innerHTML=''; var t0=new Date(); for(var i=0,k=0;k<4&&i<10;i++){ var x=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i); if(i===0 && t0.getHours()*60+t0.getMinutes()+60>rango(x.getDay())[1]) continue; k++;
+    var v=iso(x), lleno=!hayLibre(v), bt=document.createElement('button'); bt.type='button'; bt.className='d-day'; bt.disabled=lleno; bt.setAttribute('data-d',v); bt.setAttribute('aria-label','Agendar el '+DIAS[x.getDay()]+' '+x.getDate()+' de '+MES[x.getMonth()]+(lleno?', sin horas libres':''));
+    bt.innerHTML='<span>'+(i===0?'Hoy':i===1?'Mañana':dn[x.getDay()])+'</span><b>'+x.getDate()+'</b><em>'+(lleno?'lleno':MES[x.getMonth()])+'</em>'; box.appendChild(bt); } }
+  if(box){ rapidos(); cargaOcupadas(rapidos);
+    box.addEventListener('click',function(e){ var q=e.target.closest('.d-day'); if(!q||q.disabled) return; abrir(e); fDate.value=q.getAttribute('data-d'); pinta(); fill(); }); }
+  fDate.addEventListener('change', fill);
+  document.getElementById('vThX').addEventListener('click', function(){ d.close(); });
+  document.getElementById('vNo').addEventListener('click', function(){ d.close(); });
+  d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
+  document.getElementById('visForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var n=document.getElementById('vName'), p=document.getElementById('vPhone'), ok=document.getElementById('vOk');
+    var name=pnNombre(n.value), phone=p.value.replace(/\D/g,'').replace(/^57(?=3\d{9}$)/,'');
+    [n,p,fDate,fTime,ok].forEach(function(x){x.removeAttribute('aria-invalid');});
+    var bad = name.length<3 ? [n,'Escribe tu nombre completo.'] : !/^3\d{9}$/.test(phone) ? [p,'Escribe un celular de 10 dígitos que empiece por 3.'] : !fDate.value ? [fDate,'Escoge el día de tu visita.'] : !fTime.value ? [fTime,'Escoge una hora disponible.'] : !ok.checked ? [ok,'Acepta la política de datos para continuar.'] : null;
+    if(bad){ bad[0].setAttribute('aria-invalid','true'); err.textContent=bad[1]; err.classList.add('on'); bad[0].focus(); return; }
+    var dt=parse(fDate.value), pretty=phone.replace(/(\d{3})(\d{3})(\d{4})/,'$1 $2 $3');
+    var msg='Visita a Ferrecubiertas\nNombre: '+name+'\nCelular: '+pretty+'\nDía: '+DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]+'\nHora: '+fTime.value;
+    var vb=document.querySelector('#visForm button[type=submit]'), vbt=vb.textContent; vb.disabled=true; vb.textContent='Agendando…';
+    enviarRegistro({ tipo:'visita', nombre:name, celular:pretty, detalle:msg, clave:fDate.value+'|'+fTime.value }).then(function(ok){
+      vb.disabled=false; vb.textContent=vbt;
+      if(enviarRegistro.ultimo==='ocupado'){ cargaOcupadas(function(){ pinta(); fill(); rapidos(); }); err.textContent='Otra persona acaba de reservar esa hora. Ya actualizamos las horas libres: escoge otra.'; err.classList.add('on'); return; }
+      if(ok) pnTrack('Schedule', {content_name:'Visita a Ferrecubiertas'});
+      var vp=document.querySelector('#vThanks p');
+      if(ok){ vp.innerHTML='No necesitas confirmar nada. Si no puedes venir, escríbenos por WhatsApp para liberar tu hora.'; document.getElementById('vWD').textContent=DIAS[dt.getDay()]+' '+dt.getDate()+' de '+MES[dt.getMonth()]; document.getElementById('vWH').textContent=fTime.value; document.getElementById('vWhen').hidden=false; var cl=document.getElementById('vCal'); cl.href=calUrl(fDate.value,fTime.value); cl.hidden=false; ocupadas.push(fDate.value+'|'+fTime.value); rapidos(); }
+      else { window.open(waURL(msg),'_blank','noopener'); document.getElementById('vWhen').hidden=true; document.getElementById('vCal').hidden=true; vp.innerHTML='No pudimos reservar tu hora desde la página. Quedó escrita en WhatsApp: <strong>toca Enviar para que nos llegue</strong> y allí te decimos si esa hora sigue libre.'; }
+      document.getElementById('vThN').textContent=name.split(' ')[0]; document.querySelectorAll('#visForm > label, #visForm .vday-wrap, #visForm .vis-sub, #visForm .vis-h, #visForm .err, #vBtns').forEach(function(x){x.hidden=true;}); var th=document.getElementById('vThanks'); th.hidden=false; th.focus();
+    });
+  });
+})();
+
+
 </script>
 
 </body>
